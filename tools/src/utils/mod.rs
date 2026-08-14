@@ -12,6 +12,9 @@ pub mod fetch;
 #[cfg(feature = "extra")]
 pub mod zlib;
 
+#[cfg(feature = "crawler")]
+pub mod http;
+
 use url::Url;
 
 pub fn chunks_exact<T>(v: Vec<T>, n: usize) -> impl Iterator<Item = Vec<T>> {
