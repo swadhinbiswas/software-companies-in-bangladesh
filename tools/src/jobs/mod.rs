@@ -102,7 +102,7 @@ pub async fn run(
             Err(err) => error!("[ERROR] {err}"),
         }
 
-        if processed % 5 == 0 {
+        if processed.is_multiple_of(5) {
             save(&output_file, &output)?;
             info!("Progress: {processed}/{} companies persisted", companies.len());
         }
@@ -214,13 +214,11 @@ impl Crawler {
 
     async fn raw_fetch_jobs(&self, url: Url) -> Result<Option<Vec<JobPost>>> {
         // 1. Known ATS platform → public JSON API (exact, no LLM).
-        if let Some(ats) = Ats::detect(&url) {
-            if let Some(jobs) = ats.fetch_jobs(&self.http).await? {
-                if !jobs.is_empty() {
+        if let Some(ats) = Ats::detect(&url)
+            && let Some(jobs) = ats.fetch_jobs(&self.http).await?
+                && !jobs.is_empty() {
                     return Ok(Some(jobs));
                 }
-            }
-        }
 
         // 2. Schema.org JobPosting JSON-LD on the page (no LLM).
         let html = self.fetch_html(&url).await?;
@@ -362,11 +360,10 @@ impl Crawler {
     }
 
     fn log_page(&self, url: &Url, markdown: &str) {
-        if let Some(file) = &self.log_file {
-            if let Ok(file) = file.lock() {
+        if let Some(file) = &self.log_file
+            && let Ok(file) = file.lock() {
                 let _ = writeln!(file.as_ref(), "---\n{url}\n{}", cap_input(markdown, 12_000));
             }
-        }
     }
 
     /// Instant HTML fetch with a 24h cache. No browser, no waits.
@@ -462,11 +459,10 @@ fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
         for element in html.select(&selector) {
             let text = element.text().collect::<String>();
             let text = text.trim();
-            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →") {
-                if let Some(href) = element.value().attr("href") {
+            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →")
+                && let Some(href) = element.value().attr("href") {
                     candidates.push((href.to_string(), true));
                 }
-            }
         }
     }
 

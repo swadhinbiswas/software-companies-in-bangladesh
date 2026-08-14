@@ -72,7 +72,7 @@ enum Command {
         #[arg(
             long,
             short,
-            default_value = "gemini-3.5-flash-lite",
+            default_value = jobs::llm::DEFAULT_MODEL,
             value_name = "MODEL"
         )]
         model: String,
@@ -81,7 +81,7 @@ enum Command {
         log_file: bool,
 
         /// Maximum number of concurrent jobs.
-        #[arg(long, short, default_value_t = 2, value_name = "N")]
+        #[arg(long, short, default_value_t = 8, value_name = "N")]
         concurrent: u8,
     },
 }

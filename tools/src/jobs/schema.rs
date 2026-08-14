@@ -312,7 +312,7 @@ pub fn gen_readme(dir: PathBuf) -> Result {
 
         for mut job in jobs {
             let src = match &job.source {
-                Some(url) => resolve_url(&source, &url)?.into(),
+                Some(url) => resolve_url(&source, url)?.into(),
                 None => source.to_string(),
             };
 
@@ -320,7 +320,7 @@ pub fn gen_readme(dir: PathBuf) -> Result {
                 let ApplicationMethod::Website(link) = method else {
                     continue;
                 };
-                *link = resolve_url(&source, &link)?.into()
+                *link = resolve_url(&source, link)?.into()
             }
 
             writeln!(o, "<details>")?;

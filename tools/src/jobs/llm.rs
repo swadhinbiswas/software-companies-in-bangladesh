@@ -124,10 +124,8 @@ fn truncate(text: &str, max: usize) -> String {
 /// Resolve the Zen API key: env vars first, then the opencode auth store.
 fn zen_api_key() -> Result<String> {
     for env in ["ZEN_API_KEY", "OPENCODE_ZEN_API_KEY", "OPENAUTH_OPCODE_API_KEY"] {
-        if let Ok(key) = std::env::var(env) {
-            if !key.is_empty() {
-                return Ok(key);
-            }
+        if let Some(key) = std::env::var(env).ok().filter(|k| !k.is_empty()) {
+            return Ok(key);
         }
     }
 

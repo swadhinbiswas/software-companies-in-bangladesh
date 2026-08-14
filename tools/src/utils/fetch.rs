@@ -25,7 +25,7 @@ pub fn fetch(url: &Url) -> Result<String> {
 
     let data = client().get(url).send()?.error_for_status()?.text()?;
 
-    cahce.set(&data)?;
+    cache.set(&data)?;
 
     Ok(data)
 }
