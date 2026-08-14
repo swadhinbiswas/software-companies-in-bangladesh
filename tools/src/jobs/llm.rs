@@ -21,7 +21,7 @@ pub const GEMINI_ENDPOINT: &str = "https://generativelanguage.googleapis.com/v1b
 pub const DEFAULT_MODEL: &str = "gemini-3.5-flash-lite";
 
 /// Maximum concurrent LLM requests (the bottleneck of the crawl).
-pub const LLM_CONCURRENCY: usize = 6;
+pub const LLM_CONCURRENCY: usize = 10;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Provider {

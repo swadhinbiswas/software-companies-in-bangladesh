@@ -17,7 +17,7 @@ use std::time::{Duration, Instant};
 use tokio::sync::Semaphore;
 use url::Url;
 
-const MAX_RETRIES: u32 = 2;
+const MAX_RETRIES: u32 = 1;
 const BASE_BACKOFF_MS: u64 = 300;
 const HOST_DELAY_RANGE: (u64, u64) = (60, 180);
 
@@ -39,8 +39,8 @@ impl Http {
 
         let client = Client::builder()
             .default_headers(headers)
-            .connect_timeout(Duration::from_secs(10))
-            .timeout(Duration::from_secs(20))
+            .connect_timeout(Duration::from_secs(8))
+            .timeout(Duration::from_secs(12))
             .tcp_keepalive(Duration::from_secs(30))
             .redirect(reqwest::redirect::Policy::limited(10))
             .gzip(true)

@@ -63,7 +63,7 @@ Rules:
 
 const CACHE_PATH: &str = "job-postings-cache";
 const CACHE_TTL: Duration = Duration::from_secs(24 * 60 * 60);
-const MAX_LISTING_PAGES: usize = 6;
+const MAX_LISTING_PAGES: usize = 4;
 const MAX_LLM_CHARS: usize = 40_000;
 
 #[tokio::main]
@@ -87,12 +87,16 @@ pub async fn run(
 
     let output_file = TextFile::read(dir.join("./data/job-posts.json"))?;
 
+    let started = std::time::Instant::now();
     let mut output = Jobs::new();
+    // `buffer_unordered`: a slow site must never stall the stream — results
+    // are yielded as they complete (order is irrelevant for the output map).
     let mut stream = stream::iter(companies.iter())
         .map(|(name, company)| engine.fetch_jobs_from(name, company))
-        .buffered(concurrent.into());
+        .buffer_unordered(concurrent.into());
 
     let mut processed = 0usize;
+    let mut failed = 0usize;
     while let Some(result) = stream.next().await {
         processed += 1;
         match result {
@@ -100,12 +104,24 @@ pub async fn run(
                 output.insert(name, Entry { source, jobs });
             }
             Ok(None) => {}
-            Err(err) => error!("[ERROR] {err}"),
+            Err(err) => {
+                failed += 1;
+                error!("[ERROR] {err}");
+            }
         }
 
-        if processed.is_multiple_of(5) {
+        let elapsed = started.elapsed().as_secs();
+        if processed.is_multiple_of(10) || elapsed >= 240 {
             save(&output_file, &output)?;
-            info!("Progress: {processed}/{} companies persisted", companies.len());
+            info!(
+                "Progress: {processed}/{} companies ({} failed) in {elapsed}s",
+                companies.len(),
+                failed
+            );
+        }
+        if elapsed >= 285 {
+            warn!("Soft deadline reached; saving partial results. Re-run resumes via cache.");
+            break;
         }
     }
 
@@ -113,9 +129,10 @@ pub async fn run(
     save(&output_file, &output)?;
 
     info!(
-        "From {} companies; Found {} Jobs",
+        "From {} companies; Found {} Jobs in {:.1}s",
         output.len(),
-        output.values().map(|f| f.jobs.len()).sum::<usize>()
+        output.values().map(|f| f.jobs.len()).sum::<usize>(),
+        started.elapsed().as_secs_f64()
     );
 
     Ok(())
@@ -412,47 +429,61 @@ impl Crawler {
     }
 
     /// Crawl a listing page plus its pagination pages (max `MAX_LISTING_PAGES`).
-    /// Returns the concatenated Markdown with `<!-- PAGE -->` markers.
+    /// Each round fetches all queued pages in parallel; next-links are
+    /// discovered from the fetched HTML and enqueued for the next round.
+    /// Returns concatenated Markdown with `<!-- PAGE -->` markers.
     async fn crawl_listing(&self, base: &Url) -> Result<String> {
         let mut visited = HashSet::new();
+        let mut pages: Vec<String> = Vec::new();
         let mut queue: VecDeque<Url> = VecDeque::new();
         queue.push_back(base.clone());
 
-        let mut pages = Vec::new();
+        while !queue.is_empty() && pages.len() < MAX_LISTING_PAGES {
+            let round: Vec<Url> = queue
+                .drain(..)
+                .filter(|url| visited.insert(url.as_str().to_string()))
+                .collect();
 
-        while let Some(url) = queue.pop_front() {
-            let key = url.as_str().to_string();
-            if !visited.insert(key) || pages.len() >= MAX_LISTING_PAGES {
-                continue;
-            }
+            let results: Vec<(Url, Result<(String, String)>)> = stream::iter(round)
+                .map(|url| {
+                    let me = self;
+                    Box::pin(async move {
+                        let markdown = me.fetch_html_and_markdown(&url).await;
+                        (url, markdown)
+                    })
+                })
+                .buffer_unordered(4)
+                .collect()
+                .await;
 
-            let html = match self.fetch_html(&url).await {
-                Ok(html) => html,
-                Err(err) => {
-                    warn!("[PAGE-ERROR] {url}: {err}");
-                    continue;
-                }
-            };
+            for (url, result) in &results {
+                match result {
+                    Ok((html, markdown)) if !markdown.trim().is_empty() => {
+                        pages.push(format!("<!-- PAGE: {url} -->\n\n{markdown}"));
 
-            let markdown = match normalize_markdown_from(&html) {
-                Ok(markdown) => markdown,
-                Err(err) => {
-                    warn!("[MARKDOWN-ERROR] {url}: {err}");
-                    continue;
-                }
-            };
-
-            pages.push(format!("<!-- PAGE: {url} -->\n\n{markdown}"));
-
-            for next in next_page_links(&html, &url) {
-                let key = next.as_str().to_string();
-                if !visited.contains(&key) {
-                    queue.push_back(next);
+                        if pages.len() < MAX_LISTING_PAGES {
+                            for next in next_page_links(html, url) {
+                                let key = next.as_str().to_string();
+                                if !visited.contains(&key) && !queue.iter().any(|u| u.as_str() == key) {
+                                    queue.push_back(next);
+                                }
+                            }
+                        }
+                    }
+                    Ok(_) => warn!("[EMPTY-PAGE] {url}"),
+                    Err(err) => warn!("[PAGE-ERROR] {url}: {err}"),
                 }
             }
         }
 
         Ok(pages.join("\n\n"))
+    }
+
+    /// Fetch a page and convert it to Markdown in one cached step.
+    async fn fetch_html_and_markdown(&self, url: &Url) -> Result<(String, String)> {
+        let html = self.fetch_html(url).await?;
+        let markdown = normalize_markdown_from(&html)?;
+        Ok((html, markdown))
     }
 }
 
