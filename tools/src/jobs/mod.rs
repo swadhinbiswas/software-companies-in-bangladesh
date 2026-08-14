@@ -87,8 +87,11 @@ pub async fn run(
 
     let output_file = TextFile::read(dir.join("./data/job-posts.json"))?;
 
+    // Merge with previous results so a failed company never loses data:
+    // re-runs only fill the gaps.
+    let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
+
     let started = std::time::Instant::now();
-    let mut output = Jobs::new();
     // `buffer_unordered`: a slow site must never stall the stream — results
     // are yielded as they complete (order is irrelevant for the output map).
     let mut stream = stream::iter(companies.iter())
@@ -96,7 +99,7 @@ pub async fn run(
         .buffer_unordered(concurrent.into());
 
     let mut processed = 0usize;
-    let mut failed = 0usize;
+    let mut failed: Vec<String> = Vec::new();
     while let Some(result) = stream.next().await {
         processed += 1;
         match result {
@@ -104,19 +107,16 @@ pub async fn run(
                 output.insert(name, Entry { source, jobs });
             }
             Ok(None) => {}
-            Err(err) => {
-                failed += 1;
-                error!("[ERROR] {err}");
-            }
+            Err(name) => failed.push(name),
         }
 
         let elapsed = started.elapsed().as_secs();
-        if processed.is_multiple_of(10) || elapsed >= 240 {
+        if processed.is_multiple_of(20) || elapsed >= 240 {
             save(&output_file, &output)?;
             info!(
                 "Progress: {processed}/{} companies ({} failed) in {elapsed}s",
                 companies.len(),
-                failed
+                failed.len()
             );
         }
         if elapsed >= 285 {
@@ -126,13 +126,40 @@ pub async fn run(
     }
 
     drop(stream);
+
+    // Retry sweep for rate-limited / transient failures.
+    let mut sweep = 0;
+    while !failed.is_empty() && sweep < 2 && started.elapsed().as_secs() < 270 {
+        sweep += 1;
+        info!("Retry sweep #{sweep}: {} companies", failed.len());
+        let current = std::mem::take(&mut failed);
+        let pending: Vec<(&str, &Company)> = current
+            .iter()
+            .filter_map(|name| companies.get(name).map(|company| (name.as_str(), company)))
+            .collect();
+        let mut retries = stream::iter(pending)
+            .map(|(name, company)| engine.fetch_jobs_from(name, company))
+            .buffer_unordered(concurrent.into());
+
+        while let Some(result) = retries.next().await {
+            match result {
+                Ok(Some((name, source, jobs))) => {
+                    output.insert(name, Entry { source, jobs });
+                }
+                Ok(None) => {}
+                Err(name) => failed.push(name),
+            }
+        }
+    }
+
     save(&output_file, &output)?;
 
     info!(
-        "From {} companies; Found {} Jobs in {:.1}s",
+        "From {} companies; Found {} Jobs in {:.1}s ({} still failed)",
         output.len(),
         output.values().map(|f| f.jobs.len()).sum::<usize>(),
-        started.elapsed().as_secs_f64()
+        started.elapsed().as_secs_f64(),
+        failed.len()
     );
 
     Ok(())
@@ -177,17 +204,20 @@ impl Crawler {
         &self,
         name: &str,
         company: &Company,
-    ) -> Result<Option<(String, Url, Vec<JobPost>)>> {
+    ) -> Result<Option<(String, Url, Vec<JobPost>)>, String> {
         let Some(url) = company.links.job.as_ref() else {
             return Ok(None);
         };
-        let url = normalize_url(url)?;
+        let url = match normalize_url(url) {
+            Ok(url) => url,
+            Err(err) => return Err(format!("invalid job URL: {err}")),
+        };
 
         let jobs = match self.fetch_jobs(&url).await {
             Ok(jobs) => jobs,
             Err(err) => {
                 error!("[ERROR] {name}: {err}");
-                return Ok(None);
+                return Err(name.to_string());
             }
         };
 
@@ -416,7 +446,7 @@ impl Crawler {
 
     /// Instant HTML fetch with a 24h cache. No browser, no waits.
     async fn fetch_html(&self, url: &Url) -> Result<String> {
-        let url = normalize_url(url)?;
+        let url = normalize_url(url).map_err(|err| format!("{err}"))?;
         let cache = Cache::open_with_ttl(CACHE_PATH, url.as_str(), Some(CACHE_TTL))?;
 
         if let Some(html) = cache.get()? {
