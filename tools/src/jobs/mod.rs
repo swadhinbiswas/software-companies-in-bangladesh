@@ -69,7 +69,7 @@ const CACHE_TTL: Duration = Duration::from_secs(24 * 60 * 60);
 const MAX_LISTING_PAGES: usize = 4;
 const MAX_LLM_CHARS: usize = 12_000;
 /// Sites per LLM call in the listing phase.
-const BATCH_SITES: usize = 8;
+const BATCH_SITES: usize = 12;
 /// Detail pages per LLM call in the detail phase.
 const BATCH_DETAILS: usize = 8;
 /// Soft deadline: stop starting new work at this point; persisted results
@@ -145,6 +145,8 @@ pub async fn run(
     // ── Phase 2: batched LLM extraction of pending sites. ────────────────
     info!("Extracting {} site(s) via LLM...", pending.len());
     let mut detail_queue: Vec<(String, Url, JobPost)> = Vec::new();
+
+    let mut retry_batches: Vec<Vec<(String, String)>> = Vec::new();
     let mut batch = 0usize;
     while batch < pending.len() && started.elapsed().as_secs() < SOFT_DEADLINE_SECS {
         let chunk: Vec<_> = pending[batch..(batch + BATCH_SITES).min(pending.len())]
@@ -152,6 +154,52 @@ pub async fn run(
             .map(|(name, _, md)| (name.as_str(), md.as_str()))
             .collect();
 
+        match engine.extract_batch(&chunk).await {
+            Ok(assignments) => {
+                let mut matched = std::collections::HashSet::new();
+                for (name, jobs) in assignments {
+                    matched.insert(name.clone());
+                    if let Some((_, url, _)) = pending.iter().find(|(n, _, _)| *n == name) {
+                        for job in jobs {
+                            if job.needs_fetch {
+                                detail_queue.push((name.clone(), url.clone(), job));
+                            } else if let Some(entry) = output.get_mut(&name) {
+                                entry.jobs.push(job);
+                            }
+                        }
+                    }
+                }
+                // Sites the LLM skipped get one more chance in the sweep.
+                let missed: Vec<_> = chunk
+                    .iter()
+                    .filter(|(n, _)| !matched.contains(*n))
+                    .map(|(n, md)| (n.to_string(), md.to_string()))
+                    .collect();
+                if !missed.is_empty() {
+                    retry_batches.push(missed);
+                }
+            }
+            Err(err) => {
+                error!("[BATCH-ERROR] {err}");
+                retry_batches.push(
+                    chunk
+                        .iter()
+                        .map(|(n, md)| (n.to_string(), md.to_string()))
+                        .collect(),
+                );
+            }
+        }
+
+        batch += BATCH_SITES;
+    }
+
+    // Retry sweep for rate-limited / LLM-skipped sites.
+    for sweep in retry_batches {
+        if started.elapsed().as_secs() >= SOFT_DEADLINE_SECS {
+            break;
+        }
+        info!("[LLM-SWEEP] retrying {} site(s)", sweep.len());
+        let chunk: Vec<(&str, &str)> = sweep.iter().map(|(n, md)| (n.as_str(), md.as_str())).collect();
         match engine.extract_batch(&chunk).await {
             Ok(assignments) => {
                 for (name, jobs) in assignments {
@@ -166,15 +214,8 @@ pub async fn run(
                     }
                 }
             }
-            Err(err) => {
-                error!("[BATCH-ERROR] {err}");
-                for (n, _) in chunk {
-                    warn!("[FAILED] {n}");
-                }
-            }
+            Err(err) => error!("[SWEEP-ERROR] {err}"),
         }
-
-        batch += BATCH_SITES;
     }
 
     // ── Phase 3: batched detail resolution for `needsFetch` jobs. ─────────
