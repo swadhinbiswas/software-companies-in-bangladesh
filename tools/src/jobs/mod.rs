@@ -1,15 +1,17 @@
 //! Fast job crawler.
 //!
-//! Pipeline (no browser, no long waits):
-//!   job URL
-//!     ├─ ATS platform detected?  ──► public JSON API ──► exact JobPost[] (no LLM)
-//!     ├─ schema.org JSON-LD?     ──► parse directly   ──► JobPost[]        (no LLM)
-//!     └─ generic page            ──► instant HTML GET → paginate (smart) → clean Markdown
-//!                                        └─► one LLM call per site ──► JobPost[]
-//!   `needsFetch` jobs → detail pages fetched in parallel (memoized/deduped) → LLM
+//! Pipeline (no browser, no long waits, minimal LLM calls):
+//!   1. Crawl phase (HTTP only, parallel):
+//!      - ATS platform detected?  -> public JSON API -> exact JobPost[] (no LLM)
+//!      - schema.org JSON-LD?     -> parse directly  -> JobPost[]        (no LLM)
+//!      - generic page            -> instant HTML GET + smart pagination -> clean Markdown
+//!   2. LLM phase (batched): several sites per call with `<!-- SITE -->`
+//!      markers, returns per-site JobPost[]. Paced to stay under rate limits.
+//!   3. Detail phase (batched): `needsFetch` pages fetched in parallel,
+//!      extracted in batches.
 //!
-//! Errors never abort the run: a failing company is logged and skipped, and
-//! output is persisted incrementally.
+//! Errors never abort the run; output is persisted incrementally and merged
+//! with previous runs, so a re-run only fills the gaps (24h disk cache).
 mod input_normalizer;
 pub mod ats;
 pub mod llm;
@@ -20,15 +22,13 @@ use input_normalizer::{cap_input, normalize_markdown_from};
 use llm::Llm;
 use schema::*;
 
-use std::collections::{BTreeMap as Map, HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap as Map, HashSet, VecDeque};
 use std::io::Write;
 use std::path::Path;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Duration;
 
-use crate::data::Company;
-use crate::utils::resolve_url;
 use crate::utils::cache::Cache;
 use crate::utils::http;
 use crate::utils::http::Http;
@@ -42,11 +42,14 @@ use serde_json as json;
 use url::Url;
 
 const LLM_INPUT: &str = r#"You are an information extraction engine.
-Extract job postings from the provided Markdown (which may span several pages of a careers site).
+The input Markdown contains ONE OR MORE career sites. Each site is wrapped in markers:
+<!-- SITE: <company name> -->
+...site markdown...
+<!-- END SITE -->
 
 Rules:
-- Output a JSON object of the form {"jobs": [ ... ]} matching the provided JSON schema. Never wrap in extra keys.
-- Extract only actual job postings. If no job posting is found, return {"jobs": []}.
+- Output a JSON object of the form {"sites": [ {"name": "<company name from the SITE marker>", "jobs": [ ... ]}, ... ]} matching the provided JSON schema. Never wrap in extra keys.
+- Extract job postings from EACH site under its own marker. If a site has no job postings, return {"name": ..., "jobs": []}.
 - Set `needsFetch` to true ONLY if the listing lacks full details (description, deadline, apply link) and the job's `source` URL must be fetched to complete it.
 - Never guess. Use schema defaults when required.
 - Keep `title` unchanged.
@@ -58,13 +61,20 @@ Rules:
 - Never guess salary information. Only extract salary explicitly present in the source.
 - Include a confidence score (0.0–1.0) for each extracted job.
 - Do not include job postings with confidence below 0.5.
-- You may see `<!-- PAGE: url -->` markers between pages; ignore them.
+- You may see `<!-- PAGE: url -->` markers inside a site; ignore them.
 "#;
 
 const CACHE_PATH: &str = "job-postings-cache";
 const CACHE_TTL: Duration = Duration::from_secs(24 * 60 * 60);
 const MAX_LISTING_PAGES: usize = 4;
-const MAX_LLM_CHARS: usize = 40_000;
+const MAX_LLM_CHARS: usize = 12_000;
+/// Sites per LLM call in the listing phase.
+const BATCH_SITES: usize = 8;
+/// Detail pages per LLM call in the detail phase.
+const BATCH_DETAILS: usize = 8;
+/// Soft deadline: stop starting new work at this point; persisted results
+/// plus the 24h cache let a re-run finish in seconds.
+const SOFT_DEADLINE_SECS: u64 = 270;
 
 #[tokio::main]
 pub async fn run(
@@ -86,68 +96,138 @@ pub async fn run(
     )?);
 
     let output_file = TextFile::read(dir.join("./data/job-posts.json"))?;
-
-    // Merge with previous results so a failed company never loses data:
-    // re-runs only fill the gaps.
+    // Merge with previous results: failed companies never lose data.
     let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
 
     let started = std::time::Instant::now();
-    // `buffer_unordered`: a slow site must never stall the stream — results
-    // are yielded as they complete (order is irrelevant for the output map).
+    info!("Crawling {} companies...", companies.len());
+
+    // ── Phase 1: crawl everything (HTTP only, no LLM). ────────────────────
+    let mut pending: Vec<(String, Url, String)> = Vec::new();
     let mut stream = stream::iter(companies.iter())
-        .map(|(name, company)| engine.fetch_jobs_from(name, company))
+        .map(|(name, company)| {
+            let me = engine.clone();
+            let name = name.clone();
+            async move {
+                let Some(url) = company.links.job.as_ref() else {
+                    return (name, None);
+                };
+                let Ok(url) = normalize_url(url) else {
+                    return (name, None);
+                };
+                let prepared = me.prepare_site(&url).await;
+                (name, Some((url, prepared)))
+            }
+        })
         .buffer_unordered(concurrent.into());
 
-    let mut processed = 0usize;
-    let mut failed: Vec<String> = Vec::new();
-    while let Some(result) = stream.next().await {
-        processed += 1;
+    while let Some((name, result)) = stream.next().await {
         match result {
-            Ok(Some((name, source, jobs))) => {
-                output.insert(name, Entry { source, jobs });
+            Some((url, Ok(SitePrepare::Exact(jobs)))) if !jobs.is_empty() => {
+                output.insert(name, Entry { source: url, jobs });
             }
-            Ok(None) => {}
-            Err(name) => failed.push(name),
+            Some((_, Ok(SitePrepare::Exact(_)))) => {}
+            Some((url, Ok(SitePrepare::Markdown(md)))) => {
+                pending.push((name, url, md));
+            }
+            Some((_, Ok(SitePrepare::Empty))) => {}
+            Some((_, Err(err))) => error!("[ERROR] {name}: {err}"),
+            None => {}
         }
 
-        let elapsed = started.elapsed().as_secs();
-        if processed.is_multiple_of(20) || elapsed >= 240 {
-            save(&output_file, &output)?;
-            info!(
-                "Progress: {processed}/{} companies ({} failed) in {elapsed}s",
-                companies.len(),
-                failed.len()
-            );
-        }
-        if elapsed >= 285 {
-            warn!("Soft deadline reached; saving partial results. Re-run resumes via cache.");
+        if started.elapsed().as_secs() >= SOFT_DEADLINE_SECS {
+            warn!("Soft deadline in crawl phase; saving partial results");
             break;
         }
     }
-
     drop(stream);
 
-    // Retry sweep for rate-limited / transient failures.
-    let mut sweep = 0;
-    while !failed.is_empty() && sweep < 2 && started.elapsed().as_secs() < 270 {
-        sweep += 1;
-        info!("Retry sweep #{sweep}: {} companies", failed.len());
-        let current = std::mem::take(&mut failed);
-        let pending: Vec<(&str, &Company)> = current
+    // ── Phase 2: batched LLM extraction of pending sites. ────────────────
+    info!("Extracting {} site(s) via LLM...", pending.len());
+    let mut detail_queue: Vec<(String, Url, JobPost)> = Vec::new();
+    let mut batch = 0usize;
+    while batch < pending.len() && started.elapsed().as_secs() < SOFT_DEADLINE_SECS {
+        let chunk: Vec<_> = pending[batch..(batch + BATCH_SITES).min(pending.len())]
             .iter()
-            .filter_map(|name| companies.get(name).map(|company| (name.as_str(), company)))
+            .map(|(name, _, md)| (name.as_str(), md.as_str()))
             .collect();
-        let mut retries = stream::iter(pending)
-            .map(|(name, company)| engine.fetch_jobs_from(name, company))
-            .buffer_unordered(concurrent.into());
 
-        while let Some(result) = retries.next().await {
-            match result {
-                Ok(Some((name, source, jobs))) => {
-                    output.insert(name, Entry { source, jobs });
+        match engine.extract_batch(&chunk).await {
+            Ok(assignments) => {
+                for (name, jobs) in assignments {
+                    if let Some((_, url, _)) = pending.iter().find(|(n, _, _)| *n == name) {
+                        for job in jobs {
+                            if job.needs_fetch {
+                                detail_queue.push((name.clone(), url.clone(), job));
+                            } else if let Some(entry) = output.get_mut(&name) {
+                                entry.jobs.push(job);
+                            }
+                        }
+                    }
                 }
-                Ok(None) => {}
-                Err(name) => failed.push(name),
+            }
+            Err(err) => {
+                error!("[BATCH-ERROR] {err}");
+                for (n, _) in chunk {
+                    warn!("[FAILED] {n}");
+                }
+            }
+        }
+
+        batch += BATCH_SITES;
+    }
+
+    // ── Phase 3: batched detail resolution for `needsFetch` jobs. ─────────
+    if !detail_queue.is_empty() {
+        info!("Resolving {} detail page(s)...", detail_queue.len());
+
+        // Fetch all detail pages in parallel (HTTP only).
+        let mut fetched: Vec<(String, Url, JobPost, Result<String>)> = stream::iter(detail_queue)
+            .map(|(name, url, job)| {
+                let me = engine.clone();
+                let url = url.clone();
+                async move {
+                    let md = me.detail_markdown(&url).await;
+                    (name, url, job, md)
+                }
+            })
+            .buffer_unordered(concurrent.into())
+            .collect()
+            .await;
+
+        // Extract in batches.
+        let mut i = 0;
+        while i < fetched.len() {
+            let chunk: Vec<_> = fetched[i..(i + BATCH_DETAILS).min(fetched.len())]
+                .iter()
+                .map(|(_, url, job, md)| {
+                    (url.as_str(), job.title.as_str(), md.as_ref().ok().map(|s| s.as_str()))
+                })
+                .collect();
+
+            match engine.extract_details(&chunk).await {
+                Ok(posts) => {
+                    for ((_, url, job, _), post) in fetched[i..].iter_mut().zip(posts) {
+                        if let Some(mut post) = post {
+                            if post.source.is_none() && post.apply.is_empty() {
+                                post.source = Some(url.to_string());
+                                post.apply = vec![ApplicationMethod::Website(url.to_string())];
+                            }
+                            *job = post;
+                        }
+                    }
+                }
+                Err(err) => error!("[DETAIL-BATCH-ERROR] {err}"),
+            }
+            i += BATCH_DETAILS;
+        }
+
+        // Assign resolved posts back into the output.
+        for (name, _, job, _) in fetched {
+            if let Some(entry) = output.get_mut(&name) {
+                if !job.source.is_none() || !job.apply.is_empty() {
+                    entry.jobs.push(job);
+                }
             }
         }
     }
@@ -155,11 +235,10 @@ pub async fn run(
     save(&output_file, &output)?;
 
     info!(
-        "From {} companies; Found {} Jobs in {:.1}s ({} still failed)",
+        "From {} companies; Found {} Jobs in {:.1}s",
         output.len(),
         output.values().map(|f| f.jobs.len()).sum::<usize>(),
-        started.elapsed().as_secs_f64(),
-        failed.len()
+        started.elapsed().as_secs_f64()
     );
 
     Ok(())
@@ -174,15 +253,19 @@ pub fn clear_cache() -> Result {
     Cache::clear(CACHE_PATH)
 }
 
-/// Completed extractions, memoized per URL so work is never repeated
-/// across companies in one run. (The 24h disk cache handles re-runs.)
-type MemoResult = Arc<Result<Option<Vec<JobPost>>>>;
+/// What phase 1 produced for a site.
+enum SitePrepare {
+    /// Structured data, no LLM needed.
+    Exact(Vec<JobPost>),
+    /// Cleaned Markdown awaiting LLM extraction.
+    Markdown(String),
+    /// Nothing scrapable (JS-rendered page, empty listing, ...).
+    Empty,
+}
 
 struct Crawler {
     http: Arc<Http>,
     llm: Llm,
-    /// URL → completed extraction result.
-    memo: Mutex<HashMap<String, MemoResult>>,
     log_file: Option<Mutex<LogFile>>,
 }
 
@@ -192,252 +275,113 @@ impl Crawler {
             Some(path) => Some(Mutex::new(open_log_file(path)?)),
             None => None,
         };
-        Ok(Self {
-            http,
-            llm,
-            memo: Mutex::new(HashMap::new()),
-            log_file,
-        })
+        Ok(Self { http, llm, log_file })
     }
 
-    async fn fetch_jobs_from(
-        &self,
-        name: &str,
-        company: &Company,
-    ) -> Result<Option<(String, Url, Vec<JobPost>)>, String> {
-        let Some(url) = company.links.job.as_ref() else {
-            return Ok(None);
-        };
-        let url = match normalize_url(url) {
-            Ok(url) => url,
-            Err(err) => return Err(format!("invalid job URL: {err}")),
-        };
-
-        let jobs = match self.fetch_jobs(&url).await {
-            Ok(jobs) => jobs,
-            Err(err) => {
-                error!("[ERROR] {name}: {err}");
-                return Err(name.to_string());
-            }
-        };
-
-        if !jobs.is_empty() {
-            info!("[{name}] {} jobs", jobs.len());
-        }
-
-        Ok(Some((name.into(), url, jobs)))
-    }
-
-    /// Full extraction for one site URL.
-    async fn fetch_jobs(&self, url: &Url) -> Result<Vec<JobPost>> {
-        let key = format!("site|{url}");
-
-        let result = self.memo_lookup(&key).await?;
-        match result.as_ref() {
-            Ok(Some(jobs)) => Ok(jobs.clone()),
-            Ok(None) => Ok(vec![]),
-            Err(err) => Err(format!("{err:?}").into()),
-        }
-    }
-
-    /// Completed-result memo lookup; computes and stores on miss.
-    async fn memo_lookup(&self, key: &str) -> Result<MemoResult> {
-        if let Some(result) = self.memo.lock().unwrap().get(key) {
-            return Ok(result.clone());
-        }
-
-        let url = key.trim_start_matches("site|");
-        let url = Url::parse(url)?;
-        let result = Arc::new(self.raw_fetch_jobs(url).await);
-
-        self.memo.lock().unwrap().insert(key.to_string(), result.clone());
-        Ok(result)
-    }
-
-    async fn raw_fetch_jobs(&self, url: Url) -> Result<Option<Vec<JobPost>>> {
+    /// Phase 1: fastest path to structured or clean data for one site.
+    async fn prepare_site(&self, url: &Url) -> Result<SitePrepare> {
         // 1. Known ATS platform → public JSON API (exact, no LLM).
-        if let Some(ats) = Ats::detect(&url)
+        if let Some(ats) = Ats::detect(url)
             && let Some(jobs) = ats.fetch_jobs(&self.http).await?
                 && !jobs.is_empty() {
-                    return Ok(Some(jobs));
-                }
+                return Ok(SitePrepare::Exact(jobs));
+            }
 
         // 2. Schema.org JobPosting JSON-LD on the page (no LLM).
-        let html = self.fetch_html(&url).await?;
+        let html = self.fetch_html(url).await?;
         let from_ld = ats::from_json_ld(&html);
         if !from_ld.is_empty() {
-            return Ok(Some(from_ld));
+            return Ok(SitePrepare::Exact(from_ld));
         }
 
-        // 3. Generic: crawl listing pages (pagination-aware), then one LLM call.
-        let markdown = self.crawl_listing(&url).await?;
+        // 3. Generic: crawl listing pages (pagination-aware) → clean Markdown.
+        let markdown = self.crawl_listing(url).await?;
 
         if markdown.trim().is_empty() {
             warn!("[EMPTY] {url}");
-            return Ok(Some(vec![]));
+            return Ok(SitePrepare::Empty);
         }
 
-        let mut jobs = self.extract_jobs(&url, &markdown).await?;
-        self.resolve_needs_fetch(&url, &mut jobs).await;
-
-        Ok(Some(jobs))
+        Ok(SitePrepare::Markdown(markdown))
     }
 
-    /// Resolve `needsFetch` jobs: fetch all detail pages in parallel (HTTP
-    /// only, deduped per URL), then run ONE LLM call on the concatenated
-    /// pages instead of one call per page.
-    async fn resolve_needs_fetch(&self, site: &Url, jobs: &mut [JobPost]) {
-        let mut pending: Vec<_> = jobs
-            .iter_mut()
-            .filter(|job| job.needs_fetch)
-            .filter_map(|job| {
-                let urls = job
-                    .source
-                    .as_deref()
-                    .into_iter()
-                    .chain(job.apply.iter().find_map(|m| m.website()));
-
-                find_resolved_url(site, urls).map(|url| (url, job))
-            })
-            .collect();
-
-        if pending.is_empty() {
-            return;
-        }
-
-        let page_count = pending.len();
-        info!("[NEED-FETCH] fetching {page_count} detail page(s) in parallel");
-
-        // 1. Parallel HTTP fetch + markdown conversion (no LLM).
-        let pages: Vec<(Url, Result<String>)> = stream::iter(pending.iter().map(|(url, _)| url.clone()))
-            .map(|url| async move {
-                let markdown = self.detail_markdown(&url).await;
-                (url, markdown)
-            })
-            .buffer_unordered(8)
-            .collect()
-            .await;
-
-        // 2. One LLM call on all pages together.
-        let mut combined = String::new();
-        let mut expected: Vec<(&Url, String)> = Vec::new(); // (url, title) in page order
-        for (index, (url, markdown)) in pages.iter().enumerate() {
-            match markdown {
-                Ok(markdown) if !markdown.trim().is_empty() => {
-                    let title = pending[index].1.title.clone();
-                    expected.push((url, title));
-                    combined.push_str(&format!("<!-- JOB {index}: {url} -->\n\n{markdown}\n\n"));
-                }
-                Ok(_) => warn!("[NO-DETAIL] {url}"),
-                Err(err) => error!("[DETAIL-ERROR] {url}: {err}"),
-            }
-        }
-
-        if combined.trim().is_empty() {
-            return;
-        }
-
-        let extracted = match self.extract_jobs(site, &combined).await {
-            Ok(jobs) => jobs,
-            Err(err) => {
-                error!("[DETAIL-EXTRACT-ERROR] {site}: {err}");
-                return;
-            }
+    /// One LLM call covering `sites` (name + markdown). Returns per-site jobs.
+    async fn extract_batch(&self, sites: &[(&str, &str)]) -> Result<Vec<(String, Vec<JobPost>)>> {
+        let cache_key = {
+            let mut names: Vec<_> = sites.iter().map(|(n, _)| n.to_string()).collect();
+            names.sort();
+            format!("llm|{}|batch|{}", self.llm.model(), names.join("|"))
         };
-
-        // 3. Map results back: same order and count is the common case;
-        //    otherwise match by title so a partial extraction still lands.
-        if extracted.len() == expected.len() {
-            for ((url, _), mut post) in expected.iter().zip(extracted) {
-                if post.source.is_none() && post.apply.is_empty() {
-                    post.source = Some(url.to_string());
-                    post.apply = vec![ApplicationMethod::Website(url.to_string())];
-                }
-                if let Some(job) = pending.iter_mut().find(|(u, _)| u.as_str() == url.as_str()) {
-                    *(job.1) = post;
-                }
-            }
-        } else {
-            for mut post in extracted {
-                let matched = expected
-                    .iter()
-                    .find(|(_, title)| titles_match(title, &post.title));
-                if let Some(url) = matched.map(|(url, _)| *url) {
-                    if post.source.is_none() && post.apply.is_empty() {
-                        post.source = Some(url.to_string());
-                        post.apply = vec![ApplicationMethod::Website(url.to_string())];
-                    }
-                    if let Some((pending_url, job)) =
-                        pending.iter_mut().find(|(u, _)| u.as_str() == url.as_str())
-                    {
-                        let _ = pending_url;
-                        **job = post;
-                    }
-                }
-            }
-        }
-
-        info!("[NEED-FETCH] resolved {page_count} detail page(s)");
-    }
-
-    /// Fetch one detail page and convert to markdown (JSON-LD short-circuits).
-    async fn detail_markdown(&self, url: &Url) -> Result<String> {
-        let html = self.fetch_html(url).await?;
-
-        let from_ld = ats::from_json_ld(&html);
-        if !from_ld.is_empty() {
-            let jobs = from_ld;
-            return Ok(format!("<!-- JSON-LD -->\n{}", serde_json::to_string(&jobs)?));
-        }
-
-        normalize_markdown_from(&html)
-    }
-
-    /// One LLM call per site (all crawled pages concatenated).
-    async fn extract_jobs(&self, url: &Url, markdown: &str) -> Result<Vec<JobPost>> {
-        let cache_key = format!("llm|{}|{}", self.llm.model(), url);
         let cache = Cache::open_with_ttl(CACHE_PATH, &cache_key, Some(CACHE_TTL))?;
-
         if let Some(json) = cache.get()? {
-            return Ok(json::from_str(&json)?);
+            let value: json::Value = json::from_str(&json).unwrap_or_default();
+            return Ok(parse_batch(&value));
         }
 
-        self.log_page(url, markdown);
+        let mut markdown = String::new();
+        for (name, md) in sites {
+            markdown.push_str(&format!("<!-- SITE: {name} -->\n\n{}\n\n<!-- END SITE -->\n\n", cap_input(md, MAX_LLM_CHARS)));
+        }
 
-        info!("[LLM-CALL] {url}");
-        let schema = json::json!({
-            "type": "object",
-            "properties": {
-                "jobs": {
-                    "type": "array",
-                    "items": json::to_value(schema_for!(JobPost))?,
-                }
-            },
-            "required": ["jobs"],
-        });
+        self.log_page("batch", &markdown);
 
+        info!(
+            "[LLM-CALL] batch of {} site(s) ({} chars)",
+            sites.len(),
+            markdown.len()
+        );
+
+        let schema = batch_schema();
+        let value = self
+            .llm
+            .extract_json(LLM_INPUT, &format!("Extract from this markdown and return the job postings as json.\n\n{markdown}"), &schema)
+            .await?;
+
+        let assignments = parse_batch(&value);
+        cache.set(&json::to_string(&value)?)?;
+        Ok(assignments)
+    }
+
+    /// One LLM call for a batch of detail pages (in given order).
+    /// Returns one `JobPost` per page (aligned by index), `None` for empty.
+    async fn extract_details(&self, pages: &[(&str, &str, Option<&str>)]) -> Result<Vec<Option<JobPost>>> {
+        let cache_key = {
+            let mut urls: Vec<_> = pages.iter().map(|(url, _, _)| url.to_string()).collect();
+            urls.sort();
+            format!("llm|{}|details|{}", self.llm.model(), urls.join("|"))
+        };
+        let cache = Cache::open_with_ttl(CACHE_PATH, &cache_key, Some(CACHE_TTL))?;
+        if let Some(json) = cache.get()? {
+            let value: json::Value = json::from_str(&json).unwrap_or_default();
+            return Ok(parse_details(&value));
+        }
+
+        let mut markdown = String::new();
+        for (index, (url, title, md)) in pages.iter().enumerate() {
+            let md = md.unwrap_or_default();
+            markdown.push_str(&format!("<!-- JOB {index}: {url} (expected title: {title}) -->\n\n{}\n\n", cap_input(md, MAX_LLM_CHARS)));
+        }
+
+        self.log_page("details", &markdown);
+
+        info!("[LLM-CALL] batch of {} detail page(s)", pages.len());
+
+        let schema = details_schema();
         let value = self
             .llm
             .extract_json(
-                LLM_INPUT,
-                &format!("Extract from this markdown and return the job postings as json.\n\n{}", cap_input(markdown, MAX_LLM_CHARS)),
+                r#"Extract job postings from this markdown. The input contains one job posting per page, marked with <!-- JOB index: url -->. Output a JSON object {"jobs": [ ... ]} — one job per page, IN THE SAME ORDER as the pages. If a page has no job posting, output null for that slot. Never invent jobs; do not include on-site jobs outside Bangladesh unless remote. Preserve `source` exactly as provided. Keep `title` unchanged. Confidence below 0.5 → null slot."#,
+                &format!("Extract from this markdown and return the job postings as json.\n\n{markdown}"),
                 &schema,
             )
             .await?;
 
-        let jobs: Vec<JobPost> = match value.get("jobs") {
-            Some(json::Value::Array(jobs)) => jobs
-                .iter()
-                .filter_map(|j| json::from_value(j.clone()).ok())
-                .collect(),
-            _ => vec![],
-        };
-
-        cache.set(&json::to_string(&jobs)?)?;
-        Ok(jobs)
+        let posts = parse_details(&value);
+        cache.set(&json::to_string(&value)?)?;
+        Ok(posts)
     }
 
-    fn log_page(&self, url: &Url, markdown: &str) {
+    fn log_page(&self, url: &str, markdown: &str) {
         if let Some(file) = &self.log_file
             && let Ok(file) = file.lock() {
                 let _ = writeln!(file.as_ref(), "---\n{url}\n{}", cap_input(markdown, 12_000));
@@ -446,7 +390,7 @@ impl Crawler {
 
     /// Instant HTML fetch with a 24h cache. No browser, no waits.
     async fn fetch_html(&self, url: &Url) -> Result<String> {
-        let url = normalize_url(url).map_err(|err| format!("{err}"))?;
+        let url = normalize_url(url)?;
         let cache = Cache::open_with_ttl(CACHE_PATH, url.as_str(), Some(CACHE_TTL))?;
 
         if let Some(html) = cache.get()? {
@@ -494,7 +438,9 @@ impl Crawler {
                         if pages.len() < MAX_LISTING_PAGES {
                             for next in next_page_links(html, url) {
                                 let key = next.as_str().to_string();
-                                if !visited.contains(&key) && !queue.iter().any(|u| u.as_str() == key) {
+                                if !visited.contains(&key)
+                                    && !queue.iter().any(|u| u.as_str() == key)
+                                {
                                     queue.push_back(next);
                                 }
                             }
@@ -515,10 +461,99 @@ impl Crawler {
         let markdown = normalize_markdown_from(&html)?;
         Ok((html, markdown))
     }
+
+    /// Fetch one detail page and convert to markdown (JSON-LD short-circuits).
+    async fn detail_markdown(&self, url: &Url) -> Result<String> {
+        let html = self.fetch_html(url).await?;
+
+        let from_ld = ats::from_json_ld(&html);
+        if !from_ld.is_empty() {
+            return Ok(format!("<!-- JSON-LD -->\n{}", serde_json::to_string(&from_ld)?));
+        }
+
+        normalize_markdown_from(&html)
+    }
+}
+
+fn batch_schema() -> json::Value {
+    json::json!({
+        "type": "object",
+        "properties": {
+            "sites": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "jobs": { "type": "array", "items": json::to_value(schema_for!(JobPost)).unwrap() },
+                    },
+                    "required": ["name", "jobs"],
+                }
+            }
+        },
+        "required": ["sites"],
+    })
+}
+
+fn details_schema() -> json::Value {
+    json::json!({
+        "type": "object",
+        "properties": {
+            "jobs": {
+                "type": "array",
+                "items": {
+                    "anyOf": [
+                        json::to_value(schema_for!(JobPost)).unwrap(),
+                        { "type": "null" },
+                    ]
+                }
+            }
+        },
+        "required": ["jobs"],
+    })
+}
+
+fn parse_batch(value: &json::Value) -> Vec<(String, Vec<JobPost>)> {
+    value
+        .get("sites")
+        .and_then(json::Value::as_array)
+        .map(|sites| {
+            sites
+                .iter()
+                .filter_map(|site| {
+                    let name = site.get("name")?.as_str()?.to_string();
+                    let jobs: Vec<JobPost> = site
+                        .get("jobs")
+                        .and_then(json::Value::as_array)
+                        .map(|jobs| jobs.iter().filter_map(|j| json::from_value(j.clone()).ok()).collect())
+                        .unwrap_or_default();
+                    Some((name, jobs))
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn parse_details(value: &json::Value) -> Vec<Option<JobPost>> {
+    value
+        .get("jobs")
+        .and_then(json::Value::as_array)
+        .map(|jobs| {
+            jobs.iter()
+                .map(|j| {
+                    if j.is_null() {
+                        None
+                    } else {
+                        json::from_value(j.clone()).ok()
+                    }
+                })
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 /// Find pagination links on a listing page: `<link rel="next">`, `?page=N`
-/// query links, and next/› anchors. Same-origin, same path, never fragment-only.
+/// query links, and next/› anchors. Same-origin, same path.
 fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
     use scraper::{Html, Selector};
 
@@ -551,10 +586,11 @@ fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
         for element in html.select(&selector) {
             let text = element.text().collect::<String>();
             let text = text.trim();
-            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →")
-                && let Some(href) = element.value().attr("href") {
+            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →") {
+                if let Some(href) = element.value().attr("href") {
                     candidates.push((href.to_string(), true));
                 }
+            }
         }
     }
 
@@ -580,29 +616,7 @@ fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
     found
 }
 
-fn find_resolved_url<'a>(base: &Url, urls: impl IntoIterator<Item = &'a str>) -> Option<Url> {
-    for src in urls {
-        let resolved = resolve_url(base, src).ok()?;
-        if &resolved != base {
-            return Some(resolved);
-        }
-    }
-    None
-}
-
-/// Loose title equality: one contains the other (case/punctuation-insensitive).
-fn titles_match(expected: &str, actual: &str) -> bool {
-    fn normalize(title: &str) -> String {
-        title
-            .chars()
-            .filter(|c| c.is_alphanumeric())
-            .flat_map(char::to_lowercase)
-            .collect()
-    }
-    let a = normalize(expected);
-    let b = normalize(actual);
-    (a.len() >= 4 && b.len() >= 4) && (a.contains(&b) || b.contains(&a))
-}
+use crate::utils::resolve_url;
 
 #[cfg(test)]
 mod tests {

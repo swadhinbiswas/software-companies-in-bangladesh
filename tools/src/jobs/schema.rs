@@ -115,6 +115,7 @@ pub enum ApplicationMethod {
 }
 
 impl ApplicationMethod {
+    #[allow(dead_code)]
     pub fn website(&self) -> Option<&str> {
         match self {
             ApplicationMethod::Email(_) => None,
