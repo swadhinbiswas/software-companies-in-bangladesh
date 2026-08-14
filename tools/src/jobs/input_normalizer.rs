@@ -2,18 +2,59 @@ use super::*;
 use markup5ever_rcdom::NodeData;
 
 pub fn normalize_markdown_from(html: &str) -> Result<String> {
-    let converter = htmd::HtmlToMarkdown::builder()
-        .skip_tags(vec![
-            "script", "style", "noscript", // Executable / styling
-            "iframe", "canvas", "svg", "object", "embed", // Embedded content
-            "img", "picture", "source", "video", "audio", // Media
-            "head", "footer", "aside", "template", // Other
-        ])
-        .build();
-
+    let converter = HtmlToMarkdown::new();
     let node = converter.html_to_tree(html)?;
     clean_markdown(&node);
     Ok(converter.tree_to_markdown(&node))
+}
+
+struct HtmlToMarkdown {
+    converter: htmd::HtmlToMarkdown,
+}
+
+impl HtmlToMarkdown {
+    fn new() -> Self {
+        let converter = htmd::HtmlToMarkdown::builder()
+            .skip_tags(vec![
+                "script", "style", "noscript", // Executable / styling
+                "iframe", "canvas", "svg", "object", "embed", // Embedded content
+                "img", "picture", "source", "video", "audio", // Media
+                "head", "footer", "aside", "template", "nav", // Other
+            ])
+            .build();
+        Self { converter }
+    }
+}
+
+/// Cap LLM input while keeping the head (where job listings live) and the
+/// tail (deadlines / footer notes). The middle is trimmed with a marker.
+pub fn cap_input(markdown: &str, max_chars: usize) -> String {
+    let len = markdown.len();
+    if len <= max_chars {
+        return markdown.to_string();
+    }
+
+    let head = (max_chars * 3) / 4;
+    let tail = max_chars - head;
+
+    let head_end = markdown
+        .char_indices()
+        .nth(head)
+        .map(|(i, _)| i)
+        .unwrap_or(len);
+    let tail_start = markdown
+        .char_indices()
+        .rev()
+        .nth(tail)
+        .map(|(i, _)| i)
+        .unwrap_or(0);
+
+    let trimmed = len.saturating_sub(head + tail);
+    format!(
+        "{}\n\n…[{trimmed} chars trimmed]…\n\n{}",
+        &markdown[..head_end],
+        &markdown[tail_start..]
+    )
 }
 
 pub fn is_empty(node: &htmd::Node) -> bool {
