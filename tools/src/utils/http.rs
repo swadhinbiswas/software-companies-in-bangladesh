@@ -59,6 +59,11 @@ impl Http {
         self.fetch(url).await?.error_for_status()?.text().await.map_err(Into::into)
     }
 
+    /// Access to the underlying reqwest client (for custom requests).
+    pub fn raw_client(&self) -> &Client {
+        &self.client
+    }
+
     /// Fetch a URL and parse the response as JSON.
     pub async fn get_json<T: DeserializeOwned>(&self, url: &Url) -> Result<T> {
         let response = self.fetch(url).await?.error_for_status()?;
