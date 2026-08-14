@@ -224,11 +224,10 @@ pub async fn run(
 
         // Assign resolved posts back into the output.
         for (name, _, job, _) in fetched {
-            if let Some(entry) = output.get_mut(&name) {
-                if !job.source.is_none() || !job.apply.is_empty() {
+            if let Some(entry) = output.get_mut(&name)
+                && (!job.source.is_none() || !job.apply.is_empty()) {
                     entry.jobs.push(job);
                 }
-            }
         }
     }
 
@@ -586,11 +585,10 @@ fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
         for element in html.select(&selector) {
             let text = element.text().collect::<String>();
             let text = text.trim();
-            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →") {
-                if let Some(href) = element.value().attr("href") {
+            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →")
+                && let Some(href) = element.value().attr("href") {
                     candidates.push((href.to_string(), true));
                 }
-            }
         }
     }
 
