@@ -5,6 +5,7 @@
 //! directly. Jobs returned this way are exact: no confidence score, no
 //! `needs_fetch` re-crawl. Schema.org `JobPosting` JSON-LD embedded in
 //! generic pages is handled here as well.
+#![allow(non_snake_case)] // vendor API JSON uses camelCase field names
 use super::schema::*;
 use crate::Result;
 use crate::utils::http::Http;
@@ -597,7 +598,7 @@ pub fn from_json_ld(html: &str) -> Vec<JobPost> {
 
     Html::parse_document(html)
         .select(&selector)
-        .flat_map(|script| script.text().collect::<String>())
+        .map(|script| script.text().collect::<String>())
         .filter_map(|raw| json::from_str::<json::Value>(&raw).ok())
         .filter_map(extract_jobposting)
         .collect()

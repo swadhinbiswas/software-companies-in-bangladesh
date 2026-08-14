@@ -24,6 +24,14 @@ impl HtmlToMarkdown {
             .build();
         Self { converter }
     }
+
+    fn html_to_tree(&self, html: &str) -> Result<std::rc::Rc<htmd::Node>> {
+        self.converter.html_to_tree(html).map_err(Into::into)
+    }
+
+    fn tree_to_markdown(&self, node: &std::rc::Rc<htmd::Node>) -> String {
+        self.converter.tree_to_markdown(node)
+    }
 }
 
 /// Cap LLM input while keeping the head (where job listings live) and the

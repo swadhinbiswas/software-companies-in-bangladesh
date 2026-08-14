@@ -1,8 +1,6 @@
 use crate::{Result, utils::zlib};
 use std::{env, fs, path::PathBuf, time::SystemTime};
 
-pub const DEFAULT_TTL_SECS: u64 = 24 * 60 * 60;
-
 pub struct Cache {
     pub path: PathBuf,
     ttl: Option<SystemTime>,

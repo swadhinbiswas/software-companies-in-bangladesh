@@ -8,14 +8,14 @@ use std::{
 
 pub type Jobs = Map<String, Entry>;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Entry {
     pub source: Url,
     pub jobs: Vec<JobPost>,
 }
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct JobPost {
     pub title: String,
@@ -69,7 +69,7 @@ pub struct JobPost {
 
 /// Broad job category or professional domain.
 /// Use `Technology` for software, IT, cybersecurity, DevOps, ... roles.
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
 pub enum Category {
     Technology,
     Sales,
@@ -77,7 +77,7 @@ pub enum Category {
     Other(String)
 }
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Salary {
     /// Minimum salary.
@@ -90,7 +90,7 @@ pub struct Salary {
     pub currency: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Serialize, Deserialize, JsonSchema, Clone)]
 pub enum Deadline {
     /// Application deadline.
     Date(PostedAt),
@@ -99,14 +99,14 @@ pub enum Deadline {
     Expired,
 }
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Serialize, Deserialize, JsonSchema, Clone)]
 pub enum PostedAt {
     Absolute(String),
     /// Relative time, e.g. "2 days ago".
     Relative(String),
 }
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
 pub enum ApplicationMethod {
     Email(String),
     /// Preserve exactly as provided, whether relative or absolute. Never guess or alter it.
@@ -123,7 +123,7 @@ impl ApplicationMethod {
     }
 }
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Serialize, Deserialize, JsonSchema, Clone)]
 pub enum EmploymentType {
     FullTime,
     PartTime,
@@ -133,7 +133,7 @@ pub enum EmploymentType {
     Freelance,
 }
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Serialize, Deserialize, JsonSchema, Clone)]
 pub enum JobLocation {
     ///  All remote jobs are allowed, including those outside Bangladesh.
     Remote,

@@ -133,16 +133,16 @@ fn zen_api_key() -> Result<String> {
 
     let auth = auth_json_path()?;
     let text = std::fs::read_to_string(&auth)
-        .map_err(|err| format!("no ZEN_API_KEY and failed to read {auth}: {err}"))?;
+        .map_err(|err| format!("no ZEN_API_KEY and failed to read {}: {err}", auth.display()))?;
     let value: json::Value = json::from_str(&text)
-        .map_err(|err| format!("failed to parse {auth}: {err}"))?;
+        .map_err(|err| format!("failed to parse {}: {err}", auth.display()))?;
 
     value
         .get("opencode")
         .and_then(|v| v.get("key"))
         .and_then(json::Value::as_str)
         .map(|key| key.to_string())
-        .ok_or_else(|| format!("no `opencode` key found in {auth}; set ZEN_API_KEY").into())
+        .ok_or_else(|| format!("no `opencode` key found in {}; set ZEN_API_KEY", auth.display()).into())
 }
 
 fn auth_json_path() -> Result<PathBuf> {
@@ -157,8 +157,8 @@ fn auth_json_path() -> Result<PathBuf> {
 }
 
 impl Llm {
-    /// Raw access to the shared HTTP client (used by callers for streaming).
-    pub fn http(&self) -> &Http {
-        &self.http
+    /// The model name used for calls (also the cache key component).
+    pub fn model(&self) -> &str {
+        &self.model
     }
 }
