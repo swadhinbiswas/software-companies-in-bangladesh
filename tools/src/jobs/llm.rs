@@ -206,13 +206,26 @@ impl Llm {
 
         let mut attempt = 0u32;
         loop {
-            let request = self
+            // Gemini authenticates via `?key=` query parameter, Zen via Bearer header.
+            let auth_url = match self.provider {
+                Provider::Gemini => {
+                    reqwest::Url::parse_with_params(url, &[("key", &self.api_key)])
+                        .map_err(|err| format!("invalid LLM url {url}: {err}"))?
+                }
+                Provider::Zen => reqwest::Url::parse(url)
+                    .map_err(|err| format!("invalid LLM url {url}: {err}"))?,
+            };
+
+            let mut request = self
                 .http
                 .raw_client()
-                .post(url)
-                .bearer_auth(&self.api_key)
+                .post(auth_url)
                 .json(body)
                 .timeout(Duration::from_secs(60));
+
+            if self.provider == Provider::Zen {
+                request = request.bearer_auth(&self.api_key);
+            }
 
             match request.send().await {
                 Ok(response) => {
