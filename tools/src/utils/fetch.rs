@@ -15,9 +15,9 @@ pub fn clear_cache() -> Result {
 pub fn fetch(url: &Url) -> Result<String> {
     let url = normalize_url(url)?;
 
-    let cahce = Cache::open(CACHE_PATH, url.as_str())?;
+    let cache = Cache::open(CACHE_PATH, url.as_str())?;
 
-    if let Some(data) = cahce.get()? {
+    if let Some(data) = cache.get()? {
         return Ok(data);
     }
 
@@ -51,7 +51,6 @@ fn client() -> &'static Client {
 
         Client::builder()
             .default_headers(headers)
-            .danger_accept_invalid_certs(true)
             .redirect(Policy::limited(10))
             .connect_timeout(Duration::from_secs(10))
             .timeout(Duration::from_secs(15))
