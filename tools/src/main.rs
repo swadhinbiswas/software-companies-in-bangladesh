@@ -68,6 +68,14 @@ enum Command {
         #[arg(long, short)]
         force: bool,
 
+        /// LLM provider: `gemini` or `zen`.
+        #[arg(
+            long,
+            default_value = "gemini",
+            value_name = "PROVIDER"
+        )]
+        provider: String,
+
         /// LLM model to use.
         #[arg(
             long,
@@ -159,14 +167,16 @@ fn cli() -> Result {
         log_file,
         force,
         concurrent,
+        provider,
     }) = command
     {
         if force {
             log::info!("Clearing index cache...");
             jobs::clear_cache()?;
         }
-        log::info!("Concurrent: {concurrent}; LLM: {model}");
-        jobs::run(model, &dir, &companies, log_file, concurrent)?;
+        let provider = jobs::llm::Provider::parse(&provider)?;
+        log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}");
+        jobs::run(provider, model, &dir, &companies, log_file, concurrent)?;
     }
 
     if fmt {

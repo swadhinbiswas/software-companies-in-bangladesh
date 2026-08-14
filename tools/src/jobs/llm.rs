@@ -1,24 +1,71 @@
-//! OpenCode Zen LLM client.
+//! LLM client for job extraction.
 //!
-//! Calls `https://opencode.ai/zen/v1/chat/completions` (OpenAI-compatible)
-//! with the free `deepseek-v4-flash-free` model. The API key is read from
-//! `ZEN_API_KEY`, `OPENCODE_ZEN_API_KEY`, or the local opencode auth store
-//! (`~/.local/share/opencode/auth.json`, service `opencode`).
+//! Two providers:
+//! - `gemini` (default): Google Generative Language API
+//!   `POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent`
+//!   key from `GEMINI_API_KEY`, or the `google` service in the opencode auth store.
+//! - `zen`: OpenCode Zen OpenAI-compatible endpoint
+//!   `POST https://opencode.ai/zen/v1/chat/completions`
+//!   key from `ZEN_API_KEY`, or the `opencode` service in the auth store.
 use crate::Result;
 use crate::utils::http::Http;
-use log::{debug, info};
+use log::{debug, info, warn};
 use serde_json as json;
 use std::path::PathBuf;
-use std::time::Instant;
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+use tokio::sync::Semaphore;
 
 pub const ZEN_ENDPOINT: &str = "https://opencode.ai/zen/v1/chat/completions";
-pub const DEFAULT_MODEL: &str = "deepseek-v4-flash-free";
+pub const GEMINI_ENDPOINT: &str = "https://generativelanguage.googleapis.com/v1beta/models";
+pub const DEFAULT_MODEL: &str = "gemini-3.5-flash-lite";
+
+/// Maximum concurrent LLM requests (the bottleneck of the crawl).
+pub const LLM_CONCURRENCY: usize = 3;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Provider {
+    Gemini,
+    Zen,
+}
+
+impl Provider {
+    pub fn parse(value: &str) -> Result<Self> {
+        match value.to_ascii_lowercase().as_str() {
+            "gemini" => Ok(Self::Gemini),
+            "zen" => Ok(Self::Zen),
+            other => Err(format!("unknown provider '{other}' (expected 'gemini' or 'zen')").into()),
+        }
+    }
+}
 
 pub struct Llm {
-    http: std::sync::Arc<Http>,
+    http: Arc<Http>,
+    provider: Provider,
     endpoint: String,
     api_key: String,
     model: String,
+    semaphore: Arc<Semaphore>,
+}
+
+#[derive(serde::Deserialize)]
+struct GeminiResponse {
+    candidates: Vec<GeminiCandidate>,
+}
+
+#[derive(serde::Deserialize)]
+struct GeminiCandidate {
+    content: GeminiContent,
+}
+
+#[derive(serde::Deserialize)]
+struct GeminiContent {
+    parts: Vec<GeminiPart>,
+}
+
+#[derive(serde::Deserialize)]
+struct GeminiPart {
+    text: Option<String>,
 }
 
 #[derive(serde::Deserialize)]
@@ -37,19 +84,29 @@ struct Message {
 }
 
 impl Llm {
-    pub fn new(model: &str, http: std::sync::Arc<Http>) -> Result<Self> {
-        let api_key = zen_api_key()?;
-        info!("LLM: {model} via {ZEN_ENDPOINT}");
+    /// The model name used for calls (also a cache key component).
+    pub fn model(&self) -> &str {
+        &self.model
+    }
+
+    pub fn new(provider: Provider, model: &str, http: Arc<Http>) -> Result<Self> {
+        let (endpoint, api_key) = match provider {
+            Provider::Gemini => (GEMINI_ENDPOINT.to_string(), gemini_api_key()?),
+            Provider::Zen => (ZEN_ENDPOINT.to_string(), zen_api_key()?),
+        };
+        info!("LLM: {model} via {provider:?}");
         Ok(Self {
             http,
-            endpoint: ZEN_ENDPOINT.to_string(),
+            provider,
+            endpoint,
             api_key,
             model: model.to_string(),
+            semaphore: Arc::new(Semaphore::new(LLM_CONCURRENCY)),
         })
     }
 
     /// Extract structured JSON from `markdown`. The schema is embedded in
-    /// the system prompt and the response is forced to JSON object mode.
+    /// the system prompt and the response is forced to JSON mode.
     pub async fn extract_json(
         &self,
         system: &str,
@@ -57,49 +114,130 @@ impl Llm {
         json_schema: &json::Value,
     ) -> Result<json::Value> {
         let started = Instant::now();
+        let schema_pretty = json::to_string_pretty(json_schema)?;
 
-        let body = json::json!({
-            "model": self.model,
-            "temperature": 0.0,
-            "response_format": { "type": "json_object" },
-            "messages": [
-                {
-                    "role": "system",
-                    "content": format!("{system}\n\nRespond with a single JSON object that conforms to this JSON schema:\n{schema_pretty}", schema_pretty = json_schema),
-                },
-                { "role": "user", "content": user },
-            ],
-        });
+        let content = match self.provider {
+            Provider::Gemini => {
+                let response = self
+                    .send_with_retry(
+                        &format!("{}/{}:generateContent", self.endpoint, self.model),
+                        &json::json!({
+                            "systemInstruction": { "parts": [{ "text": format!("{system}\n\nRespond with a single JSON object that conforms to this JSON schema:\n{schema_pretty}") }] },
+                            "contents": [{ "parts": [{ "text": user }] }],
+                            "generationConfig": {
+                                "temperature": 0.0,
+                                "responseMimeType": "application/json",
+                            },
+                        }),
+                        |status| status.is_server_error() || status == reqwest::StatusCode::TOO_MANY_REQUESTS,
+                    )
+                    .await?;
 
-        let response = self
-            .http
-            .raw_client()
-            .post(&self.endpoint)
-            .bearer_auth(&self.api_key)
-            .json(&body)
-            .send()
-            .await?;
+                let status = response.status();
+                if !status.is_success() {
+                    let text = response.text().await.unwrap_or_default();
+                    return Err(format!("gemini error {status}: {}", truncate(&text, 300)).into());
+                }
 
-        let status = response.status();
-        if !status.is_success() {
-            let text = response.text().await.unwrap_or_default();
-            return Err(format!("zen LLM error {status}: {}", truncate(&text, 300)).into());
-        }
+                let payload: GeminiResponse = response.json().await?;
+                payload
+                    .candidates
+                    .into_iter()
+                    .next()
+                    .and_then(|c| c.content.parts.into_iter().filter_map(|p| p.text).next())
+                    .ok_or_else(|| "gemini returned no content".to_string())?
+            }
+            Provider::Zen => {
+                let response = self
+                    .send_with_retry(
+                        &self.endpoint,
+                        &json::json!({
+                            "model": self.model,
+                            "temperature": 0.0,
+                            "response_format": { "type": "json_object" },
+                            "messages": [
+                                {
+                                    "role": "system",
+                                    "content": format!("{system}\n\nRespond with a single JSON object that conforms to this JSON schema:\n{schema_pretty}"),
+                                },
+                                { "role": "user", "content": user },
+                            ],
+                        }),
+                        |status| status.is_server_error() || status == reqwest::StatusCode::TOO_MANY_REQUESTS,
+                    )
+                    .await?;
 
-        let payload: ChatResponse = response.json().await?;
-        let content = payload
-            .choices
-            .into_iter()
-            .next()
-            .and_then(|c| c.message.content)
-            .ok_or_else(|| "zen LLM returned no content".to_string())?;
+                let status = response.status();
+                if !status.is_success() {
+                    let text = response.text().await.unwrap_or_default();
+                    return Err(format!("zen LLM error {status}: {}", truncate(&text, 300)).into());
+                }
 
-        let value = strip_code_fence(&content);
-        let value = json::from_str::<json::Value>(&value)
-            .map_err(|err| format!("LLM returned invalid JSON: {err}\n{}", truncate(&content, 400)))?;
+                let payload: ChatResponse = response.json().await?;
+                payload
+                    .choices
+                    .into_iter()
+                    .next()
+                    .and_then(|c| c.message.content)
+                    .ok_or_else(|| "zen LLM returned no content".to_string())?
+            }
+        };
+
+        let value = json::from_str::<json::Value>(&strip_code_fence(&content)).map_err(|err| {
+            format!("LLM returned invalid JSON: {err}\n{}", truncate(&content, 400))
+        })?;
 
         debug!("LLM call took {:.1}s", started.elapsed().as_secs_f64());
         Ok(value)
+    }
+
+    /// POST with retries, bounded concurrency, generous timeout and
+    /// exponential backoff (429s need real cooldown).
+    async fn send_with_retry(
+        &self,
+        url: &str,
+        body: &json::Value,
+        retryable_status: impl Fn(reqwest::StatusCode) -> bool,
+    ) -> Result<reqwest::Response> {
+        const MAX_ATTEMPTS: u32 = 5;
+        const BACKOFF_SECS: u64 = 2;
+
+        let _permit = self.semaphore.acquire().await?;
+
+        let mut attempt = 0u32;
+        loop {
+            let request = self
+                .http
+                .raw_client()
+                .post(url)
+                .bearer_auth(&self.api_key)
+                .json(body)
+                .timeout(Duration::from_secs(60));
+
+            match request.send().await {
+                Ok(response) => {
+                    let status = response.status();
+                    if retryable_status(status) {
+                        if attempt + 1 < MAX_ATTEMPTS {
+                            warn!("[LLM-RETRY {attempt}] {status}");
+                            drop(response);
+                        } else {
+                            return response.error_for_status().map_err(Into::into);
+                        }
+                    } else {
+                        return Ok(response);
+                    }
+                }
+                Err(err) if attempt + 1 < MAX_ATTEMPTS => {
+                    warn!("[LLM-RETRY {attempt}] {err}");
+                }
+                Err(err) => return Err(err.into()),
+            }
+
+            attempt += 1;
+            let backoff = Duration::from_secs(BACKOFF_SECS << (attempt - 1));
+            tokio::time::sleep(backoff).await;
+        }
     }
 }
 
@@ -121,26 +259,49 @@ fn truncate(text: &str, max: usize) -> String {
     }
 }
 
-/// Resolve the Zen API key: env vars first, then the opencode auth store.
+/// Resolve the Gemini API key: `GEMINI_API_KEY` env first, then the `google`
+/// service in the opencode auth store.
+fn gemini_api_key() -> Result<String> {
+    if let Some(key) = env_key("GEMINI_API_KEY") {
+        return Ok(key);
+    }
+    auth_service_key("google")
+}
+
+/// Resolve the Zen API key: `ZEN_API_KEY` env first, then the `opencode`
+/// service in the opencode auth store.
 fn zen_api_key() -> Result<String> {
-    for env in ["ZEN_API_KEY", "OPENCODE_ZEN_API_KEY", "OPENAUTH_OPCODE_API_KEY"] {
-        if let Some(key) = std::env::var(env).ok().filter(|k| !k.is_empty()) {
+    for env in ["ZEN_API_KEY", "OPENCODE_ZEN_API_KEY"] {
+        if let Some(key) = env_key(env) {
             return Ok(key);
         }
     }
+    auth_service_key("opencode")
+}
 
+fn env_key(env: &str) -> Option<String> {
+    std::env::var(env).ok().filter(|k| !k.is_empty())
+}
+
+fn auth_service_key(service: &str) -> Result<String> {
     let auth = auth_json_path()?;
     let text = std::fs::read_to_string(&auth)
-        .map_err(|err| format!("no ZEN_API_KEY and failed to read {}: {err}", auth.display()))?;
+        .map_err(|err| format!("no API key env set and failed to read {}: {err}", auth.display()))?;
     let value: json::Value = json::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", auth.display()))?;
 
     value
-        .get("opencode")
+        .get(service)
         .and_then(|v| v.get("key"))
         .and_then(json::Value::as_str)
         .map(|key| key.to_string())
-        .ok_or_else(|| format!("no `opencode` key found in {}; set ZEN_API_KEY", auth.display()).into())
+        .ok_or_else(|| {
+            format!(
+                "no `{service}` key found in {}; set the provider API key env var",
+                auth.display()
+            )
+            .into()
+        })
 }
 
 fn auth_json_path() -> Result<PathBuf> {
@@ -152,11 +313,4 @@ fn auth_json_path() -> Result<PathBuf> {
     }
     let home = std::env::var("HOME").map_err(|_| "HOME not set".to_string())?;
     Ok(PathBuf::from(home).join(".local/share/opencode/auth.json"))
-}
-
-impl Llm {
-    /// The model name used for calls (also the cache key component).
-    pub fn model(&self) -> &str {
-        &self.model
-    }
 }

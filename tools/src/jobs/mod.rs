@@ -68,6 +68,7 @@ const MAX_LLM_CHARS: usize = 40_000;
 
 #[tokio::main]
 pub async fn run(
+    provider: llm::Provider,
     model: String,
     dir: &Path,
     companies: &Companies<'_>,
@@ -76,7 +77,7 @@ pub async fn run(
 ) -> Result {
     http::init_global(concurrent as usize)?;
     let http = http::global().clone();
-    let llm = Llm::new(&model, http.clone())?;
+    let llm = Llm::new(provider, &model, http.clone())?;
 
     let engine = Arc::new(Crawler::new(
         http,
@@ -273,7 +274,15 @@ impl Crawler {
 
         while let Some((url, job, post)) = resolved.next().await {
             match post {
-                Ok(Some(post)) => *job = post,
+                Ok(Some(mut post)) => {
+                    // The detail URL we just fetched is authoritative: fill it
+                    // in when the LLM did not preserve a source/apply link.
+                    if post.source.is_none() && post.apply.is_empty() {
+                        post.source = Some(url.to_string());
+                        post.apply = vec![ApplicationMethod::Website(url.to_string())];
+                    }
+                    *job = post;
+                }
                 Ok(None) => warn!("[NO-DETAIL] {url}"),
                 Err(err) => error!("[DETAIL-ERROR] {url}: {err}"),
             }
@@ -342,7 +351,7 @@ impl Crawler {
             .llm
             .extract_json(
                 LLM_INPUT,
-                &format!("Extract from this markdown.\n\n{}", cap_input(markdown, MAX_LLM_CHARS)),
+                &format!("Extract from this markdown and return the job postings as json.\n\n{}", cap_input(markdown, MAX_LLM_CHARS)),
                 &schema,
             )
             .await?;
