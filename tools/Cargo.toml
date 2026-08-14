@@ -15,11 +15,9 @@ extra = [
 crawler = [
     "extra",
     "dep:tokio",
-    "dep:chromiumoxide",
     "dep:futures",
     "dep:chrono",
     "dep:htmd",
-    "dep:genai",
     "dep:schemars",
     "dep:markup5ever_rcdom",
 ]
@@ -38,6 +36,7 @@ annotate-snippets = "0.12"
 scraper = { version = "0.27", optional = true }
 reqwest = { version = "0.13", default-features = false, optional = true, features = [
     "blocking",
+    "json",
     "rustls",
     "gzip",
     "zstd",
@@ -51,9 +50,7 @@ flate2 = { version = "1", default-features = false, optional = true, features = 
 
 chrono = { version = "0.4", optional = true }
 futures = { version = "*", optional = true }
-tokio = { version = "1", optional = true }
-chromiumoxide = { version = "0.9", optional = true }
-genai = { version = "0.6", optional = true }
+tokio = { version = "1", optional = true, features = ["macros", "rt-multi-thread"] }
 htmd = { version = "0.5", optional = true }
 markup5ever_rcdom = { version = "*", optional = true }
 schemars = { version = "1", optional = true, features = ["url2"] }
