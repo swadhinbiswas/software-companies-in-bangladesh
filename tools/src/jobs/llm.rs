@@ -194,8 +194,9 @@ impl Llm {
             }
         };
 
-        let value = json::from_str::<json::Value>(&strip_code_fence(&content)).map_err(|err| {
-            format!("LLM returned invalid JSON: {err}\n{}", truncate(&content, 400))
+        let cleaned = sanitize_json(&content);
+        let value = json::from_str::<json::Value>(&cleaned).map_err(|err| {
+            format!("LLM returned invalid JSON after sanitize: {err}\n{}", truncate(&cleaned, 600))
         })?;
 
         debug!("LLM call took {:.1}s", started.elapsed().as_secs_f64());
@@ -354,14 +355,73 @@ fn parse_delay(s: &str) -> Option<u64> {
     Some(secs.ceil() as u64)
 }
 
-fn strip_code_fence(content: &str) -> String {
-    let content = content.trim();
-    content
-        .strip_prefix("```json")
-        .or_else(|| content.strip_prefix("```"))
-        .and_then(|s| s.strip_suffix("```"))
-        .map(|s| s.trim().to_string())
-        .unwrap_or_else(|| content.to_string())
+/// Sanitize LLM-returned JSON before parsing.
+/// Fixes common issues: invalid escapes, code fences, etc.
+fn sanitize_json(raw: &str) -> String {
+    let mut out = raw.trim().to_string();
+    // 1. Remove markdown code fences if present
+    if out.starts_with("```json") {
+        out = out.strip_prefix("```json").unwrap_or(&out).trim().to_string();
+    } else if out.starts_with("```") {
+        out = out.strip_prefix("```").unwrap_or(&out).trim().to_string();
+    }
+    if out.ends_with("```") {
+        out = out.strip_suffix("```").unwrap_or(&out).trim().to_string();
+    }
+    // 2. Fix invalid JSON escape sequences that LLMs produce:
+    //    \/  -> /  (valid JSON but sometimes rejected)
+    //    \v  -> \\v  (vertical tab, not valid JSON)
+    //    \0  -> \\0  (null, not valid JSON)
+    //    \a  -> \\a  (bell, not valid JSON)
+    //    \b  -> \\b  (backspace — KEEP, it's valid JSON)
+    //    \xHH -> remove (hex escape not in JSON)
+    //    \uXXXX -> keep (valid JSON unicode escape)
+    let mut chars = out.chars().peekable();
+    let mut result = String::with_capacity(out.len());
+    while let Some(c) = chars.next() {
+        if c == '\\' {
+            match chars.peek() {
+                Some(&next) if next == '/' => {
+                    // \/ -> just /
+                    result.push('/');
+                    chars.next();
+                }
+                Some(&next) if next == 'v' || next == '0' || next == 'a' => {
+                    // \v \0 \a are not valid JSON escapes — escape the backslash
+                    result.push('\\');
+                    result.push('\\');
+                    result.push(next);
+                    chars.next();
+                }
+                Some(&next) if next == 'x' => {
+                    // \xHH hex escape — skip it entirely
+                    chars.next(); // skip 'x'
+                    for _ in 0..2 { chars.next(); } // skip two hex digits
+                }
+                Some(&next) if next == 'n' || next == 't' || next == 'r' || next == '\\' || next == '"' || next == 'b' || next == 'f' => {
+                    // Valid JSON escape — keep as-is
+                    result.push(c);
+                    result.push(next);
+                    chars.next();
+                }
+                Some(&next) if next == 'u' => {
+                    // \uXXXX — valid JSON, keep as-is
+                    result.push(c);
+                    result.push(next);
+                    chars.next();
+                    for _ in 0..4 { result.push(chars.next().unwrap_or('0')); }
+                }
+                _ => {
+                    // Unknown escape — escape the backslash
+                    result.push('\\');
+                    result.push('\\');
+                }
+            }
+        } else {
+            result.push(c);
+        }
+    }
+    result
 }
 
 fn truncate(text: &str, max: usize) -> String {
