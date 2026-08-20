@@ -111,7 +111,13 @@ pub async fn run(
     let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
 
     let started = std::time::Instant::now();
-    info!("Crawling {} companies ({} with explicit job links, {} to discover)...", companies.len(), companies.values().filter(|c| c.links.job.is_some()).count(), companies.values().filter(|c| c.links.job.is_none()).count());
+    let explicit_count = companies.values().filter(|c| c.links.job.is_some()).count();
+    let discover_count = companies.len() - explicit_count;
+    info!("Crawling {} companies ({} explicit, {} to discover)...", companies.len(), explicit_count, discover_count);
+
+    // Track discovered career URLs for persistence back to companies.toml
+    let discovered_urls: std::sync::Arc<std::sync::Mutex<Vec<(String, String)>>> =
+        std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
 
     // ── Phase 1: crawl everything (HTTP only, no LLM). ────────────────────
     let mut pending: Vec<(String, Url, String)> = Vec::new();
@@ -120,6 +126,7 @@ pub async fn run(
         .map(|(name, company)| {
             let me = engine.clone();
             let name = name.clone();
+            let disc = discovered_urls.clone();
             async move {
                 // If job URL is explicitly set, use it directly
                 if let Some(url) = company.links.job.as_ref() {
@@ -133,8 +140,21 @@ pub async fn run(
                 let Ok(base) = normalize_url(website) else {
                     return (name, None);
                 };
+                // Try heuristic discovery first (link scan + path probe)
                 if let Some(career_url) = me.discover_career_url(&base).await {
                     let prepared = me.prepare_site(&career_url).await;
+                    // Persist for next run
+                    if let Ok(mut urls) = disc.lock() {
+                        urls.push((name.clone(), career_url.to_string()));
+                    }
+                    return (name, Some((career_url, prepared, true)));
+                }
+                // Fallback: ask AI to find career page from homepage
+                if let Some(career_url) = me.ai_discover_career_url(&base).await {
+                    let prepared = me.prepare_site(&career_url).await;
+                    if let Ok(mut urls) = disc.lock() {
+                        urls.push((name.clone(), career_url.to_string()));
+                    }
                     return (name, Some((career_url, prepared, true)));
                 }
                 (name, None)
@@ -340,6 +360,14 @@ pub async fn run(
 
     save(&output_file, &output)?;
 
+    // Persist discovered career URLs back to companies.toml so next run
+    // doesn't need to rediscover them (link scan + path probe + AI).
+    if let Ok(urls) = discovered_urls.lock() {
+        if !urls.is_empty() {
+            persist_discovered_urls(dir, &urls);
+        }
+    }
+
     info!(
         "From {} companies; Found {} Jobs in {:.1}s (production AI-enhanced)",
         output.len(),
@@ -353,6 +381,66 @@ pub async fn run(
 fn save(output_file: &TextFile, output: &Jobs) -> Result {
     output_file.write(json::to_string_pretty(output)?)?;
     Ok(())
+}
+
+/// Persist discovered career URLs back to companies.toml.
+/// Adds `job = "..."` to companies that didn't have one, so next run
+/// skips discovery and goes straight to crawling.
+fn persist_discovered_urls(dir: &Path, discovered: &[(String, String)]) {
+    let companies_path = dir.join("data/companies.toml");
+    let Ok(content) = std::fs::read_to_string(&companies_path) else {
+        warn!("[PERSIST] Could not read companies.toml");
+        return;
+    };
+
+    let mut lines: Vec<String> = content.lines().map(String::from).collect();
+    let mut updated = 0;
+
+    for (name, url) in discovered {
+        // Find the company section header: ["Company Name"]
+        let header = format!("[\"{}\"]", name);
+        let header_alt = format!("[{}]", name);
+
+        // Find the line index of the header
+        let header_idx = lines.iter().position(|l| {
+            l.trim() == header || l.trim() == header_alt
+        });
+
+        let Some(idx) = header_idx else {
+            continue;
+        };
+
+        // Check if job = already exists in this company's block
+        let block_end = lines[idx+1..].iter()
+            .position(|l| l.trim().starts_with('[') && !l.trim().starts_with("[["))
+            .unwrap_or(lines.len() - idx - 1);
+        let block = &lines[idx..=idx+block_end];
+        let has_job = block.iter().any(|l| l.trim().starts_with("job"));
+
+        if has_job {
+            continue; // Already has job link, skip
+        }
+
+        // Insert job = "..." after the website = line (or after type = line)
+        let insert_after = block.iter().position(|l| {
+            let t = l.trim();
+            t.starts_with("website") || t.starts_with("type")
+        }).unwrap_or(0);
+
+        let job_line = format!("job = \"{}\"", url);
+        lines.insert(idx + 1 + insert_after, job_line);
+        updated += 1;
+        info!("[PERSIST] Added job = \"{}\" for \"{}\"", url, name);
+    }
+
+    if updated > 0 {
+        let new_content = lines.join("\n");
+        if let Err(e) = std::fs::write(&companies_path, new_content) {
+            warn!("[PERSIST] Failed to write companies.toml: {e}");
+        } else {
+            info!("[PERSIST] Updated {} companies in data/companies.toml", updated);
+        }
+    }
 }
 
 pub fn clear_cache() -> Result {
@@ -452,6 +540,74 @@ impl Crawler {
         {
             Ok(r) => r.status().is_success(),
             Err(_) => false,
+        }
+    }
+
+    /// AI-based career page discovery: send homepage markdown to LLM,
+    /// ask it to find the career/jobs page URL. Used when heuristic
+    /// discovery (link scan + path probing) fails.
+    async fn ai_discover_career_url(&self, base_url: &Url) -> Option<Url> {
+        let host = base_url.host_str()?.to_ascii_lowercase();
+
+        // Fetch homepage and convert to markdown
+        let html = self.fetch_html(base_url).await.ok()?;
+        let markdown = input_normalizer::normalize_markdown_from(&html).ok()?;
+        if markdown.len() < 100 {
+            return None; // page too short, likely JS-rendered or empty
+        }
+
+        // Cap to 6k chars to keep LLM call fast
+        let markdown = input_normalizer::cap_input(&markdown, 6_000);
+
+        let prompt = format!(
+            "You are a web crawler. Given this homepage markdown, find the URL path to the careers/jobs page.\n\n\
+             Rules:\n\
+             - Look for links containing: career, careers, job, jobs, hiring, join, vacancy, recruit, work-with-us, open-positions\n\
+             - Check both the link href and the visible link text\n\
+             - Return ONLY the path (e.g. \"/careers\" or \"/jobs\") relative to the root, or the full URL if absolute\n\
+             - If no career page found, return exactly: NONE\n\
+             - Do not guess. If unsure, return NONE.\n\n\
+             Homepage ({host}):\n\n{markdown}"
+        );
+
+        let schema = json::json!({
+            "type": "object",
+            "properties": {
+                "path": { "type": "string", "description": "Career page path like /careers or NONE" }
+            },
+            "required": ["path"]
+        });
+
+        match self.llm.extract_json(
+            "You are a web crawler that finds career page URLs.",
+            &prompt,
+            &schema,
+        ).await {
+            Ok(value) => {
+                let path = value.get("path")?.as_str()?.trim();
+                if path == "NONE" || path.is_empty() {
+                    debug!("[AI-DISCOVER] {host}: AI returned NONE");
+                    return None;
+                }
+                // Resolve relative path to full URL
+                let url = if path.starts_with("http") {
+                    Url::parse(path).ok()?
+                } else {
+                    base_url.join(path).ok()?
+                };
+                // Verify the URL is reachable
+                if self.http_head_ok(&url).await {
+                    info!("[AI-DISCOVER] {host}: found career page at {}", url.path());
+                    Some(url)
+                } else {
+                    debug!("[AI-DISCOVER] {host}: AI suggested {} but HEAD failed", url);
+                    None
+                }
+            }
+            Err(err) => {
+                debug!("[AI-DISCOVER] {host}: LLM error: {err}");
+                None
+            }
         }
     }
 
