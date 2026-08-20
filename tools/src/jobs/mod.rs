@@ -36,7 +36,7 @@ use crate::utils::http::Http;
 use crate::utils::{normalize_url, text_file::*};
 use crate::{Result, data::Companies};
 use futures::{StreamExt, stream};
-use log::{error, info, warn};
+use log::{debug, error, info, warn};
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize};
 use serde_json as json;
@@ -111,42 +111,53 @@ pub async fn run(
     let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
 
     let started = std::time::Instant::now();
-    info!("Crawling {} companies...", companies.len());
+    info!("Crawling {} companies ({} with explicit job links, {} to discover)...", companies.len(), companies.values().filter(|c| c.links.job.is_some()).count(), companies.values().filter(|c| c.links.job.is_none()).count());
 
     // ── Phase 1: crawl everything (HTTP only, no LLM). ────────────────────
     let mut pending: Vec<(String, Url, String)> = Vec::new();
+    let mut discovered_count = 0usize;
     let mut stream = stream::iter(companies.iter())
         .map(|(name, company)| {
             let me = engine.clone();
             let name = name.clone();
             async move {
-                let Some(url) = company.links.job.as_ref() else {
+                // If job URL is explicitly set, use it directly
+                if let Some(url) = company.links.job.as_ref() {
+                    if let Ok(url) = normalize_url(url) {
+                        let prepared = me.prepare_site(&url).await;
+                        return (name, Some((url, prepared, false)));
+                    }
+                }
+                // Auto-discover career page from website
+                let website = &company.links.website;
+                let Ok(base) = normalize_url(website) else {
                     return (name, None);
                 };
-                let Ok(url) = normalize_url(url) else {
-                    return (name, None);
-                };
-                let prepared = me.prepare_site(&url).await;
-                (name, Some((url, prepared)))
+                if let Some(career_url) = me.discover_career_url(&base).await {
+                    let prepared = me.prepare_site(&career_url).await;
+                    return (name, Some((career_url, prepared, true)));
+                }
+                (name, None)
             }
         })
         .buffer_unordered(concurrent.into());
 
     while let Some((name, result)) = stream.next().await {
         match result {
-            Some((url, Ok(SitePrepare::Exact(jobs)))) if !jobs.is_empty() => {
-                // Production: normalize ATS jobs too (salary caps, tag hygiene, dedup)
+            Some((url, Ok(SitePrepare::Exact(jobs)), discovered)) if !jobs.is_empty() => {
                 let jobs = enhancer::enhance_batch(jobs, None);
                 if !jobs.is_empty() {
+                    if discovered { discovered_count += 1; }
                     output.insert(name, Entry { source: url, jobs });
                 }
             }
-            Some((_, Ok(SitePrepare::Exact(_)))) => {}
-            Some((url, Ok(SitePrepare::Markdown(md)))) => {
+            Some((_, Ok(SitePrepare::Exact(_)), _)) => {}
+            Some((url, Ok(SitePrepare::Markdown(md)), discovered)) => {
+                if discovered { discovered_count += 1; }
                 pending.push((name, url, md));
             }
-            Some((_, Ok(SitePrepare::Empty))) => {}
-            Some((_, Err(err))) => error!("[ERROR] {name}: {err}"),
+            Some((_, Ok(SitePrepare::Empty), _)) => {}
+            Some((_, Err(err), _)) => error!("[ERROR] {name}: {err}"),
             None => {}
         }
 
@@ -156,6 +167,9 @@ pub async fn run(
         }
     }
     drop(stream);
+    if discovered_count > 0 {
+        info!("[DISCOVER] Found career pages for {} companies without explicit job link", discovered_count);
+    }
 
     // ── Phase 2: batched LLM extraction of pending sites. ────────────────
     info!("Extracting {} site(s) via LLM...", pending.len());
@@ -395,6 +409,50 @@ impl Crawler {
         }
 
         Ok(SitePrepare::Markdown(markdown))
+    }
+
+    /// Auto-discover career/jobs page from a company website.
+    /// Probes common paths + scans homepage links for career-related keywords.
+    async fn discover_career_url(&self, base_url: &Url) -> Option<Url> {
+        let host = base_url.host_str()?.to_ascii_lowercase();
+
+        // 1. Scan homepage for career-related links
+        if let Ok(html) = self.fetch_html(base_url).await {
+            let links = extract_career_links(&html, base_url);
+            if let Some(url) = links.into_iter().next() {
+                debug!("[DISCOVER] {host}: found career link {url}");
+                return Some(url);
+            }
+        }
+
+        // 2. Probe common career page paths (HEAD only, fast)
+        let career_paths = [
+            "/career", "/careers", "/jobs", "/job-opening", "/job-openings",
+            "/join-us", "/work-with-us", "/hiring", "/open-positions",
+            "/recruit", "/recruitment", "/vacancy", "/vacancies",
+            "/about/careers", "/company/careers",
+        ];
+        for path in &career_paths {
+            let Ok(url) = base_url.join(path) else { continue };
+            if self.http_head_ok(&url).await {
+                debug!("[DISCOVER] {host}: found career page at {path}");
+                return Some(url);
+            }
+        }
+        None
+    }
+
+    /// Quick HEAD check — is the URL reachable and not 404/500?
+    async fn http_head_ok(&self, url: &Url) -> bool {
+        use reqwest::Method;
+        match self.http.raw_client().request(Method::HEAD, url.clone())
+            .timeout(Duration::from_secs(5))
+            .send()
+            .await
+        {
+            Ok(r) => r.status().is_success(),
+            Err(_) => false,
+        }
     }
 
     /// One LLM call covering `sites` (name + markdown). Returns per-site jobs.
@@ -642,6 +700,66 @@ fn parse_details(value: &json::Value) -> Vec<Option<JobPost>> {
                 .collect()
         })
         .unwrap_or_default()
+}
+
+/// Extract career/job-related links from HTML homepage.
+/// Returns same-origin URLs whose path or text contains career keywords.
+fn extract_career_links(html: &str, base: &Url) -> Vec<Url> {
+    use scraper::{Html, Selector};
+
+    let keywords = [
+        "career", "careers", "job", "jobs", "hiring", "join", "work-with",
+        "vacancy", "vacancies", "recruit", "open-position", "opening",
+        "employment", "opportunity", "we-are-hiring",
+    ];
+
+    let html = Html::parse_document(html);
+    let mut found: Vec<Url> = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+
+    if let Ok(selector) = Selector::parse("a[href]") {
+        for element in html.select(&selector) {
+            let href = match element.value().attr("href") {
+                Some(h) if !h.is_empty() && !h.starts_with('#') && !h.starts_with("mailto:") => h,
+                _ => continue,
+            };
+
+            // Resolve relative URL
+            let url = match base.join(href) {
+                Ok(u) => u,
+                Err(_) => continue,
+            };
+
+            // Only same-origin links
+            if url.host_str() != base.host_str() {
+                continue;
+            }
+
+            // Check path or link text for career keywords
+            let path_lower = url.path().to_ascii_lowercase();
+            let text: String = element.text().collect::<String>().trim().to_ascii_lowercase();
+
+            let is_career = keywords.iter().any(|kw| {
+                path_lower.contains(kw) || text.contains(kw)
+            });
+
+            if is_career {
+                let key = url.to_string();
+                if seen.insert(key) {
+                    found.push(url);
+                }
+            }
+        }
+    }
+
+    // Sort: prefer exact matches (/careers over /company/team/careers)
+    found.sort_by(|a, b| {
+        let a_depth = a.path().split('/').filter(|s| !s.is_empty()).count();
+        let b_depth = b.path().split('/').filter(|s| !s.is_empty()).count();
+        a_depth.cmp(&b_depth)
+    });
+
+    found
 }
 
 /// Find pagination links on a listing page: `<link rel="next">`, `?page=N`
