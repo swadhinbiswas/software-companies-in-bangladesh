@@ -3,6 +3,7 @@ mod info;
 #[cfg(feature = "crawler")]
 mod jobs;
 mod update;
+mod warehouse;
 
 mod data;
 mod error;
@@ -44,6 +45,13 @@ struct Cli {
 
     #[arg(long, short)]
     docs: bool,
+
+    /// Build DuckDB warehouse + Parquet + Gold JSON (for HF + dashboard)
+    #[arg(long)]
+    warehouse: bool,
+
+    #[arg(long)]
+    push: bool,
 
     // /// Crawl jobs with the specified LLM model
 
@@ -91,6 +99,16 @@ enum Command {
         /// Maximum number of concurrent jobs.
         #[arg(long, short, default_value_t = 8, value_name = "N")]
         concurrent: u8,
+
+        /// Also build warehouse after crawl
+        #[arg(long, default_value_t = true)]
+        warehouse: bool,
+    },
+    /// Build DuckDB warehouse locally (no crawl)
+    Warehouse {
+        /// Push to Hugging Face (needs HF_TOKEN + HF_DATASET)
+        #[arg(long)]
+        push: bool,
     },
 }
 
@@ -119,6 +137,8 @@ fn cli() -> Result {
         mut update,
         mut fmt,
         mut docs,
+        warehouse: warehouse_flag,
+        push,
         #[allow(unused)]
         command,
     } = Cli::parse();
@@ -152,31 +172,58 @@ fn cli() -> Result {
         docs = true;
     }
 
-    #[cfg(feature = "extra")]
-    if let Some(Command::Fetch { force }) = command {
-        if force {
-            log::info!("Clearing cache...");
-            utils::fetch::clear_cache()?;
+    // Handle subcommands (single match to avoid partial moves)
+    match command {
+        #[cfg(feature = "extra")]
+        Some(Command::Fetch { force }) => {
+            if force {
+                log::info!("Clearing cache...");
+                utils::fetch::clear_cache()?;
+            }
+            info::fetch_info(&companies, &dir)?;
         }
-        info::fetch_info(&companies, &dir)?;
+        #[cfg(feature = "crawler")]
+        Some(Command::Index {
+            model,
+            log_file,
+            force,
+            concurrent,
+            provider,
+            warehouse: wh,
+        }) => {
+            if force {
+                log::info!("Clearing index cache...");
+                jobs::clear_cache()?;
+            }
+            let provider = jobs::llm::Provider::parse(&provider)?;
+            log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}");
+            jobs::run(provider, model, &dir, &companies, log_file, concurrent)?;
+            if wh {
+                warehouse::build_warehouse(&dir)?;
+            }
+        }
+        Some(Command::Warehouse { push: do_push }) => {
+            warehouse::build_warehouse(&dir)?;
+            if do_push {
+                let status = std::process::Command::new("python3")
+                    .arg(dir.join("warehouse/hf_push.py"))
+                    .current_dir(&dir)
+                    .status()?;
+                if !status.success() {
+                    log::warn!("HF push failed: {}", status);
+                }
+            }
+            return Ok(());
+        }
+        None => {}
+        #[allow(unreachable_patterns)]
+        _ => {}
     }
 
-    #[cfg(feature = "crawler")]
-    if let Some(Command::Index {
-        model,
-        log_file,
-        force,
-        concurrent,
-        provider,
-    }) = command
-    {
-        if force {
-            log::info!("Clearing index cache...");
-            jobs::clear_cache()?;
-        }
-        let provider = jobs::llm::Provider::parse(&provider)?;
-        log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}");
-        jobs::run(provider, model, &dir, &companies, log_file, concurrent)?;
+    // top-level flags for back-compat: --warehouse / --push without subcommand
+    let mut do_warehouse = warehouse_flag;
+    if push {
+        do_warehouse = true;
     }
 
     if fmt {
@@ -193,7 +240,21 @@ fn cli() -> Result {
             "{README_HEADER}, From `{count_jobs_link}` companies.\n\n{companies}",
         ))?;
         #[cfg(feature = "crawler")]
-        jobs::schema::gen_readme(dir)?;
+        jobs::schema::gen_readme(dir.clone())?;
+        do_warehouse = true;
+    }
+
+    if do_warehouse {
+        warehouse::build_warehouse(&dir)?;
+        if push {
+            let status = std::process::Command::new("python3")
+                .arg(dir.join("warehouse/hf_push.py"))
+                .current_dir(&dir)
+                .status()?;
+            if !status.success() {
+                log::warn!("HF push failed: {}", status);
+            }
+        }
     }
 
     Ok(())

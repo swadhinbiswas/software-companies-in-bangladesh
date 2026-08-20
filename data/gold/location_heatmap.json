@@ -1,0 +1,252 @@
+[
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka, Bangladesh",
+    "jobs":29
+  },
+  {
+    "location_type":"Unknown",
+    "location_text":null,
+    "jobs":26
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka",
+    "jobs":23
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Uttara, Dhaka",
+    "jobs":14
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Modina Market, Sylhet",
+    "jobs":12
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Baridhara DOHS",
+    "jobs":8
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"4th Floor, Mannan Plaza, Khilkhet, Dhaka-1229",
+    "jobs":7
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Dhaka, BD",
+    "jobs":7
+  },
+  {
+    "location_type":"Remote",
+    "location_text":"Remote",
+    "jobs":6
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Gulshan-1, Dhaka",
+    "jobs":6
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Gulshan 2, Dhaka",
+    "jobs":5
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Baridhara, Dhaka",
+    "jobs":5
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka, Dhaka, Bangladesh",
+    "jobs":4
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka, BD",
+    "jobs":4
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kawran Bazar, Dhaka, Bangladesh",
+    "jobs":4
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Banani, Dhaka",
+    "jobs":3
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka (Dhanmondi)",
+    "jobs":3
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Panthapath, Dhaka",
+    "jobs":3
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"House: 15, Road: 04, Block: G, Banasree, Rampura, Dhaka",
+    "jobs":3
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Colombo, Western Province, Sri Lanka",
+    "jobs":3
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur, Malaysia",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kuala Lumpur, Malaysia; Dubai, United Arab Emirates",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Modina Market, Sylhet, Bangladesh",
+    "jobs":2
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Kuala Lumpur, Malaysia \/ Dubai, United Arab Emirates",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Banani, Dhaka",
+    "jobs":2
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Mirpur DOHS, Dhaka, Bangladesh",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Goa, India",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kuala Lumpur, Malaysia",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"House 1148, Road 9\/A, Avenue 10, Mirpur DOHS, Dhaka, Bangladesh",
+    "jobs":2
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Dubai, United Arab Emirates",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Nikunja 2, Road 12, House 16, Dhaka 1229.",
+    "jobs":2
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kuala Lumpur, Singapore, Jakarta, Hong Kong, Taipei, Dubai, Colombo",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Kuala Lumpur, Malaysia",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Nikunja-2, Road 12, House 16, Dhaka",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"169, Mohakhali DOHS, Dhaka",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka,Dhaka,Bangladesh",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka and Sylhet, Bangladesh",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Worldwide",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Sylhet",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Nikunja-2, Khilkhet, Dhaka",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"24\/1 & 24\/2, Floor 8, Shiya Mashjid Mor, Tajmahal Road, Mohammadpur, Dhaka- 1207",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Kuala Lumpur, Singapore, Sydney, Taipei, New York, Hong Kong, S\u00e3o Paulo, Beijing",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur, Malaysia",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Kuala Lumpur, Dubai, Limassol",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Dhaka(Dhaka Sadar)",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"House 1148, Road 9\/A, Avenue 10, Mirpur DOHS, Dhaka, Bangladesh",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Uttara, Dhaka, Bangladesh",
+    "jobs":1
+  },
+  {
+    "location_type":"OnSite",
+    "location_text":"Niketon, Gulshan, Dhaka",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Dhaka, Bangladesh \/ Kuala Lumpur, Malaysia",
+    "jobs":1
+  },
+  {
+    "location_type":"Hybrid",
+    "location_text":"Mohakhali DOHS, Dhaka",
+    "jobs":1
+  }
+]

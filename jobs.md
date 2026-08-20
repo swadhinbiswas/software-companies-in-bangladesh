@@ -1,6 +1,6 @@
 # Jobs
 
-**🟢 245 open** · **📋 315 total** · **🏢 70 companies**
+**🟢 246 open** · **📋 316 total** · **🏢 70 companies**
 
 ## 🏢 6sense Technologies
 
@@ -14765,19 +14765,61 @@ Strong expertise in the MERN stack (MongoDB, Express.js, React.js, Node.js) and 
 | Field | Information |
 | ----- | ----------- |
 | **Employment** | Full Time |
-| **Posted** | 6 August 2026 |
-| **Location** | Dhaka, Bangladesh |
-| **Role** | Business Development Associate |
-| **Vacancies** | 4 |
+| **Posted** | 2026-07-30 |
+| **Location** | Dhaka |
+## 📝 [Description](https://ipay.com.bd/career)
 
-**🛠️ Tags**: `Business Development` `Sales` `Customer Acquisition` `Merchant Acquisition` `Fintech` `CRM` 
+We're looking for a Business Development Associate to help expand iPay's customer base, merchant network, and market presence. You'll serve as a key brand ambassador — engaging prospective customers, building strategic relationships, and driving adoption of iPay's digital payment and financial services. It's a dynamic, front-line role for someone with strong communication skills, commercial awareness, relationship-building ability, and a genuine interest in fintech. You'll work closely with Operations, Customer Experience, Merchant Acquisition, and Compliance to make the customer journey seamless from first conversation to active platform usage.
 
-## 📝 [Description](https://www.ipay.com.bd/career)
+### Customer & Business Acquisition
 
-We're looking for a Business Development Associate to help expand iPay's customer base, merchant network, and market presence. You'll serve as a key brand ambassador — engaging prospective customers, building strategic relationships, and driving adoption of iPay's digital payment and financial services. It's a dynamic, front-line role for someone with strong communication skills, commercial awareness, relationship-building ability, and a genuine interest in fintech.
+*   Identify, approach, and onboard new individual customers, merchants, SMEs, and corporate clients onto the iPay platform
+*   Build and maintain strong relationships with merchants, e-commerce businesses, SMEs, and organisations seeking modern digital payment solutions
+*   Generate and qualify leads through direct outreach, referrals, networking events, partnerships, and field visits
+*   Drive customer and merchant acquisition and increase platform adoption across relevant customer segments
+
+### Product Promotion & Sales
+
+*   Promote and explain iPay's products — digital wallet and payment solutions, QR payment and checkout, bill payment and mobile recharge, merchant payment acceptance, business and B2B payments, bulk payout and disbursement, and remittance and digital financial services
+*   Conduct product demonstrations, presentations, and client meetings both virtually and in person
+*   Understand customer and business needs and recommend suitable iPay products and solutions
+*   Communicate financial products and digital payment solutions in a simple, easy-to-understand manner
+
+### Business Development & Target Achievement
+
+*   Achieve monthly, quarterly, and annual business development targets and KPIs
+*   Maintain accurate records of leads, sales activities, customer interactions, and conversion status using CRM and internal tracking systems
+*   Track the customer acquisition funnel and follow up with prospective customers to improve conversion
+*   Identify new business opportunities, merchant segments, and customer acquisition channels for growth
+*   Build and maintain a healthy pipeline of prospective customers, merchants, and business clients
+
+### Market Intelligence & Customer Insights
+
+*   Gather market intelligence, competitor insights, and customer feedback to support product enhancement and business growth initiatives
+*   Identify customer and merchant pain points and market opportunities across the digital payments ecosystem
+*   Share relevant customer and market insights with Product, Business, and Management teams
+*   Stay informed about fintech industry trends, digital payments, QR payments, merchant services, and financial services
+
+### Cross-Functional Collaboration
+
+*   Collaborate closely with Operations, Compliance, KYC, Customer Experience, and Merchant Acquisition teams to ensure smooth and compliant customer onboarding
+*   Coordinate with internal teams to resolve customer, merchant, onboarding, and account-related issues
+*   Ensure customer and merchant acquisition activities follow internal policies and applicable compliance requirements
+*   Stay informed about relevant regulatory developments and compliance requirements
+
+### Partnerships & Brand Representation
+
+*   Develop strategic partnerships with organisations, business associations, merchant communities, SMEs, e-commerce businesses, and business networks to expand iPay's market reach
+*   Represent iPay at industry events, business forums, fintech expos, university programmes, and community engagement activities
+*   Build relationships with ecosystem partners to create new customer and merchant acquisition opportunities
+*   Act as a professional brand ambassador for iPay across customer, merchant, and partner interactions
+
+### What You Bring
+
+*   Bachelor's degree 
 
 ---
-* 📧 [Send Resume via Email](mailto:jobs@ipay.com.bd)
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
 ---
 
 </details>
@@ -14788,19 +14830,129 @@ We're looking for a Business Development Associate to help expand iPay's custome
 | Field | Information |
 | ----- | ----------- |
 | **Employment** | Full Time |
-| **Posted** | 6 August 2026 |
+| **Posted** | 2026-07-30 |
 | **Location** | Dhaka (Dhanmondi) |
-| **Role** | Customer Experience Executive |
-| **Vacancies** | 4 |
+## 📝 [Description](https://ipay.com.bd/career)
 
-**🛠️ Tags**: `Customer Support` `Zendesk` `Fintech` `Payment Operations` `KYC` 
+We're looking for a Customer Experience Executive to deliver exceptional support to iPay's customers, merchants, and business users. You'll sit at the intersection of customer support, payment operations, transaction troubleshooting, and compliance — making sure customers get accurate, timely, and empathetic help throughout their journey with iPay. It's a high-ownership role for someone who genuinely enjoys helping people, solving complex problems, and taking customer issues from start to finish in a fast-paced fintech environment.
 
-## 📝 [Description](https://www.ipay.com.bd/career)
+### Customer Support & Relationship Management
 
-We're looking for a Customer Experience Executive to deliver exceptional support to iPay's customers, merchants, and business users. You'll sit at the intersection of customer support, payment operations, transaction troubleshooting, and compliance — making sure customers get accurate, timely, and empathetic help throughout their journey with iPay.
+*   Assist iPay customers, merchants, and business users through live chat, email, tickets, calls, and social media channels
+*   Understand customer concerns and provide accurate, timely, and empathetic solutions
+*   Support customers with wallet payments, QR payments, bill payments, mobile recharge, remittance, and transaction-related queries
+*   Follow up with customers until issues are fully resolved
+*   Build trust and long-term relationships through exceptional customer service
+
+### Problem Solving & Case Ownership
+
+*   Investigate customer issues and identify root causes rather than providing generic responses
+*   Coordinate with internal teams to resolve complex account, payment, transaction, and settlement matters
+*   Take ownership of customer cases from start to finish
+*   Escalate critical or high-priority issues when necessary while keeping communication with customers clear
+*   Handle failed, pending, reversed, or delayed transactions with accuracy and professionalism
+
+### Payment & Transaction Support
+
+*   Assist customers with transaction-related issues across iPay's payment ecosystem
+*   Investigate payment failures, delayed transactions, refunds, reversals, and transaction complaints
+*   Coordinate with Operations, Product, Engineering, Compliance, and banking partners when required
+*   Maintain accurate records of transaction-related cases and resolutions
+*   Ensure customers receive clear and timely updates throughout the resolution process
+
+### Compliance & Verification Support
+
+*   Assist customers with KYC, NID verification, and other verification requirements
+*   Request and review supporting documentation when required
+*   Communicate professionally regarding account reviews and verification requirements
+*   Work closely with Compliance and Operations teams to ensure smooth case resolution
+*   Follow internal policies and regulatory requirements when handling customer information and financial transactions
+
+### Ticket & Workflow Management
+
+*   Manage support cases using Zendesk and other customer support platforms
+*   Respond to customer inquiries through available digital and social media channels
+*   Maintain accurate case notes, customer information, and resolution details
+*   Categorise and prioritise tickets based on urgency and impact
+*   Meet service level expectations while maintaining quality and attention to detail
+
+### Customer Experience Improvement
+
+*   Identify recurring customer pain points and recommend practical improvements
+*   Contribute ideas that improve support processes, FAQs, knowledge bases, and the overall customer journey
+*   Help build a culture focused on customer success and operational excellence
+*   Act as the voice of the customer by spotting trends, recurring issues, and product opportunities
+*   Actively participate in team discussions and process improvement initiatives
+*   Share customer feedback with relevant teams to help improve iPay's products and services
+
+### What You Bring
+
+*   Strong passion for helping people and solving problems
+*   Excellent written and verbal communication skills in Bangla and English
+*   Ability to remain calm, patient, and professional in challenging situations
+*   Strong attention to detail and ability to follow procedures
+*   Critical thinking and an investigative mindset
+*   Ability to quickly learn payment products, financial services, and operational proc
 
 ---
-* 📧 [Send Resume via Email](mailto:jobs@ipay.com.bd)
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
+---
+
+</details>
+
+<details>
+<summary> <strong style="font-size: 1.3em;">💼 Internal Auditor</strong> </summary>
+
+| Field | Information |
+| ----- | ----------- |
+| **Employment** | Full Time |
+| **Posted** | 2026-08-12 |
+| **Location** | Dhaka |
+## 📝 [Description](https://ipay.com.bd/career)
+
+We're looking for a motivated and detail-oriented Internal Auditor to join our team and support the organization in maintaining strong internal controls, compliance, risk management, and operational efficiency. We prefer 1–2 years of relevant experience, but freshers are encouraged to apply.
+
+### Key Responsibilities
+
+*   Conduct internal audits of financial, operational, and business processes
+*   Review accounting records, transactions, supporting documents, and financial controls
+*   Assess the effectiveness of internal controls and identify potential risks or control weaknesses
+*   Stay updated and check compliance with company policies, procedures, and applicable regulatory requirements
+*   Identify discrepancies, irregularities, and potential areas of financial or operational risk
+*   Follow up on audit findings and monitor implementation of corrective actions
+*   Assist in risk assessment and recommend practical improvements to internal processes and controls
+*   Support management and senior team members in special reviews and investigations when required
+
+### Educational Requirements
+
+*   BBA/MBA in Accounting, Finance, Banking, or a related discipline from a reputed university
+*   Candidates with a background in CA or professional accounting qualifications will be preferred
+
+### Required Skills
+
+*   Strong analytical and problem-solving abilities
+*   Basic knowledge of internal audit, risk management, and internal controls
+*   Strong attention to detail and ability to identify discrepancies
+*   Good communication and report-writing skills
+*   Proficiency in Microsoft Excel and other MS Office applications
+*   Ability to maintain confidentiality and handle sensitive financial information
+*   Strong ethical standards, integrity, and professional judgment
+
+### Why Join iPay
+
+*   Be part of Bangladesh's first licensed non-bank Payment Service Provider at meaningful scale — 1.1M+ users and growing
+*   Gain hands-on exposure to Bangladesh's rapidly evolving digital payments and financial services ecosystem
+*   Build practical expertise in internal audit, financial controls, risk management, compliance, and fintech operations
+*   Work closely with Finance, Operations, Compliance, Technology, and other business teams
+*   Gain exposure to financial and operational controls within a technology-driven financial services organization
+*   Professional development and career growth opportunities
+*   Performance-based incentives and rewards, including 2 mandatory Eid bonuses and 4 performance bonuses
+*   A collaborative, young, and driven environment built around innovation and purpose
+*   Structured onboarding, continuous learning, and internal career advancement opportunities
+*   A meaningful role in strengthening iPay's internal controls, governance, and operational efficiency
+
+---
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
 ---
 
 </details>
@@ -14811,19 +14963,58 @@ We're looking for a Customer Experience Executive to deliver exceptional support
 | Field | Information |
 | ----- | ----------- |
 | **Employment** | Full Time |
-| **Posted** | 6 August 2026 |
-| **Location** | Dhaka, Bangladesh |
-| **Role** | Operations Manager |
-| **Vacancies** | 1 |
+| **Posted** | 2026-07-30 |
+| **Location** | Dhaka |
+## 📝 [Description](https://ipay.com.bd/career)
 
-**🛠️ Tags**: `Operations` `Fintech` `Banking` `Payment Settlement` `Reconciliation` `Compliance` 
+We're looking for an Operations Manager to own the day-to-day reliability and efficiency of iPay's core payment operations. You'll sit at the intersection of banking partnerships, transaction settlement, compliance, merchant and agent operations, and customer experience — making sure every taka moves smoothly, every time, across 57+ bank integrations and a fast-growing base of consumers and merchants. It's a high-ownership role for someone comfortable with the operational realities of a regulated fintech: settlement cycles, reconciliation, dispute resolution, fraud monitoring coordination, and the process discipline a Bangladesh Bank–licensed PSP requires.
 
-## 📝 [Description](https://www.ipay.com.bd/career)
+### Payment & Settlement Operations
 
-We're looking for an Operations Manager to own the day-to-day reliability and efficiency of iPay's core payment operations. You'll sit at the intersection of banking partnerships, transaction settlement, compliance, merchant and agent operations, and customer experience — making sure every taka moves smoothly, every time, across 57+ bank integrations and a fast-growing base of consumers and merchants.
+*   Oversee end-to-end transaction operations across wallet transfers, QR payments, bill pay, mobile recharge, card transactions, and B2B disbursements
+*   Manage daily reconciliation across iPay's wallet ledger and 57+ connected commercial banks, resolving mismatches quickly
+*   Monitor settlement timelines for merchants and business partners, keeping dashboards and payouts accurate and on schedule
+*   Coordinate with banking partners and card processors on funding, withdrawal, and instant-transfer operations
+
+### Merchant & Business Operations
+
+*   Manage onboarding, activation, and ongoing operational support for QR merchants and businesses using iPay Checkout and B2B payout tools
+*   Oversee bulk payout operations — CSV uploads, approver workflows, tax-ready statements — for business clients
+*   Work with the business and merchant teams to troubleshoot settlement, integration, or payment issues raised by partners
+
+### Risk, Compliance & Fraud Coordination
+
+*   Partner with fraud monitoring and compliance teams to investigate flagged transactions, disputes, and anomalies
+*   Ensure operational processes align with Bangladesh Bank PSP regulations and internal audit and compliance requirements
+*   Maintain segregation and accuracy of trust account operations in line with regulatory obligations
+*   Support KYC/NID verification operations to keep onboarding both fast and compliant
+
+### Process & Team Management
+
+*   Build, document, and continuously improve SOPs across onboarding, transaction processing, dispute handling, and support escalations
+*   Manage and mentor an operations team, setting clear KPIs — settlement accuracy, resolution time, uptime, complaint turnaround
+*   Coordinate cross-functionally with Product, Engineering, Customer Support, and Compliance to resolve systemic issues
+*   Own operational reporting — daily and weekly dashboards on transaction volumes, settlement health, complaint trends, and incident logs
+
+### Incident & Support Escalation Management
+
+*   Act as the escalation point for operational incidents — failed transactions, delayed bill payments, bank connectivity issues — requiring urgent resolution
+*   Work with the 24/7 customer support function to ensure high-severity issues are triaged and resolved within SLA
+*   Conduct root-cause analysis on recurring issues and drive fixes with relevant teams
+
+### What You Bring
+
+*   4+ years of experience in operations, preferably within fintech, mobile financial services (MFS), banking, or payments
+*   Strong understanding of payment settlement, reconciliation, and banking operations; familiarity with the PSP/MFS regulatory environment in Bangladesh is a strong plus
+*   Comfort working with data — reconciliation reports, transaction dashboards, and operational KPIs
+*   Experience managing or coordinating with multiple banking and financial partners
+*   Strong process orientation: able to build SOPs, spot inefficiencies, and drive fixes without hand-holding
+*   Proven people management experience, leading a team through high-volume, time-sensitive operational work
+*   Excellent problem-solving and stakeholder-management skills — you'll work daily with Compliance, Product, Engineering, and Support
+*   Bachelor's degree required; a background in business, finance, or a
 
 ---
-* 📧 [Send Resume via Email](mailto:jobs@ipay.com.bd)
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
 ---
 
 </details>
@@ -14834,19 +15025,58 @@ We're looking for an Operations Manager to own the day-to-day reliability and ef
 | Field | Information |
 | ----- | ----------- |
 | **Employment** | Full Time |
-| **Posted** | 6 August 2026 |
+| **Posted** | 2026-08-06 |
 | **Location** | Dhaka (Dhanmondi) |
-| **Role** | Senior Database Administrator |
-| **Vacancies** | 1 |
-
-**🛠️ Tags**: `PostgreSQL` `MySQL` `Microsoft SQL Server` `Oracle` `Linux` `Bash` `Python` `PowerShell` 
-
-## 📝 [Description](https://www.ipay.com.bd/career)
+## 📝 [Description](https://ipay.com.bd/career)
 
 We're looking for a Senior Database Administrator to own the performance, availability, security, and scalability of iPay's database infrastructure. You'll sit at the intersection of database engineering, infrastructure, security, and payment operations — making sure our mission-critical databases remain reliable, highly available, and optimized as iPay continues to scale. It's a high-ownership role for someone who genuinely enjoys solving complex technical problems, optimizing database performance, and ensuring the integrity of financial data in a fast-paced fintech environment.
 
+### Database Administration & Performance
+
+*   Install, configure, administer, and maintain PostgreSQL, MySQL, Microsoft SQL Server, or other database platforms supporting iPay's payment ecosystem
+*   Monitor database health, availability, replication, and performance to ensure uninterrupted business operations
+*   Optimize SQL queries, indexes, stored procedures, and database configurations for maximum performance and efficiency
+*   Perform database capacity planning, storage management, and resource optimization to support business growth
+*   Identify performance bottlenecks, investigate root causes, and implement long-term performance improvements
+*   Design and maintain high-availability, clustering, replication, and failover solutions to minimize service disruptions
+
+### Database Reliability & Disaster Recovery
+
+*   Design, implement, and maintain database backup, restoration, and disaster recovery strategies
+*   Perform regular backup validation and recovery testing to ensure data can be restored successfully during emergencies
+*   Lead database incident response activities and perform detailed root cause analysis following production issues
+*   Develop and maintain database recovery procedures, operational documentation, and disaster recovery playbooks
+*   Coordinate planned maintenance, upgrades, migrations, and patch deployments with minimal business impact
+*   Ensure business continuity by maintaining resilient database infrastructure across production and disaster recovery environments
+
+### Database Security & Compliance
+
+*   Implement and maintain database security controls, access management, encryption, and auditing mechanisms
+*   Manage database user accounts, privileges, authentication methods, and role-based access controls
+*   Ensure databases comply with Bangladesh Bank regulatory requirements, internal security policies, and industry best practices
+*   Support security assessments, vulnerability remediation, audit activities, and compliance reviews
+*   Monitor database activities to detect unauthorized access, abnormal behaviour, or potential security threats
+*   Work closely with Security, Compliance, and Infrastructure teams to strengthen data protection and governance practices
+
+### Database Operations & Automation
+
+*   Automate routine database administration tasks using scripts and database management tools
+*   Monitor database jobs, scheduled tasks, replication status, and maintenance activities
+*   Maintain database monitoring dashboards, alerts, and reporting for proactive issue detection
+*   Support application deployments by reviewing database changes, schema updates, and migration scripts
+*   Continuously improve operational efficiency through automation and process optimization
+*   Maintain accurate documentation for database configurations, architecture, standards, and operational procedures
+
+### Collaboration & Technical Leadership
+
+*   Collaborate with Software Engineers, DevOps, Infrastructure, and Product teams to design scalable database solutions
+*   Review application database designs and recommend improvements for performance, reliability, and scalability
+*   Provide technical leadership on database architecture and strategic infrastructure decisions
+*   Mentor junior database administrators and provide guidance on database best practices
+*   Participate in technical discussions, architecture reviews, and infr
+
 ---
-* 📧 [Send Resume via Email](mailto:jobs@ipay.com.bd)
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
 ---
 
 </details>
@@ -14857,19 +15087,58 @@ We're looking for a Senior Database Administrator to own the performance, availa
 | Field | Information |
 | ----- | ----------- |
 | **Employment** | Full Time |
-| **Posted** | 6 August 2026 |
+| **Posted** | 2026-08-06 |
 | **Location** | Dhaka (Dhanmondi) |
-| **Role** | Senior System Administrator |
-| **Vacancies** | 1 |
-
-**🛠️ Tags**: `Windows Server` `Linux` `VMware` `Hyper-V` `AWS` `Azure` `GCP` `PowerShell` `Bash` `Python` `Active Directory` `DNS` `DHCP` `VPN` `Firewalls` 
-
-## 📝 [Description](https://www.ipay.com.bd/career)
+## 📝 [Description](https://ipay.com.bd/career)
 
 We're looking for a Senior System Administrator to own the reliability, security, and performance of iPay's IT infrastructure. You'll sit at the intersection of infrastructure engineering, cloud operations, cybersecurity, and system reliability — making sure our servers, networks, cloud platforms, and critical business systems remain secure, available, and resilient as iPay continues to scale. It's a high-ownership role for someone who genuinely enjoys solving complex infrastructure challenges, automating operations, and maintaining mission-critical systems in a fast-paced fintech environment.
 
+### Infrastructure Administration & System Management
+
+*   Install, configure, administer, and maintain Windows Server, Linux servers, virtualization platforms, and cloud infrastructure supporting iPay's production environment
+*   Monitor server health, system performance, resource utilization, and infrastructure capacity to ensure maximum availability
+*   Manage Active Directory, DNS, DHCP, file services, identity management, and enterprise authentication services
+*   Perform system upgrades, patch management, firmware updates, and infrastructure maintenance with minimal operational disruption
+*   Configure and maintain virtualization environments including VMware, Hyper-V, or similar technologies
+*   Ensure infrastructure remains scalable, secure, and capable of supporting business growth and increasing transaction volumes
+
+### Cloud Infrastructure & Platform Operations
+
+*   Administer cloud infrastructure hosted on AWS, Microsoft Azure, Google Cloud Platform, or private cloud environments
+*   Support deployment, monitoring, and maintenance of cloud-based applications and services
+*   Optimize cloud resources for performance, reliability, availability, and cost efficiency
+*   Implement cloud security best practices, access controls, and infrastructure hardening
+*   Collaborate with DevOps teams to support CI/CD pipelines, infrastructure automation, and deployment processes
+*   Maintain cloud documentation, architecture diagrams, and operational standards
+
+### Security, Compliance & Risk Management
+
+*   Implement and maintain infrastructure security policies, system hardening, endpoint protection, and vulnerability management
+*   Monitor infrastructure logs, alerts, and security events to identify potential threats and unauthorized activities
+*   Coordinate security patching, vulnerability remediation, and infrastructure audits
+*   Ensure compliance with Bangladesh Bank ICT Security Guidelines, internal security standards, and regulatory requirements
+*   Manage privileged access, system permissions, authentication mechanisms, and security configurations
+*   Work closely with Security, Compliance, and Infrastructure teams to strengthen the organization's cybersecurity posture
+
+### Backup, Disaster Recovery & Incident Response
+
+*   Design, implement, and maintain backup, disaster recovery, and business continuity solutions for critical infrastructure
+*   Perform regular backup verification, recovery testing, and disaster recovery drills
+*   Lead infrastructure incident response activities and conduct root cause analysis following critical outages
+*   Coordinate system recovery activities to minimize downtime and ensure business continuity
+*   Develop and maintain disaster recovery documentation, recovery procedures, and operational playbooks
+*   Take ownership of critical infrastructure incidents from detection through complete resolution
+
+### Monitoring, Automation & Operational Excellence
+
+*   Implement proactive infrastructure monitoring, alerting, and reporting using enterprise monitoring platforms
+*   Automate routine administrative tasks using PowerShell, Bash, Python, or similar scripting languages
+*   Improve operational efficiency through automation, standardization, and process optimization
+*   Maintain accurate documentation for infrastructure architecture, configurations, inventories, and operational procedures
+*   Review inf
+
 ---
-* 📧 [Send Resume via Email](mailto:jobs@ipay.com.bd)
+* 🌐 [Apply on Website](https://ipay.com.bd/career)
 ---
 
 </details>

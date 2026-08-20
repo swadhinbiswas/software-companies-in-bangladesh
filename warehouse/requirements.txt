@@ -1,0 +1,5 @@
+duckdb==1.2.0
+tomli==2.2.1
+pyarrow==19.0.1
+huggingface_hub==0.33.0
+pandas==2.2.3

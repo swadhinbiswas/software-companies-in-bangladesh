@@ -1,0 +1,4076 @@
+[
+  {
+    "company_id":609832328,
+    "name":"2A IT",
+    "website":"http:\/\/2aitbd.com\/",
+    "job_url":null,
+    "host":"2aitbd.com",
+    "tech":[
+      "Android",
+      "Java",
+      "Laravel",
+      "MySQL",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1469137376,
+    "name":"6amTech",
+    "website":"https:\/\/6amtech.com\/",
+    "job_url":null,
+    "host":"6amtech.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "React",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":566667873,
+    "name":"6sense Technologies",
+    "website":"https:\/\/6sensehq.com\/",
+    "job_url":"https:\/\/6sensehq.freshteam.com\/jobs",
+    "host":"6sensehq.com",
+    "tech":[
+      "AWS",
+      "Docker",
+      "Figma",
+      "Java",
+      "MongoDB",
+      "NextJS",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":551569302,
+    "name":"ATI Ltd.",
+    "website":"https:\/\/atilimited.net\/",
+    "job_url":"https:\/\/atilimited.net\/career",
+    "host":"atilimited.net",
+    "tech":[
+      "AWS",
+      "Android",
+      "C#",
+      "Docker",
+      "Flutter",
+      "JavaFX",
+      "PHP",
+      "React",
+      "SpringBoot",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":141836453,
+    "name":"Adplay Technologies (VU Mobile)",
+    "website":"http:\/\/vumobile.biz\/",
+    "job_url":null,
+    "host":"vumobile.biz",
+    "tech":[
+      "React",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1295968278,
+    "name":"Adventure Dhaka Ltd.",
+    "website":"https:\/\/adventurekk.com\/company\/about\/",
+    "job_url":null,
+    "host":"adventurekk.com",
+    "tech":[
+      "DevOps",
+      "Flutter",
+      "Go",
+      "Java",
+      "NextJS",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":459328594,
+    "name":"Alchemy Software Ltd.",
+    "website":"https:\/\/alchemy-bd.com\/",
+    "job_url":"https:\/\/alchemy-bd.com\/career\/",
+    "host":"alchemy-bd.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "Java",
+      "Laravel",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":591271451,
+    "name":"AlgorixIT LTD.",
+    "website":"https:\/\/algorixit.com\/",
+    "job_url":null,
+    "host":"algorixit.com",
+    "tech":[
+      "Android",
+      "Flutter",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1037370949,
+    "name":"All Generation tech",
+    "website":"https:\/\/allgentech.bamboohr.com\/careers",
+    "job_url":null,
+    "host":"allgentech.bamboohr.com",
+    "tech":[
+      "Azure",
+      "C#",
+      "Docker",
+      "Go",
+      "MongoDB",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":811811027,
+    "name":"Anchorblock Technology",
+    "website":"https:\/\/anchorblock.ai\/",
+    "job_url":null,
+    "host":"anchorblock.ai",
+    "tech":[
+      "AWS",
+      "Android",
+      "Django",
+      "Flutter",
+      "ML",
+      "NestJS",
+      "Solidity"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":613216116,
+    "name":"Apex DMIT",
+    "website":"https:\/\/www.apexdmit.com\/",
+    "job_url":"https:\/\/www.career.apexdmit.com\/",
+    "host":"apexdmit.com",
+    "tech":[
+      "Flutter",
+      "JavaScript",
+      "PHP",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":52182611,
+    "name":"Appnap",
+    "website":"https:\/\/www.appnap.io\/",
+    "job_url":"https:\/\/www.appnap.io\/career",
+    "host":"appnap.io",
+    "tech":[
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1375647719,
+    "name":"AppsCode Ltd.",
+    "website":"https:\/\/www.appscode.com\/",
+    "job_url":null,
+    "host":"appscode.com",
+    "tech":[
+      "Docker",
+      "Go",
+      "Kubernetes",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1572045821,
+    "name":"Appstick",
+    "website":"https:\/\/appstick.com.bd\/",
+    "job_url":null,
+    "host":"appstick.com.bd",
+    "tech":[
+      "Android",
+      "Flutter",
+      "ReactNative",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1671660490,
+    "name":"Appyfilab",
+    "website":"https:\/\/www.appifylab.com\/",
+    "job_url":"https:\/\/www.appifylab.com\/career#openings",
+    "host":"appifylab.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "NodeJS",
+      "Nuxt"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1101184247,
+    "name":"Apurba Technologies Ltd.",
+    "website":"http:\/\/apurba.com.bd\/",
+    "job_url":null,
+    "host":"apurba.com.bd",
+    "tech":[
+      "AWS",
+      "Docker",
+      "JavaScript",
+      "Kubernetes",
+      "ML",
+      "PHP",
+      "Python",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":823207795,
+    "name":"Aqualink Bangladesh Ltd.",
+    "website":"https:\/\/aqualinkbangladesh.com\/",
+    "job_url":null,
+    "host":"aqualinkbangladesh.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "ML",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":48481620,
+    "name":"Arraytics",
+    "website":"https:\/\/arraytics.com\/",
+    "job_url":null,
+    "host":"arraytics.com",
+    "tech":[
+      "Docker",
+      "GoogleNLP",
+      "Ionic",
+      "Laravel",
+      "NodeJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1562923986,
+    "name":"Astha IT",
+    "website":"https:\/\/www.asthait.com\/",
+    "job_url":null,
+    "host":"asthait.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "Angular",
+      "C#",
+      "Docker",
+      "Flutter",
+      "Go",
+      "Kubernetes",
+      "React",
+      "Selenium",
+      "SpringBoot",
+      "Testsigma",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":995712151,
+    "name":"Audacity Ventures",
+    "website":"https:\/\/audacityventures.ca\/",
+    "job_url":"https:\/\/career.audacityit.com",
+    "host":"audacityventures.ca",
+    "tech":[
+      "Android",
+      "ExpressJS",
+      "Flutter",
+      "Kotlin",
+      "MongoDB",
+      "Swift",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1511281964,
+    "name":"Augmedix Inc.",
+    "website":"https:\/\/www.augmedix.com\/",
+    "job_url":"https:\/\/www.augmedix.com\/careers",
+    "host":"augmedix.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "AngularJS",
+      "Go",
+      "ML",
+      "NodeJS",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":340984306,
+    "name":"Avenir IP Ltd.",
+    "website":"https:\/\/aveniripltd.com\/",
+    "job_url":null,
+    "host":"aveniripltd.com",
+    "tech":[
+      "Android",
+      "NodeJS",
+      "PHP",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1189459348,
+    "name":"BJIT Ltd.",
+    "website":"http:\/\/bjitgroup.com\/",
+    "job_url":"https:\/\/bjitgroup.com\/career",
+    "host":"bjitgroup.com",
+    "tech":[
+      "AI",
+      "Android",
+      "C#",
+      "Java",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2101367401,
+    "name":"Bangladesh Software Solution",
+    "website":"https:\/\/bssoln.com\/",
+    "job_url":"https:\/\/bssoln.com\/careers\/",
+    "host":"bssoln.com",
+    "tech":[
+      "C#",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2145944633,
+    "name":"Bdtask",
+    "website":"https:\/\/www.bdtask.com\/",
+    "job_url":"https:\/\/www.bdtask.com\/career.php",
+    "host":"bdtask.com",
+    "tech":[
+      "Android",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":26821928,
+    "name":"Binate Solutions",
+    "website":"https:\/\/www.binate-solutions.com\/",
+    "job_url":null,
+    "host":"binate-solutions.com",
+    "tech":[
+      "Java",
+      "Magento",
+      "Python",
+      "Ruby",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2108415284,
+    "name":"Bit Mascot Ltd.",
+    "website":"https:\/\/www.bitmascot.com\/",
+    "job_url":"https:\/\/www.bitmascot.com\/careers\/",
+    "host":"bitmascot.com",
+    "tech":[
+      ".NET",
+      "Python",
+      "Spring",
+      "TensorFlow",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":528666014,
+    "name":"BlueBees Ltd.",
+    "website":"https:\/\/bluebees.ventures\/",
+    "job_url":null,
+    "host":"bluebees.ventures",
+    "tech":[
+      ".NET",
+      "AngularJS",
+      "Flutter",
+      "PHP",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1182138450,
+    "name":"Bondstein Technologies Ltd.",
+    "website":"https:\/\/bondstein.com\/",
+    "job_url":null,
+    "host":"bondstein.com",
+    "tech":[
+      "Angular",
+      "MySQL",
+      "NodeJS",
+      "PHP",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1542506003,
+    "name":"Bongo",
+    "website":"https:\/\/bongobd.com\/",
+    "job_url":null,
+    "host":"bongobd.com",
+    "tech":[
+      "AI",
+      "Android",
+      "NodeJS",
+      "React",
+      "SQL",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1694265542,
+    "name":"Brac IT Services (biTS)",
+    "website":"https:\/\/www.bracits.com\/",
+    "job_url":"https:\/\/www.bracits.com\/career\/#open-rules",
+    "host":"bracits.com",
+    "tech":[
+      "Android",
+      "Java",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":706466820,
+    "name":"Brain Station 23 PLC",
+    "website":"http:\/\/www.brainstation-23.com\/",
+    "job_url":"https:\/\/brainstation-23.easy.jobs\/",
+    "host":"brainstation-23.com",
+    "tech":[
+      "AEM",
+      "Android",
+      "Flutter",
+      "Odoo",
+      "PHP",
+      "React",
+      "Sitecore",
+      "Xamarin",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":685324444,
+    "name":"Braincraft Ltd.",
+    "website":"https:\/\/www.braincraftapps.com\/",
+    "job_url":null,
+    "host":"braincraftapps.com",
+    "tech":[
+      "Android",
+      "AngularJS",
+      "Go",
+      "Java",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1873217360,
+    "name":"Brotecs Technologies Ltd. (USA)",
+    "website":"http:\/\/www.brotecs.com\/",
+    "job_url":null,
+    "host":"brotecs.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "C",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":966576857,
+    "name":"COdesign",
+    "website":"https:\/\/co.design\/",
+    "job_url":"https:\/\/co.design\/careers",
+    "host":"co.design",
+    "tech":[
+      "Nuxt"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":75482206,
+    "name":"Cefalo Bangladesh",
+    "website":"https:\/\/cefalo.com\/",
+    "job_url":null,
+    "host":"cefalo.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "Python",
+      "Rails",
+      "React",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1583957071,
+    "name":"Chumbok IT",
+    "website":"https:\/\/chumbok.com\/",
+    "job_url":null,
+    "host":"chumbok.com",
+    "tech":[
+      "AngularJS",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1744022777,
+    "name":"Circle Fintech",
+    "website":"https:\/\/www.circlefintech.com\/",
+    "job_url":null,
+    "host":"circlefintech.com",
+    "tech":[
+      "Blockchain",
+      "Django",
+      "NodeJS",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":149405376,
+    "name":"Code Prophet",
+    "website":"https:\/\/codeprophet.tech\/",
+    "job_url":null,
+    "host":"codeprophet.tech",
+    "tech":[
+      "NodeJS",
+      "PHP",
+      "PostgreSQL",
+      "Python",
+      "React",
+      "Redux",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":966561655,
+    "name":"Codemen Solutions",
+    "website":"http:\/\/www.codemen.com\/",
+    "job_url":null,
+    "host":"codemen.com",
+    "tech":[
+      ".NET",
+      "AWS",
+      "MongoDB",
+      "NodeJS",
+      "React",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1763373520,
+    "name":"CodersTrust",
+    "website":"https:\/\/coderstrust.global\/",
+    "job_url":null,
+    "host":"coderstrust.global",
+    "tech":[
+      "JavaScript",
+      "Kubernetes",
+      "Lambda",
+      "Python",
+      "Scala",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1214410030,
+    "name":"Codinism",
+    "website":"http:\/\/www.codinism.com\/",
+    "job_url":null,
+    "host":"codinism.com",
+    "tech":[
+      "Android",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":111967390,
+    "name":"Commlink Info Tech Ltd.",
+    "website":"https:\/\/www.commlinkinfotech.com\/",
+    "job_url":null,
+    "host":"commlinkinfotech.com",
+    "tech":[
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1852995894,
+    "name":"Computer Source InfoTech",
+    "website":"http:\/\/csinfotechbd.com\/",
+    "job_url":null,
+    "host":"csinfotechbd.com",
+    "tech":[
+      "Java",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":99022045,
+    "name":"Craftsmen (EU)",
+    "website":"https:\/\/www.craftsmenltd.com\/",
+    "job_url":null,
+    "host":"craftsmenltd.com",
+    "tech":[
+      "AI",
+      "AWS",
+      "Azure",
+      "GCP",
+      "NodeJS",
+      "Python",
+      "ReactNative",
+      "Redux"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1113574895,
+    "name":"Daffodil Software Ltd. (DSL)",
+    "website":"http:\/\/daffodilsoft.com\/",
+    "job_url":null,
+    "host":"daffodilsoft.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "Java",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":895441638,
+    "name":"Danpite.Tech",
+    "website":"https:\/\/danpite.tech\/",
+    "job_url":null,
+    "host":"danpite.tech",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1747898109,
+    "name":"Daraz Bangladesh",
+    "website":"https:\/\/careers.daraz.com\/",
+    "job_url":null,
+    "host":"careers.daraz.com",
+    "tech":[
+      "Angular",
+      "CodeIgniter",
+      "GraphQL",
+      "Laravel",
+      "NodeJS",
+      "VueJS"
+    ],
+    "company_type":[
+      "E-commerce"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1163152696,
+    "name":"Data Grid Ltd.",
+    "website":"https:\/\/datagridltd.com\/",
+    "job_url":null,
+    "host":"datagridltd.com",
+    "tech":[
+      ".NET",
+      "Angular",
+      "C#"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":385228477,
+    "name":"DataSoft",
+    "website":"http:\/\/datasoft-bd.com\/",
+    "job_url":"https:\/\/datasoft-bd.com\/career",
+    "host":"datasoft-bd.com",
+    "tech":[
+      ".NET",
+      "Angular",
+      "C#",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2062194844,
+    "name":"Databiz Software Ltd.",
+    "website":"http:\/\/www.databizsoftware.com\/",
+    "job_url":null,
+    "host":"databizsoftware.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1555729908,
+    "name":"Dcastalia Ltd.",
+    "website":"https:\/\/dcastalia.com\/",
+    "job_url":null,
+    "host":"dcastalia.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":694302075,
+    "name":"Dhrubok Infotech Services Ltd.",
+    "website":"https:\/\/dhrubokinfotech.com\/",
+    "job_url":null,
+    "host":"dhrubokinfotech.com",
+    "tech":[
+      "Android",
+      "Flutter",
+      "NextJS",
+      "SpringBoot",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1501590378,
+    "name":"Dingi Technologies",
+    "website":"https:\/\/www.dingi.tech\/",
+    "job_url":null,
+    "host":"dingi.tech",
+    "tech":[
+      "Firebase",
+      "Flutter",
+      "GoogleMaps",
+      "Java",
+      "NodeJS",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1151180754,
+    "name":"Divine IT Ltd.",
+    "website":"https:\/\/www.divineit.net\/",
+    "job_url":null,
+    "host":"divineit.net",
+    "tech":[
+      "Angular",
+      "Django",
+      "Flask",
+      "NodeJS",
+      "React",
+      "SQLAlchemy",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2047739874,
+    "name":"Dizi Nova Ltd.",
+    "website":"http:\/\/www.dizinova.com\/",
+    "job_url":null,
+    "host":"dizinova.com",
+    "tech":[
+      ".NET",
+      "C#",
+      "Flutter",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1690259274,
+    "name":"Dohatec New Media",
+    "website":"http:\/\/www.dohatec.com\/",
+    "job_url":null,
+    "host":"dohatec.com",
+    "tech":[
+      ".NET",
+      "AngularJS",
+      "Python",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":677330131,
+    "name":"Dream71",
+    "website":"http:\/\/www.dream71.com\/",
+    "job_url":null,
+    "host":"dream71.com",
+    "tech":[
+      "Android",
+      "Flutter",
+      "JavaScript",
+      "Laravel",
+      "MySQL",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":234359612,
+    "name":"Dynamic Solution Innovators Ltd. (DSi)",
+    "website":"http:\/\/www.dsinnovators.com\/",
+    "job_url":null,
+    "host":"dsinnovators.com",
+    "tech":[
+      "Android",
+      "AngularJS",
+      "Hibernate",
+      "NextJS",
+      "NodeJS",
+      "SpringBoot",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":560778216,
+    "name":"ERA-InfoTech Ltd.",
+    "website":"https:\/\/www.erainfotechbd.com\/",
+    "job_url":null,
+    "host":"erainfotechbd.com",
+    "tech":[
+      ".NET",
+      "AI",
+      "Java",
+      "Python",
+      "SQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1499597892,
+    "name":"Embedded Logic Operations (ELO)",
+    "website":"https:\/\/elobyte.com\/",
+    "job_url":null,
+    "host":"elobyte.com",
+    "tech":[
+      "AWS",
+      "Angular",
+      "Cypress",
+      "Docker",
+      "Flutter",
+      "Laravel",
+      "MongoDB",
+      "MySQL",
+      "NestJS",
+      "NextJS",
+      "PostgreSQL",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1545519393,
+    "name":"Enosis Solutions (USA)",
+    "website":"http:\/\/enosisbd.com\/",
+    "job_url":"https:\/\/enosisbd.pinpointhq.com\/",
+    "host":"enosisbd.com",
+    "tech":[
+      "C#",
+      "Java",
+      "PHP",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":935091802,
+    "name":"Escenic (Norway)",
+    "website":"http:\/\/www.escenic.com\/",
+    "job_url":null,
+    "host":"escenic.com",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":603158099,
+    "name":"Evaly Ltd.",
+    "website":"https:\/\/evaly.com.bd\/career\/",
+    "job_url":null,
+    "host":"evaly.com.bd",
+    "tech":[
+      "Django",
+      "ExpressJS",
+      "Go",
+      "MQTT",
+      "NoSQL",
+      "SNS",
+      "SQL",
+      "SQS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":444744065,
+    "name":"Exabyting Technologies",
+    "website":"http:\/\/exabyting.com\/",
+    "job_url":null,
+    "host":"exabyting.com",
+    "tech":[
+      "Django",
+      "ExpressJS",
+      "Laravel",
+      "NoSQL",
+      "SNS",
+      "SQL",
+      "SQS",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1566813454,
+    "name":"FIGLAB",
+    "website":"https:\/\/figlab.io\/",
+    "job_url":"https:\/\/figlab.io\/career\/",
+    "host":"figlab.io",
+    "tech":[
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1479566510,
+    "name":"Fieldbuzz (Germany)",
+    "website":"https:\/\/www.field.buzz\/",
+    "job_url":null,
+    "host":"field.buzz",
+    "tech":[
+      "Android",
+      "Django",
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1743624989,
+    "name":"Fieldnation (USA)",
+    "website":"https:\/\/jobs.lever.co\/fieldnation?location=Dhaka",
+    "job_url":null,
+    "host":"jobs.lever.co",
+    "tech":[
+      "AWS",
+      "Docker",
+      "Kubernetes",
+      "NodeJS",
+      "PHP",
+      "React",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":78969282,
+    "name":"Fiftytwo",
+    "website":"https:\/\/www.fiftytwo.com\/",
+    "job_url":null,
+    "host":"fiftytwo.com",
+    "tech":[
+      "Angular",
+      "C++",
+      "SQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":16733230,
+    "name":"Flinkeo",
+    "website":"https:\/\/flinkeo.online\/",
+    "job_url":null,
+    "host":"flinkeo.online",
+    "tech":[
+      "NextJS",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":185224376,
+    "name":"Flyte Solutions",
+    "website":"https:\/\/flytesolutions.com\/",
+    "job_url":"https:\/\/flytesolutions.com\/career\/",
+    "host":"flytesolutions.com",
+    "tech":[
+      "Android",
+      "NodeJS",
+      "ReactNative",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1104001798,
+    "name":"Fringecore",
+    "website":"https:\/\/fringecore.sh\/",
+    "job_url":null,
+    "host":"fringecore.sh",
+    "tech":[
+      "Linux",
+      "ML",
+      "NodeJS",
+      "ReactNative",
+      "SQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1270076933,
+    "name":"Frontier Semiconductor (FSM) (USA)",
+    "website":"http:\/\/www.frontiersemi.com\/center\/home.php",
+    "job_url":null,
+    "host":"frontiersemi.com",
+    "tech":[
+      "MFC",
+      "OpenCV"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":321259876,
+    "name":"Furqan Software",
+    "website":"https:\/\/furqansoftware.com\/",
+    "job_url":"https:\/\/furqansoftware.com\/careers\/",
+    "host":"furqansoftware.com",
+    "tech":[
+      "Elasticsearch",
+      "Firebase",
+      "Go",
+      "Laravel",
+      "MongoDB",
+      "RabbitMQ",
+      "React",
+      "Redis"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":469689985,
+    "name":"GeekSSort",
+    "website":"https:\/\/geekssort.com\/",
+    "job_url":"https:\/\/geekssort.com\/career-page\/",
+    "host":"geekssort.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "NextJS",
+      "Shopify",
+      "TestAutomation",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":997731474,
+    "name":"Genex Infosys Ltd.",
+    "website":"http:\/\/genexinfosys.com\/",
+    "job_url":null,
+    "host":"genexinfosys.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1229852201,
+    "name":"Genuity Systems Ltd.",
+    "website":"https:\/\/genusys.us\/",
+    "job_url":null,
+    "host":"genusys.us",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":382184720,
+    "name":"Giga Tech Ltd.",
+    "website":"https:\/\/gigatechltd.com\/",
+    "job_url":null,
+    "host":"gigatechltd.com",
+    "tech":[
+      ".NET",
+      "Blockchain",
+      "DeepLearning",
+      "Django",
+      "Java",
+      "JavaScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1809323603,
+    "name":"Gigalogy",
+    "website":"https:\/\/gigalogy.com\/",
+    "job_url":"https:\/\/gigalogy.com\/en\/company\/career",
+    "host":"gigalogy.com",
+    "tech":[
+      "AI",
+      "Django",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1061850198,
+    "name":"Golden Harvest InfoTech Ltd. (GHIT)",
+    "website":"http:\/\/ghitbd.com\/",
+    "job_url":null,
+    "host":"ghitbd.com",
+    "tech":[
+      "AngularJS",
+      "C#",
+      "MySQL",
+      "PHP",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":515928097,
+    "name":"Grameen Solutions Ltd.",
+    "website":"https:\/\/www.grameensolutions.com\/",
+    "job_url":null,
+    "host":"grameensolutions.com",
+    "tech":[
+      "Java",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1730484556,
+    "name":"Grit Technologies Ltd.",
+    "website":"https:\/\/www.grit0.com\/",
+    "job_url":null,
+    "host":"grit0.com",
+    "tech":[
+      "AWS",
+      "Cypress",
+      "Docker",
+      "Figma",
+      "Go",
+      "LLM",
+      "MongoDB",
+      "PHP",
+      "PostgreSQL",
+      "Python",
+      "ReactNative",
+      "XR"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":410245794,
+    "name":"HawarIT",
+    "website":"https:\/\/www.hawarit.com\/career-at-hawarit\/",
+    "job_url":"https:\/\/www.hawarit.com\/career\/",
+    "host":"hawarit.com",
+    "tech":[
+      "C#"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":712300957,
+    "name":"Hogarth Dhaka",
+    "website":"https:\/\/www.hogarth.com\/careers",
+    "job_url":null,
+    "host":"hogarth.com",
+    "tech":[
+      "AWS",
+      "NodeJS",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1270587679,
+    "name":"HypeScout",
+    "website":"https:\/\/www.hypescout.co\/",
+    "job_url":null,
+    "host":"hypescout.co",
+    "tech":[
+      "Flutter",
+      "Mongoose",
+      "React",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1239472889,
+    "name":"IBCS-Primax",
+    "website":"http:\/\/www.ibcs-primax.com\/ibcsonweb\/",
+    "job_url":null,
+    "host":"ibcs-primax.com",
+    "tech":[
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":854792806,
+    "name":"IBOS Ltd.",
+    "website":"https:\/\/www.ibos.io\/",
+    "job_url":null,
+    "host":"ibos.io",
+    "tech":[
+      "Java",
+      "MySQL",
+      "PHP",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2095242945,
+    "name":"IMpulse (BD) Ltd.",
+    "website":"https:\/\/www.impulsebdltd.com\/",
+    "job_url":null,
+    "host":"impulsebdltd.com",
+    "tech":[
+      ".NET",
+      "JavaScript",
+      "PostgreSQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1654115866,
+    "name":"IPvision",
+    "website":"http:\/\/ipvision.ca\/",
+    "job_url":null,
+    "host":"ipvision.ca",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":824415890,
+    "name":"IQVIA, Dhaka",
+    "website":"https:\/\/www.iqvia.com\/",
+    "job_url":null,
+    "host":"iqvia.com",
+    "tech":[
+      ".NET",
+      "Angular",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1230436833,
+    "name":"ITmedicus",
+    "website":"http:\/\/itmedicus.com\/",
+    "job_url":null,
+    "host":"itmedicus.com",
+    "tech":[
+      "Dart",
+      "Java",
+      "Kotlin",
+      "Laravel"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1170282504,
+    "name":"IXORA Solution",
+    "website":"https:\/\/ixorasolution.com\/",
+    "job_url":"https:\/\/ixorasolution.com\/career",
+    "host":"ixorasolution.com",
+    "tech":[
+      "Django",
+      "Flutter",
+      "MongoDB",
+      "NodeJS",
+      "React",
+      "SQL",
+      "SpringBoot",
+      "Swift",
+      "TypeScript",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":410038755,
+    "name":"IdeaScale Bangladesh",
+    "website":"https:\/\/ideascale.com\/",
+    "job_url":null,
+    "host":"ideascale.com",
+    "tech":[
+      "JMS",
+      "JPA",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":455177921,
+    "name":"InfancyIT",
+    "website":"http:\/\/www.infancyit.com\/",
+    "job_url":null,
+    "host":"infancyit.com",
+    "tech":[
+      "Android",
+      "Java",
+      "Laravel",
+      "NodeJS",
+      "ReactNative",
+      "VueJS",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":512031890,
+    "name":"Inflack Ltd.",
+    "website":"http:\/\/inflack.com\/",
+    "job_url":null,
+    "host":"inflack.com",
+    "tech":[
+      "Django",
+      "JavaScript",
+      "Laravel",
+      "NoSQL",
+      "SNS",
+      "SQL",
+      "SQS",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1041665368,
+    "name":"Infocrat Solutions Ltd.",
+    "website":"https:\/\/www.infocratsolutions.com\/",
+    "job_url":null,
+    "host":"infocratsolutions.com",
+    "tech":[
+      ".NET",
+      "C#"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":237120501,
+    "name":"InnoSpace",
+    "website":"https:\/\/innospace.tech\/",
+    "job_url":"https:\/\/innospace.tech\/career\/",
+    "host":"innospace.tech",
+    "tech":[
+      "Flutter",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1916603497,
+    "name":"Innovative Software",
+    "website":"http:\/\/innovativesoftware.eu\/",
+    "job_url":null,
+    "host":"innovativesoftware.eu",
+    "tech":[
+      "Android",
+      "Java",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1722272997,
+    "name":"Inovace Technologies",
+    "website":"https:\/\/inovacetech.com\/",
+    "job_url":null,
+    "host":"inovacetech.com",
+    "tech":[
+      "Angular",
+      "Bootstrap",
+      "Kafka",
+      "Laravel",
+      "MQTT",
+      "MySQL",
+      "PostgreSQL",
+      "Python",
+      "SpringBoot",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1652731989,
+    "name":"Instalogic",
+    "website":"https:\/\/preoit.com\/",
+    "job_url":null,
+    "host":"preoit.com",
+    "tech":[
+      "Bootstrap",
+      "Java",
+      "Laravel",
+      "MySQL",
+      "PostgreSQL",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":499302324,
+    "name":"Integrated Software and Technologies Ltd.",
+    "website":"https:\/\/www.istlbd.com\/",
+    "job_url":null,
+    "host":"istlbd.com",
+    "tech":[
+      "C",
+      "Java",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1037507744,
+    "name":"Intellier Ltd.",
+    "website":"https:\/\/intellier.com\/",
+    "job_url":null,
+    "host":"intellier.com",
+    "tech":[
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1439801998,
+    "name":"Inument",
+    "website":"https:\/\/inument.com\/careers\/#available-jobs",
+    "job_url":"https:\/\/inument.com\/careers\/#available-jobs",
+    "host":"inument.com",
+    "tech":[
+      "AI",
+      "Flutter",
+      "Java",
+      "NodeJS",
+      "PHP",
+      "React",
+      "nopCommerce"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1270824599,
+    "name":"Invento Software Ltd.",
+    "website":"http:\/\/invento.com.bd\/",
+    "job_url":"https:\/\/invento.com.bd\/career\/",
+    "host":"invento.com.bd",
+    "tech":[
+      "Django",
+      "JavaScript",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":320625546,
+    "name":"Inverse.AI",
+    "website":"https:\/\/inverseai.com\/",
+    "job_url":"https:\/\/inverseai.com\/career",
+    "host":"inverseai.com",
+    "tech":[
+      "Android",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1734527030,
+    "name":"Isratts Technologies",
+    "website":"http:\/\/www.israttstech.com\/",
+    "job_url":null,
+    "host":"israttstech.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":422148068,
+    "name":"JB Connect Ltd.",
+    "website":"https:\/\/www.jbc-ltd.com\/en",
+    "job_url":null,
+    "host":"jbc-ltd.com",
+    "tech":[
+      "DevOps"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":554501939,
+    "name":"Jatri Services Ltd.",
+    "website":"https:\/\/www.jatri.co\/",
+    "job_url":"https:\/\/www.jatri.co\/career#job-opening",
+    "host":"jatri.co",
+    "tech":[
+
+    ],
+    "company_type":[
+      "E-logistics"
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":746204504,
+    "name":"Joomshaper",
+    "website":"https:\/\/www.joomshaper.com\/",
+    "job_url":null,
+    "host":"joomshaper.com",
+    "tech":[
+      "Joomla",
+      "React",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":444977216,
+    "name":"JoulesLabs",
+    "website":"https:\/\/jouleslabs.com\/",
+    "job_url":null,
+    "host":"jouleslabs.com",
+    "tech":[
+      "React",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":916886382,
+    "name":"Kaz Software",
+    "website":"http:\/\/kaz.com.bd\/",
+    "job_url":null,
+    "host":"kaz.com.bd",
+    "tech":[
+      ".NET",
+      "AngularJS",
+      "Java",
+      "PHP",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":129336596,
+    "name":"Kite Games Studio",
+    "website":"https:\/\/www.kitegamesstudio.com\/",
+    "job_url":null,
+    "host":"kitegamesstudio.com",
+    "tech":[
+      "PyTorch",
+      "React",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":932944958,
+    "name":"Kompass Technologies Ltd.",
+    "website":"https:\/\/hellokompass.com\/",
+    "job_url":null,
+    "host":"hellokompass.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1893296942,
+    "name":"Kona Software Lab",
+    "website":"https:\/\/konasl.com\/",
+    "job_url":"https:\/\/konasl.com\/careers#openings",
+    "host":"konasl.com",
+    "tech":[
+      "AI",
+      "Android",
+      "Blockchain",
+      "C++",
+      "JavaScript",
+      "Kotlin",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":859470370,
+    "name":"Kovair Software, Inc.",
+    "website":"https:\/\/www.kovair.com\/",
+    "job_url":null,
+    "host":"kovair.com",
+    "tech":[
+      "AngularJS",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":837093575,
+    "name":"LIILab",
+    "website":"http:\/\/liilab.com\/",
+    "job_url":"https:\/\/liilab.com\/career",
+    "host":"liilab.com",
+    "tech":[
+      "Android",
+      "Django",
+      "Java",
+      "Kotlin",
+      "React",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":398146101,
+    "name":"LeadSoft",
+    "website":"http:\/\/leads.com.bd\/",
+    "job_url":"https:\/\/leads.com.bd\/jobs\/",
+    "host":"leads.com.bd",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":495133746,
+    "name":"LightCastle Partners",
+    "website":"https:\/\/www.lightcastlebd.com\/",
+    "job_url":null,
+    "host":"lightcastlebd.com",
+    "tech":[
+      "Laravel",
+      "NodeJS",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":698039368,
+    "name":"ME SOLshare Ltd.",
+    "website":"https:\/\/me-solshare.com\/",
+    "job_url":"https:\/\/solshare.com\/career\/",
+    "host":"me-solshare.com",
+    "tech":[
+      "Android",
+      "Java",
+      "JavaScript",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1959739143,
+    "name":"Magnito Digital",
+    "website":"http:\/\/magnitodigital.com\/",
+    "job_url":null,
+    "host":"magnitodigital.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":596110919,
+    "name":"Mamurjor IT",
+    "website":"https:\/\/mamurjor.com\/",
+    "job_url":null,
+    "host":"mamurjor.com",
+    "tech":[
+      "C",
+      "Java",
+      "Linux",
+      "MySQL",
+      "NodeJS",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1662131695,
+    "name":"Markopolo AI",
+    "website":"https:\/\/www.markopolo.ai\/",
+    "job_url":null,
+    "host":"markopolo.ai",
+    "tech":[
+      "DeepLearning"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":610113117,
+    "name":"Mazegeek Technologies BD Ltd.",
+    "website":"https:\/\/www.mazegeek.com\/",
+    "job_url":null,
+    "host":"mazegeek.com",
+    "tech":[
+      ".NET",
+      "AWS",
+      "Android",
+      "Angular",
+      "Docker",
+      "Firebase",
+      "Laravel",
+      "NodeJS",
+      "Python",
+      "React",
+      "VueJS",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":209199555,
+    "name":"Medina Tech Ltd.",
+    "website":"https:\/\/www.medinatech.co\/\/",
+    "job_url":null,
+    "host":"medinatech.co",
+    "tech":[
+      "AR",
+      "AWS",
+      "Android",
+      "Django",
+      "ML",
+      "NextJS",
+      "NodeJS",
+      "PHP",
+      "ReactNative",
+      "Unity",
+      "VueJS",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1417574406,
+    "name":"Mediusware Ltd.",
+    "website":"https:\/\/www.mediusware.com\/",
+    "job_url":"https:\/\/www.mediusware.com\/career",
+    "host":"mediusware.com",
+    "tech":[
+      "Angular",
+      "NextJS",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1208167604,
+    "name":"Meghna Group of Industries (MGI)",
+    "website":"https:\/\/www.mgi.org\/",
+    "job_url":null,
+    "host":"mgi.org",
+    "tech":[
+      "Android",
+      "Java",
+      "MySQL",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+      "E-commerce"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":737054687,
+    "name":"Metafour Asia",
+    "website":"http:\/\/www.metafour.com\/",
+    "job_url":null,
+    "host":"metafour.com",
+    "tech":[
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":420220260,
+    "name":"Metatude Asia Ltd.",
+    "website":"https:\/\/www.fellowdigitals.com\/metatude",
+    "job_url":null,
+    "host":"fellowdigitals.com",
+    "tech":[
+      ".NET",
+      "AWS",
+      "Angular",
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":117774080,
+    "name":"Mevrik Ltd.",
+    "website":"https:\/\/www.mevrik.com\/",
+    "job_url":null,
+    "host":"mevrik.com",
+    "tech":[
+      "AWS",
+      "Celery",
+      "ClickHouse",
+      "Django",
+      "Docker",
+      "Elasticsearch",
+      "FastAPI",
+      "GitHub",
+      "Gunicorn",
+      "Kafka",
+      "Kubernetes",
+      "LLM",
+      "Laravel",
+      "MongoDB",
+      "MySQL",
+      "Nginx",
+      "PostgreSQL",
+      "React",
+      "Redis",
+      "TailwindCSS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1749366361,
+    "name":"Millennium Information Solution Ltd.",
+    "website":"https:\/\/www.mislbd.com\/",
+    "job_url":null,
+    "host":"mislbd.com",
+    "tech":[
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1823443347,
+    "name":"Misfit Technologies",
+    "website":"https:\/\/misfit.tech\/",
+    "job_url":null,
+    "host":"misfit.tech",
+    "tech":[
+      "Android",
+      "Django",
+      "ML",
+      "Magento",
+      "React",
+      "Ruby",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1758430532,
+    "name":"MononSoft Ltd.",
+    "website":"https:\/\/mononsoft.org\/",
+    "job_url":null,
+    "host":"mononsoft.org",
+    "tech":[
+      "Laravel",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1613926048,
+    "name":"MonstarLab Bangladesh",
+    "website":"https:\/\/monstar-lab.com\/bd\/",
+    "job_url":null,
+    "host":"monstar-lab.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "NestJS",
+      "NextJS",
+      "Symfony"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":83801530,
+    "name":"Namespace IT",
+    "website":"https:\/\/www.namespaceit.com\/",
+    "job_url":null,
+    "host":"namespaceit.com",
+    "tech":[
+      "Django",
+      "Laravel",
+      "ML",
+      "NextJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":593001560,
+    "name":"Nascenia",
+    "website":"https:\/\/www.nascenia.com\/",
+    "job_url":null,
+    "host":"nascenia.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1229427521,
+    "name":"NeerLab",
+    "website":"https:\/\/neerlab.com\/",
+    "job_url":null,
+    "host":"neerlab.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":573599548,
+    "name":"NeosCoder",
+    "website":"https:\/\/www.neoscoder.com\/",
+    "job_url":"https:\/\/www.neoscoder.com\/career",
+    "host":"neoscoder.com",
+    "tech":[
+      "NodeJS",
+      "PostgreSQL",
+      "Python",
+      "React",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1450058142,
+    "name":"NetCoden Inc",
+    "website":"https:\/\/netcoden.com\/",
+    "job_url":null,
+    "host":"netcoden.com",
+    "tech":[
+      "Android",
+      "C++",
+      "Laravel",
+      "NodeJS",
+      "React",
+      "SQL",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":429191889,
+    "name":"Netizen IT Ltd.",
+    "website":"https:\/\/www.netizenbd.com\/",
+    "job_url":null,
+    "host":"netizenbd.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "Angular",
+      "Kotlin",
+      "MySQL",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1454226497,
+    "name":"New Technology Systems Ltd.",
+    "website":"https:\/\/ntsctgbd.com\/",
+    "job_url":null,
+    "host":"ntsctgbd.com",
+    "tech":[
+      "JavaScript",
+      "MongoDB",
+      "MySQL",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1054399865,
+    "name":"Newgen Technology Ltd.",
+    "website":"https:\/\/newgen-bd.com\/",
+    "job_url":null,
+    "host":"newgen-bd.com",
+    "tech":[
+      "Hibernate",
+      "JSTL",
+      "MySQL",
+      "Spring",
+      "Tomcat"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1174149051,
+    "name":"Newroz Technologies Ltd.",
+    "website":"https:\/\/www.newroztech.com\/",
+    "job_url":null,
+    "host":"newroztech.com",
+    "tech":[
+      "Flutter",
+      "Kotlin",
+      "React",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":748234074,
+    "name":"Next Ventures",
+    "website":"https:\/\/nextventures.io\/",
+    "job_url":"https:\/\/career.nextventures.io\/",
+    "host":"nextventures.io",
+    "tech":[
+      "AWS",
+      "Linux",
+      "PostgreSQL",
+      "Python",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1356489901,
+    "name":"Nextech Ltd.",
+    "website":"https:\/\/nextech.com.bd\/",
+    "job_url":null,
+    "host":"nextech.com.bd",
+    "tech":[
+      "Laravel",
+      "SQL",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":672201310,
+    "name":"Nice Power & IT Solution Ltd.",
+    "website":"https:\/\/www.nicegroupbd.com\/",
+    "job_url":null,
+    "host":"nicegroupbd.com",
+    "tech":[
+      "MySQL",
+      "PHP",
+      "Spring",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":242743753,
+    "name":"Nogor Solutions Ltd.",
+    "website":"https:\/\/www.nogorsolutions.com\/",
+    "job_url":"https:\/\/nogorsolutions.com\/career",
+    "host":"nogorsolutions.com",
+    "tech":[
+      "CakePHP",
+      "Docker",
+      "MongoDB",
+      "MySQL",
+      "Vuex"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":970840665,
+    "name":"Nova Labs Ltd.",
+    "website":"https:\/\/novalabs.gg\/",
+    "job_url":null,
+    "host":"novalabs.gg",
+    "tech":[
+      "AR",
+      "Android",
+      "Unity",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1999312484,
+    "name":"Nybbles System Ltd.",
+    "website":"https:\/\/www.nybsys.com\/",
+    "job_url":null,
+    "host":"nybsys.com",
+    "tech":[
+      "AngularJS",
+      "C#",
+      "Dart",
+      "Java",
+      "Kotlin",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":772997501,
+    "name":"Ollyo",
+    "website":"https:\/\/www.ollyo.com\/",
+    "job_url":"https:\/\/ollyo.com\/careers\/roles\/",
+    "host":"ollyo.com",
+    "tech":[
+      "JoomShaper",
+      "Themeum"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":398217425,
+    "name":"Onecodesoft",
+    "website":"https:\/\/onecodesoft.com\/",
+    "job_url":"https:\/\/onecodesoft.com\/career",
+    "host":"onecodesoft.com",
+    "tech":[
+      "Flutter",
+      "Laravel",
+      "NodeJS",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1443225786,
+    "name":"Optimizely (Newscred) (USA)",
+    "website":"https:\/\/www.optimizely.com\/",
+    "job_url":"https:\/\/careers.optimizely.com\/search\/?locationsearch=bangladesh",
+    "host":"optimizely.com",
+    "tech":[
+      "MongoDB",
+      "NodeJS",
+      "Python",
+      "Scala"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1970775610,
+    "name":"Orange Toolz",
+    "website":"https:\/\/orangetoolz.com\/",
+    "job_url":null,
+    "host":"orangetoolz.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "AngularJS",
+      "Azure",
+      "CakePHP",
+      "Laravel",
+      "NodeJS",
+      "ReactNative",
+      "Xamarin",
+      "Zend",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1218967989,
+    "name":"Orbitax Bangladesh",
+    "website":"http:\/\/www.orbitax.com\/",
+    "job_url":null,
+    "host":"orbitax.com",
+    "tech":[
+      "Android",
+      "Java",
+      "JavaScript",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":295105280,
+    "name":"Orbund LLC",
+    "website":"https:\/\/www.orbund.com\/",
+    "job_url":null,
+    "host":"orbund.com",
+    "tech":[
+      "Android",
+      "Java",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":933059795,
+    "name":"OrvionSoft",
+    "website":"https:\/\/www.orvionsoft.com\/",
+    "job_url":null,
+    "host":"orvionsoft.com",
+    "tech":[
+      "Angular",
+      "C#",
+      "Laravel",
+      "NextJS",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1306517543,
+    "name":"Otto International Ltd.",
+    "website":"https:\/\/www.ottoint.com\/",
+    "job_url":null,
+    "host":"ottoint.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "ExpressJS",
+      "Flutter",
+      "Gatsby",
+      "MongoDB",
+      "MySQL",
+      "WordPress",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":761454015,
+    "name":"Paperfly Ltd.",
+    "website":"https:\/\/www.paperfly.com.bd\/",
+    "job_url":null,
+    "host":"paperfly.com.bd",
+    "tech":[
+      "Laravel",
+      "React",
+      "VueJS"
+    ],
+    "company_type":[
+      "E-logistics"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":61604573,
+    "name":"Pathao Ltd.",
+    "website":"https:\/\/pathao.com\/",
+    "job_url":null,
+    "host":"pathao.com",
+    "tech":[
+      "Android",
+      "Go",
+      "Kubernetes",
+      "NodeJS",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+      "E-logistics"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1891526070,
+    "name":"Penta Global Ltd.",
+    "website":"https:\/\/www.pentabd.com\/",
+    "job_url":null,
+    "host":"pentabd.com",
+    "tech":[
+      "Java",
+      "Kubernetes",
+      "NodeJS",
+      "PostgreSQL",
+      "Python",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1941167365,
+    "name":"PixelNet Technologies Ltd.",
+    "website":"http:\/\/www.pixelnettech.com\/",
+    "job_url":null,
+    "host":"pixelnettech.com",
+    "tech":[
+      "Ionic",
+      "Magento",
+      "MongoDB",
+      "MySQL",
+      "NodeJS",
+      "Rails"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1397524499,
+    "name":"Portonics Ltd.",
+    "website":"http:\/\/portonics.com\/",
+    "job_url":"https:\/\/www.portonics.com\/career",
+    "host":"portonics.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "Docker",
+      "MySQL",
+      "NodeJS",
+      "PHP",
+      "PostgreSQL",
+      "Python",
+      "React",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1599240733,
+    "name":"Pridesys IT Ltd.",
+    "website":"https:\/\/pridesys.com\/",
+    "job_url":"https:\/\/pridesys.com\/careers",
+    "host":"pridesys.com",
+    "tech":[
+      "MySQL",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1349431034,
+    "name":"Progoti Systems Ltd.",
+    "website":"https:\/\/www.progoti.com\/",
+    "job_url":null,
+    "host":"progoti.com",
+    "tech":[
+      "Android",
+      "Django",
+      "Docker",
+      "MySQL",
+      "PostgreSQL",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1339104994,
+    "name":"REVE Systems (Singapore)",
+    "website":"https:\/\/www.revesoft.com\/",
+    "job_url":"https:\/\/www.revesoft.com\/career",
+    "host":"revesoft.com",
+    "tech":[
+      "CloudComputing",
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":881428345,
+    "name":"ReliSource (USA)",
+    "website":"http:\/\/www.relisource.com\/",
+    "job_url":"https:\/\/www.relisource.com\/careers\/",
+    "host":"relisource.com",
+    "tech":[
+      "AWS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":832546208,
+    "name":"Remotion IT",
+    "website":"https:\/\/www.remotionit.com\/",
+    "job_url":null,
+    "host":"remotionit.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1566145839,
+    "name":"Renessa Info Systems Ltd.",
+    "website":"http:\/\/www.renessainfosystems.com\/",
+    "job_url":"https:\/\/www.renessainfosystems.com\/career",
+    "host":"renessainfosystems.com",
+    "tech":[
+      "CakePHP",
+      "CodeIgniter",
+      "Laravel",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2121907875,
+    "name":"Retina Soft",
+    "website":"https:\/\/retinasoft.com.bd\/",
+    "job_url":null,
+    "host":"retinasoft.com.bd",
+    "tech":[
+      "Android",
+      "Laravel",
+      "React",
+      "VueJS",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":552230250,
+    "name":"RiseUp Labs",
+    "website":"https:\/\/riseuplabs.com\/",
+    "job_url":"https:\/\/riseuplabs.com\/jobs\/",
+    "host":"riseuplabs.com",
+    "tech":[
+      "Django",
+      "Flutter",
+      "Java",
+      "Kotlin",
+      "NodeJS",
+      "React",
+      "SQL",
+      "Swift",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1251697402,
+    "name":"Robust Research And Development Ltd.",
+    "website":"https:\/\/rrad.ltd\/",
+    "job_url":null,
+    "host":"rrad.ltd",
+    "tech":[
+      "C#",
+      "Flutter",
+      "Kotlin",
+      "NextJS",
+      "Python",
+      "Swift",
+      "TypeScript"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1240985924,
+    "name":"Rokomari",
+    "website":"https:\/\/www.rokomari.com\/",
+    "job_url":null,
+    "host":"rokomari.com",
+    "tech":[
+      "Flutter",
+      "NextJS",
+      "Python",
+      "Spring"
+    ],
+    "company_type":[
+      "E-commerce"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1471235806,
+    "name":"SCT Bangla Ltd.",
+    "website":"https:\/\/www.sct-bangla.com\/",
+    "job_url":"https:\/\/www.sct-bangla.com\/careers",
+    "host":"sct-bangla.com",
+    "tech":[
+      "Angular",
+      "Flutter",
+      "Laravel",
+      "React",
+      "SQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2017201366,
+    "name":"SELISE Digital Platforms (Switzerland)",
+    "website":"https:\/\/selisegroup.com\/",
+    "job_url":null,
+    "host":"selisegroup.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "AngularJS",
+      "NodeJS",
+      "Python",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1063831328,
+    "name":"SJ Innovation",
+    "website":"https:\/\/sjinnovation.com\/",
+    "job_url":"https:\/\/career.sjinnovation.com\/#jobs",
+    "host":"sjinnovation.com",
+    "tech":[
+      "Blockchain",
+      "Flutter",
+      "Java",
+      "Kotlin",
+      "React",
+      "Swift"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":664330314,
+    "name":"SSD-TECH",
+    "website":"https:\/\/ssd-tech.io\/",
+    "job_url":null,
+    "host":"ssd-tech.io",
+    "tech":[
+      "C",
+      "Java",
+      "Linux",
+      "MySQL",
+      "NodeJS",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1329160606,
+    "name":"SSL Wireless",
+    "website":"https:\/\/www.sslwireless.com\/",
+    "job_url":"https:\/\/www.sslwireless.com\/all-jobs",
+    "host":"sslwireless.com",
+    "tech":[
+      "Java",
+      "JavaScript",
+      "Laravel",
+      "MySQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":570728153,
+    "name":"Samsung R&D Institute Bangladesh, Ltd.",
+    "website":"https:\/\/research.samsung.com\/srbd",
+    "job_url":null,
+    "host":"research.samsung.com",
+    "tech":[
+      "Android",
+      "C#",
+      "Kotlin",
+      "MFC",
+      "ML",
+      "Spring",
+      "Swift",
+      "Tizen",
+      "UWP",
+      "WPF",
+      "Windows",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1737949491,
+    "name":"ServicEngine Ltd.",
+    "website":"https:\/\/sebpo.com\/",
+    "job_url":null,
+    "host":"sebpo.com",
+    "tech":[
+      "SQL",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1753102138,
+    "name":"ShareTrip",
+    "website":"https:\/\/sharetrip.net\/",
+    "job_url":null,
+    "host":"sharetrip.net",
+    "tech":[
+      "AWS",
+      "Android",
+      "DevOps",
+      "Docker",
+      "NodeJS",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":987919529,
+    "name":"Sheba Technologies Ltd.",
+    "website":"https:\/\/www.shebatech.com.bd\/",
+    "job_url":"https:\/\/www.shebatech.com.bd\/career",
+    "host":"shebatech.com.bd",
+    "tech":[
+      "Android",
+      "C++",
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":313080101,
+    "name":"ShellBeeHaken",
+    "website":"https:\/\/shellbeehaken.com\/",
+    "job_url":null,
+    "host":"shellbeehaken.com",
+    "tech":[
+      "Elasticsearch",
+      "Electron",
+      "Lambda",
+      "MongoDB",
+      "MySQL",
+      "NextJS",
+      "ReactNative",
+      "Redis",
+      "SQS",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":912115453,
+    "name":"Shopup",
+    "website":"https:\/\/shopup.com.bd\/",
+    "job_url":"https:\/\/shopup.org\/career",
+    "host":"shopup.com.bd",
+    "tech":[
+      "AWS",
+      "Docker",
+      "Flutter",
+      "MongoDB",
+      "MySQL",
+      "NodeJS",
+      "React"
+    ],
+    "company_type":[
+      "E-commerce"
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1173170130,
+    "name":"Silicon Orchard Ltd.",
+    "website":"https:\/\/www.siliconorchard.com\/",
+    "job_url":"https:\/\/www.siliconorchard.com\/career",
+    "host":"siliconorchard.com",
+    "tech":[
+      "Android",
+      "Blockchain",
+      "NodeJS",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":502033169,
+    "name":"Singularity Ltd.",
+    "website":"https:\/\/singularitybd.com\/",
+    "job_url":"https:\/\/singularitybd.com\/career",
+    "host":"singularitybd.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1703544042,
+    "name":"SoftBD Ltd.",
+    "website":"https:\/\/softbdltd.com\/",
+    "job_url":null,
+    "host":"softbdltd.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1320332734,
+    "name":"Software Lighthouse",
+    "website":"https:\/\/softlh.com\/",
+    "job_url":null,
+    "host":"softlh.com",
+    "tech":[
+      "Android",
+      "Firebase",
+      "Flutter",
+      "Go",
+      "MySQL",
+      "NodeJS",
+      "Unity",
+      "WordPress",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":717270772,
+    "name":"Softzino Technologies",
+    "website":"https:\/\/softzino.com\/",
+    "job_url":null,
+    "host":"softzino.com",
+    "tech":[
+      "Android",
+      "Flutter",
+      "ReactNative",
+      "VueJS",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1245315635,
+    "name":"Sonali Polaris FT Ltd.",
+    "website":"http:\/\/www.spftl.com\/",
+    "job_url":null,
+    "host":"spftl.com",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1519462974,
+    "name":"SouthTech",
+    "website":"https:\/\/www.southtechgroup.com\/",
+    "job_url":"https:\/\/career.southtechgroup.com\/",
+    "host":"southtechgroup.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "AngularJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1888475997,
+    "name":"SovWare",
+    "website":"https:\/\/www.sovware.com\/",
+    "job_url":"https:\/\/www.sovware.com\/career",
+    "host":"sovware.com",
+    "tech":[
+      "Flutter",
+      "JavaScript",
+      "Laravel",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1539188880,
+    "name":"Spring Rain IT",
+    "website":"https:\/\/springrainit.com\/",
+    "job_url":"https:\/\/springrain.io\/careers\/#jobs",
+    "host":"springrainit.com",
+    "tech":[
+      "Android",
+      "NodeJS",
+      "ReactNative"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1467281039,
+    "name":"Square Health Ltd.",
+    "website":"https:\/\/career.squarehealth.com.bd\/",
+    "job_url":null,
+    "host":"career.squarehealth.com.bd",
+    "tech":[
+      "Android",
+      "Angular",
+      "Java",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2013818844,
+    "name":"Strativ BD Ltd.",
+    "website":"https:\/\/strativ.se\/en\/",
+    "job_url":null,
+    "host":"strativ.se",
+    "tech":[
+      "Android",
+      "Django",
+      "Magento",
+      "NodeJS",
+      "ReactNative",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":464393007,
+    "name":"Streams Tech Inc.",
+    "website":"https:\/\/streamstech.com.bd\/",
+    "job_url":null,
+    "host":"streamstech.com.bd",
+    "tech":[
+      ".NET",
+      "AngularJS",
+      "ArcGIS",
+      "MongoDB",
+      "SQL"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":501063748,
+    "name":"TAPPWARE Solutions Ltd.",
+    "website":"https:\/\/tappware.com\/",
+    "job_url":null,
+    "host":"tappware.com",
+    "tech":[
+      ".NET",
+      "Android",
+      "C#",
+      "CakePHP",
+      "Django",
+      "Flutter",
+      "Ionic",
+      "Laravel",
+      "Less",
+      "MongoDB",
+      "MySQL",
+      "PostgreSQL",
+      "RabbitMQ",
+      "SCSS",
+      "Spring",
+      "VueJS",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":401816901,
+    "name":"TechCare",
+    "website":"https:\/\/www.techcarebd.com\/",
+    "job_url":null,
+    "host":"techcarebd.com",
+    "tech":[
+      "Android",
+      "Java",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":371155103,
+    "name":"TechFlix",
+    "website":"https:\/\/www.techflixbd.com\/",
+    "job_url":null,
+    "host":"techflixbd.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1642366939,
+    "name":"Technext Ltd.",
+    "website":"https:\/\/technext.it\/",
+    "job_url":"https:\/\/technext.it\/careers",
+    "host":"technext.it",
+    "tech":[
+      "Bootstrap",
+      "NextJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":336961979,
+    "name":"TechnoNext",
+    "website":"https:\/\/www.digigate360.com\/",
+    "job_url":null,
+    "host":"digigate360.com",
+    "tech":[
+      "DevOps",
+      "Flutter",
+      "Go",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":955105540,
+    "name":"TechnoVista Ltd.",
+    "website":"https:\/\/technovista.com.bd\/",
+    "job_url":null,
+    "host":"technovista.com.bd",
+    "tech":[
+      ".NET",
+      "Android",
+      "C#",
+      "CodeIgniter",
+      "Ionic",
+      "Laravel",
+      "Less",
+      "MySQL",
+      "PostgreSQL",
+      "SCSS",
+      "Spring",
+      "VueJS",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":449877313,
+    "name":"Technohaven Company Ltd.",
+    "website":"https:\/\/technohaven.com\/",
+    "job_url":"https:\/\/technohaven.com\/career",
+    "host":"technohaven.com",
+    "tech":[
+      "Android",
+      "Angular",
+      "Blockchain",
+      "ML",
+      "NodeJS",
+      "React",
+      "Rust",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1920154168,
+    "name":"Tekarsh",
+    "website":"https:\/\/tekarsh.com\/",
+    "job_url":"https:\/\/tekarsh.com\/career",
+    "host":"tekarsh.com",
+    "tech":[
+      "JavaScript",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1925263509,
+    "name":"Telenor Health A\\S",
+    "website":"https:\/\/telenorhealth.com\/",
+    "job_url":null,
+    "host":"telenorhealth.com",
+    "tech":[
+      "Android",
+      "Drupal",
+      "NodeJS",
+      "Python",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":770217540,
+    "name":"ThemeXpert",
+    "website":"https:\/\/www.themexpert.com\/",
+    "job_url":null,
+    "host":"themexpert.com",
+    "tech":[
+      "Joomla",
+      "Laravel",
+      "React"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1469204551,
+    "name":"Themeperch Ltd.",
+    "website":"https:\/\/themeperch.net\/",
+    "job_url":null,
+    "host":"themeperch.net",
+    "tech":[
+      "Bootstrap",
+      "NextJS",
+      "TailwindCSS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2010421534,
+    "name":"Therap (BD) Ltd.",
+    "website":"https:\/\/therap.recruiterbox.com\/",
+    "job_url":"https:\/\/therap.hire.trakstar.com\/",
+    "host":"therap.recruiterbox.com",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":503342418,
+    "name":"TigerIT Bangladesh Ltd.",
+    "website":"http:\/\/www.tigerit.com\/",
+    "job_url":null,
+    "host":"tigerit.com",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":2047583813,
+    "name":"TimeTackle (US)",
+    "website":"https:\/\/www.timetackle.com\/",
+    "job_url":null,
+    "host":"timetackle.com",
+    "tech":[
+      "React",
+      "SpringBoot"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":667763901,
+    "name":"Triva It Ltd.",
+    "website":"https:\/\/www.trivaitltd.com\/",
+    "job_url":null,
+    "host":"trivaitltd.com",
+    "tech":[
+
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":947137918,
+    "name":"TruckLagbe",
+    "website":"https:\/\/trucklagbe.com\/",
+    "job_url":null,
+    "host":"trucklagbe.com",
+    "tech":[
+      "Angular",
+      "Flutter",
+      "NodeJS",
+      "PostgreSQL"
+    ],
+    "company_type":[
+      "E-logistics"
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":996449379,
+    "name":"UPAY (UCB Fintech)",
+    "website":"https:\/\/www.upaybd.com\/",
+    "job_url":null,
+    "host":"upaybd.com",
+    "tech":[
+      "Android",
+      "Blockchain",
+      "Django",
+      "Flask",
+      "NodeJS",
+      "React",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":702321914,
+    "name":"Vantage Labs (USA)",
+    "website":"https:\/\/www.vantage.com\/",
+    "job_url":null,
+    "host":"vantage.com",
+    "tech":[
+      "AngularJS",
+      "Java",
+      "PHP"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":820967224,
+    "name":"Vivasoft Ltd.",
+    "website":"https:\/\/www.vivasoftltd.com\/",
+    "job_url":"https:\/\/www.vivasoftltd.com\/career",
+    "host":"vivasoftltd.com",
+    "tech":[
+      "C#",
+      "Flutter",
+      "Go",
+      "Java",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1320473381,
+    "name":"WPCommerz",
+    "website":"https:\/\/wpcommerz.com\/",
+    "job_url":null,
+    "host":"pcommerz.com",
+    "tech":[
+      "Laravel",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1134840912,
+    "name":"WPDeveloper",
+    "website":"https:\/\/wpdeveloper.com\/",
+    "job_url":"https:\/\/wpcommerz.com\/career",
+    "host":"pdeveloper.com",
+    "tech":[
+      "Laravel",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1171750664,
+    "name":"Wafi Solutions.",
+    "website":"https:\/\/www.wafisolutions.com\/",
+    "job_url":"https:\/\/www.wafisolutions.com\/career",
+    "host":"afisolutions.com",
+    "tech":[
+      "Django"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":847110396,
+    "name":"Walton Hi-Tech Industries Ltd.",
+    "website":"https:\/\/waltonbd.com\/",
+    "job_url":null,
+    "host":"altonbd.com",
+    "tech":[
+      "PHP",
+      "Spring",
+      "VueJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1106766675,
+    "name":"Welldev (Switzerland)",
+    "website":"https:\/\/www.welldev.io\/",
+    "job_url":null,
+    "host":"elldev.io",
+    "tech":[
+      "Android",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1131353668,
+    "name":"Widespace (Sweden)",
+    "website":"https:\/\/www.widespace.com\/",
+    "job_url":null,
+    "host":"idespace.com",
+    "tech":[
+      "Java"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":614135211,
+    "name":"Workspace InfoTech Ltd.",
+    "website":"https:\/\/www.workspaceit.com\/",
+    "job_url":"https:\/\/www.workspaceit.com\/career\/",
+    "host":"orkspaceit.com",
+    "tech":[
+      "Angular",
+      "Django",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1582571536,
+    "name":"Xpeed Studio",
+    "website":"https:\/\/xpeedstudio.com\/",
+    "job_url":null,
+    "host":"xpeedstudio.com",
+    "tech":[
+      "Drupal",
+      "JavaScript",
+      "Joomla",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":831697942,
+    "name":"XpeedLab",
+    "website":"https:\/\/xpeedlab.tech\/",
+    "job_url":null,
+    "host":"xpeedlab.tech",
+    "tech":[
+      "Angular",
+      "Flutter",
+      "Java",
+      "MongoDB",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1073124111,
+    "name":"YOTECH Ltd.",
+    "website":"https:\/\/www.yotech.ltd\/",
+    "job_url":"https:\/\/www.yotech.ltd\/careers",
+    "host":"yotech.ltd",
+    "tech":[
+      "Android",
+      "Angular",
+      "Flutter",
+      "MongoDB",
+      "NodeJS",
+      "React",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":906812505,
+    "name":"Zaynax Ltd.",
+    "website":"http:\/\/www.zaynax.com\/",
+    "job_url":null,
+    "host":"zaynax.com",
+    "tech":[
+      "Android",
+      "MongoDB",
+      "NodeJS",
+      "React",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1645636956,
+    "name":"authLab",
+    "website":"https:\/\/authlab.io\/",
+    "job_url":"https:\/\/authlab.io\/jobs\/",
+    "host":"authlab.io",
+    "tech":[
+      "AWS",
+      "Laravel",
+      "React",
+      "VueJS",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":2140489917,
+    "name":"belivIT",
+    "website":"https:\/\/www.belivit.com\/",
+    "job_url":"https:\/\/www.belivit.com\/vacancies",
+    "host":"belivit.com",
+    "tech":[
+      "Android",
+      "PHP",
+      "iOS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1495704929,
+    "name":"bkash",
+    "website":"https:\/\/www.bkash.com\/",
+    "job_url":null,
+    "host":"bkash.com",
+    "tech":[
+      "AWS",
+      "Android",
+      "JSP",
+      "JavaScript",
+      "Servlet",
+      "Spring"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1304809295,
+    "name":"hSenid Mobile Solutions Ltd.",
+    "website":"https:\/\/www.hsenidmobile.com\/",
+    "job_url":null,
+    "host":"hsenidmobile.com",
+    "tech":[
+      "AWS",
+      "JUnit",
+      "Jenkins",
+      "Kotlin",
+      "MySQL",
+      "NodeJS"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":false
+  },
+  {
+    "company_id":1213156443,
+    "name":"iPay",
+    "website":"https:\/\/www.ipay.com.bd\/",
+    "job_url":"https:\/\/www.ipay.com.bd\/career",
+    "host":"ipay.com.bd",
+    "tech":[
+      "Android",
+      "Java",
+      "MongoDB",
+      "PostgreSQL",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":146410088,
+    "name":"mPower Social Enterprises Ltd.",
+    "website":"https:\/\/www.mpower-social.com\/",
+    "job_url":"https:\/\/www.mpower-social.com\/career",
+    "host":"mpower-social.com",
+    "tech":[
+      "Android",
+      "Java",
+      "Python"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  },
+  {
+    "company_id":1926698199,
+    "name":"weDevs Ltd.",
+    "website":"https:\/\/wedevs.com\/",
+    "job_url":"https:\/\/wedevs.com\/career\/",
+    "host":"edevs.com",
+    "tech":[
+      "Flutter",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_type":[
+
+    ],
+    "has_job_page":true
+  }
+]

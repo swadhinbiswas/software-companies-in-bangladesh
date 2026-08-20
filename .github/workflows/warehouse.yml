@@ -1,0 +1,134 @@
+name: Warehouse + Dashboard (Weekly Full Scrape)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 0" # weekly Sunday 02:00 UTC — full 231-company scrape with AI enhancement → HF
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "warehouse/**"
+      - "tools/**"
+      - "dashboard/**"
+      - ".github/workflows/warehouse.yml"
+
+# Prevent duplicate runs — weekly job deduped, no same stuff twice
+concurrency:
+  group: warehouse-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  crawl-and-warehouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: tools -> tools/target
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: warehouse/requirements.txt
+      - name: Install Python deps
+        run: pip install -r warehouse/requirements.txt
+      - name: Crawl (weekly FULL — 231 sites, AI-enhanced, deduped)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINIAPIKEY: ${{ secrets.GEMINIAPIKEY }}
+          ZEN_API_KEY: ${{ secrets.ZEN_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Accept both GEMINI_API_KEY and GEMINIAPIKEY (user may set either in GitHub Secrets)
+          export GEMINI_API_KEY="${GEMINI_API_KEY:-$GEMINIAPIKEY}"
+          echo "Weekly full scrape: all 231 companies → hf://buckets/swadhinbiswas/bangladeshi-jobs (public)"
+          if [ -n "$GEMINI_API_KEY" ] || [ -n "$ZEN_API_KEY" ]; then
+            echo "GEMINI_API_KEY present: $([ -n \"$GEMINI_API_KEY\" ] && echo yes || echo no), ZEN_API_KEY: $([ -n \"$ZEN_API_KEY\" ] && echo yes || echo no)"
+            # Full crawl uses 24h cache but weekly >24h so cache stale → real full fetch; enhancer dedups
+            cargo run --manifest-path tools/Cargo.toml -- .. index --concurrent 8 || true
+            echo "Crawl done — $(jq 'to_entries|map(.value.jobs|length) | add' data/job-posts.json) jobs before dedup"
+          else
+            echo "No LLM key (set GEMINI_API_KEY or GEMINIAPIKEY in GitHub Secrets) — skipping crawl, using cached job-posts.json + enhancer re-run"
+          fi
+      - name: Build DuckDB warehouse (idempotent, no duplicates)
+        env:
+          HF_DATASET: swadhinbiswas/bangladeshi-jobs
+        run: |
+          echo "Building warehouse with dedup checks..."
+          python warehouse/build.py
+          echo "Checking for duplicates (job_id PK)..."
+          python -c "import duckdb; c=duckdb.connect('data/warehouse.duckdb'); print('fact_job', c.execute('SELECT COUNT(*), COUNT(DISTINCT job_id) FROM fact_job').fetchall()); print('bridge', c.execute('SELECT COUNT(*), COUNT(DISTINCT job_id||tag) FROM bridge_job_tag').fetchall()); c.close()"
+          echo "Gold built — site will read from hf://buckets/swadhinbiswas/bangladeshi-jobs (public)"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: warehouse
+          path: |
+            data/warehouse.duckdb
+            data/parquet/*.parquet
+            data/gold/*.json
+            data/gold/*.parquet
+          retention-days: 14
+      - name: Push to Hugging Face bucket (public, site reads directly)
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET: swadhinbiswas/bangladeshi-jobs
+          HF_BUCKET: hf://buckets/swadhinbiswas/bangladeshi-jobs
+        run: |
+          echo "Pushing to $HF_BUCKET ($HF_DATASET) — public bucket"
+          python warehouse/hf_push.py
+          echo "Verify: https://huggingface.co/datasets/$HF_DATASET/resolve/main/gold/stats.json"
+
+  dashboard:
+    needs: crawl-and-warehouse
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download warehouse gold
+        uses: actions/download-artifact@v4
+        with:
+          name: warehouse
+          path: data
+        continue-on-error: true
+      - name: Prepare public/gold for deploy
+        run: |
+          mkdir -p dashboard/public/gold
+          cp -r data/gold/* dashboard/public/gold/ 2>/dev/null || cp -r data/gold dashboard/public/ 2>/dev/null || echo "no gold yet"
+          ls -lh dashboard/public/gold | head
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: dashboard/yarn.lock
+      - name: Build dashboard
+        working-directory: dashboard
+        env:
+          NEXT_PUBLIC_HF_DATASET: swadhinbiswas/bangladeshi-jobs
+          NEXT_PUBLIC_HF_BUCKET: hf://buckets/swadhinbiswas/bangladeshi-jobs
+        run: |
+          yarn install --immutable || yarn install
+          yarn build
+          echo "Dashboard will fetch from https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs/resolve/main/gold/stats.json (public bucket)"
+      - name: Deploy to Vercel (optional)
+        if: env.VERCEL_TOKEN != ''
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm i -g vercel
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN || true
+          vercel build --prod --token=$VERCEL_TOKEN || true
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN || echo "Vercel deploy skipped"
+      - name: Deploy to Cloudflare Pages (optional)
+        if: env.CF_API_TOKEN != ''
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          cd dashboard
+          npx --yes wrangler pages deploy .vercel/output/static --project-name=bd-jobs-dashboard || npx wrangler pages deploy .next --project-name=bd-jobs-dashboard || echo "CF deploy skipped — run: npx @cloudflare/next-on-pages && wrangler pages deploy"

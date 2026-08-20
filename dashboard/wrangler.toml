@@ -1,0 +1,14 @@
+name = "bd-jobs-dashboard"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Pages via next-on-pages
+# Build: npx @cloudflare/next-on-pages
+# Preview: wrangler pages dev .vercel/output/static
+# Deploy: wrangler pages deploy .vercel/output/static
+
+[vars]
+# Public bucket used directly by site (no auth for reads) — worker syncs here
+NEXT_PUBLIC_HF_DATASET = "swadhinbiswas/bangladeshi-jobs"
+NEXT_PUBLIC_HF_BUCKET = "hf://buckets/swadhinbiswas/bangladeshi-jobs"
+HF_DATASET = "swadhinbiswas/bangladeshi-jobs"

@@ -46,7 +46,16 @@ pub struct Llm {
     api_key: String,
     model: String,
     semaphore: Arc<Semaphore>,
+    /// Last LLM call start time; enforces a minimum interval between calls
+    /// so bursts don't blow the provider's per-minute rate limit.
+    pace: std::sync::Mutex<Instant>,
+    min_interval: Duration,
 }
+
+/// Minimum spacing between LLM request starts. With the free tier at
+/// ~10 requests/minute, 7s keeps us safely under the limit while finishing
+/// ~10 batched calls per minute (all sites in well under 5 minutes).
+const LLM_INTERVAL: Duration = Duration::from_secs(7);
 
 #[derive(serde::Deserialize)]
 struct GeminiResponse {
@@ -102,6 +111,8 @@ impl Llm {
             api_key,
             model: model.to_string(),
             semaphore: Arc::new(Semaphore::new(LLM_CONCURRENCY)),
+            pace: std::sync::Mutex::new(Instant::now()),
+            min_interval: LLM_INTERVAL,
         })
     }
 
@@ -191,21 +202,33 @@ impl Llm {
         Ok(value)
     }
 
-    /// POST with retries, bounded concurrency, generous timeout and
-    /// exponential backoff (429s need real cooldown).
+    /// POST with retries, bounded concurrency, generous timeout, pacing and
+    /// exponential backoff (429s need real cooldown, ideally the server's
+    /// `Retry-After` / `retryDelay`).
     async fn send_with_retry(
         &self,
         url: &str,
         body: &json::Value,
         retryable_status: impl Fn(reqwest::StatusCode) -> bool,
     ) -> Result<reqwest::Response> {
-        const MAX_ATTEMPTS: u32 = 5;
-        const BACKOFF_SECS: u64 = 2;
+        const MAX_ATTEMPTS: u32 = 6;
+        const BACKOFF_SECS: u64 = 5;
 
         let _permit = self.semaphore.acquire().await?;
 
         let mut attempt = 0u32;
         loop {
+            // Pace: no request starts sooner than `min_interval` after the
+            // previous one, so bursts never trip the per-minute rate limit.
+            {
+                let mut last = self.pace.lock().unwrap();
+                let since = last.elapsed();
+                if since < self.min_interval {
+                    tokio::time::sleep(self.min_interval - since).await;
+                }
+                *last = Instant::now();
+            }
+
             // Gemini authenticates via `?key=` query parameter, Zen via Bearer header.
             let auth_url = match self.provider {
                 Provider::Gemini => {
@@ -227,31 +250,108 @@ impl Llm {
                 request = request.bearer_auth(&self.api_key);
             }
 
-            match request.send().await {
+            let backoff = match request.send().await {
                 Ok(response) => {
                     let status = response.status();
-                    if retryable_status(status) {
-                        if attempt + 1 < MAX_ATTEMPTS {
-                            warn!("[LLM-RETRY {attempt}] {status}");
-                            drop(response);
-                        } else {
-                            return response.error_for_status().map_err(Into::into);
-                        }
-                    } else {
+                    if !retryable_status(status) {
                         return Ok(response);
                     }
+
+                    let header_delay = response
+                        .headers()
+                        .get(reqwest::header::RETRY_AFTER)
+                        .and_then(|v| v.to_str().ok())
+                        .and_then(|v| v.parse::<u64>().ok())
+                        .unwrap_or(0);
+                    let text = response.text().await.unwrap_or_default();
+                    let (body_delay, daily_quota) = gemini_error_info(&text);
+
+                    // Daily free-tier quota is exhausted; retrying is futile.
+                    if status == reqwest::StatusCode::TOO_MANY_REQUESTS && daily_quota {
+                        return Err(format!(
+                            "gemini daily quota exhausted: {}",
+                            truncate(&text, 300)
+                        )
+                        .into());
+                    }
+
+                    if attempt + 1 < MAX_ATTEMPTS {
+                        warn!(
+                            "[LLM-RETRY {attempt}] {status} (retry-after: {}s)",
+                            header_delay.max(body_delay)
+                        );
+                    } else {
+                        return Err(format!(
+                            "LLM error {status}: {}",
+                            truncate(&text, 300)
+                        )
+                        .into());
+                    }
+
+                    Duration::from_secs(header_delay.max(body_delay).max(1))
                 }
                 Err(err) if attempt + 1 < MAX_ATTEMPTS => {
                     warn!("[LLM-RETRY {attempt}] {err}");
+                    Duration::from_secs(BACKOFF_SECS << attempt)
                 }
                 Err(err) => return Err(err.into()),
-            }
+            };
 
             attempt += 1;
-            let backoff = Duration::from_secs(BACKOFF_SECS << (attempt - 1));
             tokio::time::sleep(backoff).await;
         }
     }
+}
+
+/// Parse Gemini's structured error body for retry guidance.
+/// Returns `(retry_delay_secs, is_daily_quota_exhaustion)`.
+fn gemini_error_info(body: &str) -> (u64, bool) {
+    let Ok(value) = json::from_str::<json::Value>(body) else {
+        return (0, false);
+    };
+    let Some(error) = value.get("error") else {
+        return (0, false);
+    };
+
+    let mut delay = 0u64;
+    let mut daily = false;
+
+    if let Some(details) = error.get("details").and_then(json::Value::as_array) {
+        for detail in details {
+            if let Some(retry_delay) = detail
+                .get("retryInfo")
+                .and_then(|r| r.get("retryDelay"))
+                .and_then(json::Value::as_str)
+                .and_then(parse_delay)
+            {
+                delay = delay.max(retry_delay);
+            }
+            if let Some(violations) = detail
+                .get("quotaFailure")
+                .and_then(|q| q.get("violations"))
+                .and_then(json::Value::as_array)
+            {
+                for violation in violations {
+                    if violation
+                        .get("quotaId")
+                        .and_then(json::Value::as_str)
+                        .is_some_and(|id| id.contains("PerDay"))
+                    {
+                        daily = true;
+                    }
+                }
+            }
+        }
+    }
+
+    (delay, daily)
+}
+
+/// Parse a duration string like `"54s"` or `"1.5s"` into whole seconds.
+fn parse_delay(s: &str) -> Option<u64> {
+    let s = s.trim().trim_end_matches('s');
+    let secs: f64 = s.parse().ok()?;
+    Some(secs.ceil() as u64)
 }
 
 fn strip_code_fence(content: &str) -> String {
@@ -272,11 +372,13 @@ fn truncate(text: &str, max: usize) -> String {
     }
 }
 
-/// Resolve the Gemini API key: `GEMINI_API_KEY` env first, then the `google`
+/// Resolve the Gemini API key: `GEMINI_API_KEY` (also `GEMINIAPIKEY` alias) env first, then the `google`
 /// service in the opencode auth store.
 fn gemini_api_key() -> Result<String> {
-    if let Some(key) = env_key("GEMINI_API_KEY") {
-        return Ok(key);
+    for env in ["GEMINI_API_KEY", "GEMINIAPIKEY", "GOOGLE_API_KEY", "GOOGLE_GENAI_API_KEY"] {
+        if let Some(key) = env_key(env) {
+            return Ok(key);
+        }
     }
     auth_service_key("google")
 }

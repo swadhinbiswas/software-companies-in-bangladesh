@@ -14,6 +14,7 @@
 //! with previous runs, so a re-run only fills the gaps (24h disk cache).
 mod input_normalizer;
 pub mod ats;
+pub mod enhancer;
 pub mod llm;
 pub mod schema;
 
@@ -41,28 +42,38 @@ use serde::{Deserialize, Serialize};
 use serde_json as json;
 use url::Url;
 
-const LLM_INPUT: &str = r#"You are an information extraction engine.
-The input Markdown contains ONE OR MORE career sites. Each site is wrapped in markers:
+const LLM_INPUT: &str = r###"You are a production information extraction engine for a Bangladeshi job board.
+Input is Markdown for ONE OR MORE career sites. Each site is wrapped:
 <!-- SITE: <company name> -->
-...site markdown...
+...clean markdown (may contain <!-- PAGE: url --> markers, ignore them)...
 <!-- END SITE -->
 
-Rules:
-- Output a JSON object of the form {"sites": [ {"name": "<company name from the SITE marker>", "jobs": [ ... ]}, ... ]} matching the provided JSON schema. Never wrap in extra keys.
-- Extract job postings from EACH site under its own marker. If a site has no job postings, return {"name": ..., "jobs": []}.
-- Set `needsFetch` to true ONLY if the listing lacks full details (description, deadline, apply link) and the job's `source` URL must be fetched to complete it.
-- Never guess. Use schema defaults when required.
-- Keep `title` unchanged.
-- Exclude on-site or location-specific jobs confirmed to be outside Bangladesh.
-- Remote jobs may be included even outside Bangladesh.
-- Format `description` as Markdown. Reorganize if needed, but do not add or remove information.
-- Extract relevant `tags` from the `description` when possible; do not invent or duplicate tags.
-- Preserve `source` exactly as provided; never resolve, normalize, or modify it.
-- Never guess salary information. Only extract salary explicitly present in the source.
-- Include a confidence score (0.0–1.0) for each extracted job.
-- Do not include job postings with confidence below 0.5.
-- You may see `<!-- PAGE: url -->` markers inside a site; ignore them.
-"#;
+GOAL: Return perfect JSON matching the provided schema. Production quality — no hallucination.
+
+Output: {"sites": [{"name": "<exact company name from SITE marker>", "jobs": [ ...JobPost ]}, ...]}
+- One entry per SITE marker, in same order. If a site has no jobs, return {"name": ..., "jobs": []}. Never omit a SITE.
+- Never wrap in extra keys, never output code fences.
+
+Extraction rules (strict):
+- Title: keep exactly as on page (trim only). Don't normalize or translate.
+- Description: clean Markdown, keep all facts, remove repeated nav/footer boilerplate, fix headings/lists, don't add inventions. Keep as full as possible (up to ~5000 chars).
+- needsFetch: true ONLY if listing is summary (missing description, deadline, or apply link) and you saw a `source` URL that must be fetched for details. Otherwise false.
+- Never guess: if a field not present, use null/empty per schema. Don't infer salary, deadline, postedAt.
+- Bangladesh filter: exclude on-site/Hybrid jobs proven outside Bangladesh (contains city/country outside BD). Remote is always allowed (even US/EU).
+- Salary: extract only explicit numbers. If text says "30k-50k BDT" then min 30000 max 50000 currency BDT. If "Negotiable" then null. Never invent. Ensure min <= max. Currency ISO if present else BDT for BD jobs.
+- Tags: 3-12 real tech/skills that actually appear in description. Dedup case-insensitive. No junk: "hiring", "job", "career" forbidden. Prefer canonical (React not React.js, NodeJS not Node.js) but keep as seen if unsure. Never invent.
+- source/apply: preserve exactly as in markdown (may be relative "/careers/123" or absolute). Never resolve to absolute, never modify. `source` is the job detail URL; `apply` Website is apply link.
+- EmploymentType: map literally (Full-time -> FullTime, Internship -> Internship, etc). Don't guess.
+- Location: exact city/area string or Remote. Keep "Hybrid (Dhaka)" style if hybrid.
+- Confidence 0.5-1.0: high if title+description+location+apply present, low if sparse. Below 0.5 must be omitted (do not output).
+- Be deterministic: temperature 0.0, same input -> same JSON.
+
+Examples:
+- Good: {"title":"Sr. Backend Engineer","description":"Responsibilities: Build APIs...","employmentType":"FullTime","location":{"OnSite":"Dhaka"},"tags":["Go","PostgreSQL","Docker"],"confidence":0.92}
+- Bad (don't do): inventing salary when not present, adding tags not in description, translating title.
+
+Ignore <!-- PAGE: ... --> markers inside markdown; they are pagination hints, not content.
+"###;
 
 const CACHE_PATH: &str = "job-postings-cache";
 const CACHE_TTL: Duration = Duration::from_secs(24 * 60 * 60);
@@ -124,7 +135,11 @@ pub async fn run(
     while let Some((name, result)) = stream.next().await {
         match result {
             Some((url, Ok(SitePrepare::Exact(jobs)))) if !jobs.is_empty() => {
-                output.insert(name, Entry { source: url, jobs });
+                // Production: normalize ATS jobs too (salary caps, tag hygiene, dedup)
+                let jobs = enhancer::enhance_batch(jobs, None);
+                if !jobs.is_empty() {
+                    output.insert(name, Entry { source: url, jobs });
+                }
             }
             Some((_, Ok(SitePrepare::Exact(_)))) => {}
             Some((url, Ok(SitePrepare::Markdown(md)))) => {
@@ -160,11 +175,16 @@ pub async fn run(
                 for (name, jobs) in assignments {
                     matched.insert(name.clone());
                     if let Some((_, url, _)) = pending.iter().find(|(n, _, _)| *n == name) {
+                        // Production enhancer: clean tags, markdown, confidence recalibration, dedup
+                        let jobs = enhancer::enhance_batch(jobs, None);
                         for job in jobs {
                             if job.needs_fetch {
                                 detail_queue.push((name.clone(), url.clone(), job));
                             } else if let Some(entry) = output.get_mut(&name) {
                                 entry.jobs.push(job);
+                            } else {
+                                // Company not yet in output (first time) — create entry
+                                output.insert(name.clone(), Entry { source: url.clone(), jobs: vec![job] });
                             }
                         }
                     }
@@ -181,6 +201,10 @@ pub async fn run(
             }
             Err(err) => {
                 error!("[BATCH-ERROR] {err}");
+                if err.to_string().contains("quota exhausted") {
+                    error!("LLM daily quota exhausted; skipping remaining LLM extraction");
+                    break;
+                }
                 retry_batches.push(
                     chunk
                         .iter()
@@ -204,17 +228,27 @@ pub async fn run(
             Ok(assignments) => {
                 for (name, jobs) in assignments {
                     if let Some((_, url, _)) = pending.iter().find(|(n, _, _)| *n == name) {
+                        let jobs = enhancer::enhance_batch(jobs, None);
                         for job in jobs {
                             if job.needs_fetch {
                                 detail_queue.push((name.clone(), url.clone(), job));
                             } else if let Some(entry) = output.get_mut(&name) {
                                 entry.jobs.push(job);
+                            } else {
+                                output.insert(name.clone(), Entry { source: url.clone(), jobs: vec![job] });
                             }
                         }
                     }
                 }
             }
-            Err(err) => error!("[SWEEP-ERROR] {err}"),
+            Err(err) => {
+                error!("[SWEEP-ERROR] {err}");
+                if err.to_string().contains("quota exhausted") {
+                    error!("LLM daily quota exhausted; skipping detail extraction");
+                    detail_queue.clear();
+                    break;
+                }
+            }
         }
     }
 
@@ -254,7 +288,12 @@ pub async fn run(
                                 post.source = Some(url.to_string());
                                 post.apply = vec![ApplicationMethod::Website(url.to_string())];
                             }
-                            *job = post;
+                            // Production AI hygiene for detail page extraction
+                            if let Some(e) = enhancer::enhance_job_deterministic(post, None) {
+                                *job = e;
+                            } else {
+                                job.title = String::new(); // mark for drop
+                            }
                         }
                     }
                 }
@@ -263,19 +302,32 @@ pub async fn run(
             i += BATCH_DETAILS;
         }
 
-        // Assign resolved posts back into the output.
+        // Assign resolved posts back into the output (with final validation).
         for (name, _, job, _) in fetched {
-            if let Some(entry) = output.get_mut(&name)
-                && (!job.source.is_none() || !job.apply.is_empty()) {
+            if job.title.is_empty() || job.confidence < 0.5 { continue; }
+            if let Some(entry) = output.get_mut(&name) {
+                if job.source.is_some() || !job.apply.is_empty() {
                     entry.jobs.push(job);
                 }
+            } else if job.source.is_some() || !job.apply.is_empty() {
+                let src = job.source.clone().and_then(|s| Url::parse(&s).ok()).unwrap_or_else(|| Url::parse("https://example.com").unwrap());
+                output.insert(name.clone(), Entry { source: src, jobs: vec![job] });
+            }
         }
     }
+
+    // Production dedup per company (same title+location → best confidence) — always, not just detail queue
+    for entry in output.values_mut() {
+        let jobs = std::mem::take(&mut entry.jobs);
+        entry.jobs = enhancer::dedup_jobs(jobs);
+    }
+    // Final sanity: drop companies with zero open jobs after enhancer filtering
+    output.retain(|_, e| !e.jobs.is_empty());
 
     save(&output_file, &output)?;
 
     info!(
-        "From {} companies; Found {} Jobs in {:.1}s",
+        "From {} companies; Found {} Jobs in {:.1}s (production AI-enhanced)",
         output.len(),
         output.values().map(|f| f.jobs.len()).sum::<usize>(),
         started.elapsed().as_secs_f64()

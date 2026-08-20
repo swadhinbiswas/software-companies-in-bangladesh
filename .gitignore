@@ -1,5 +1,57 @@
-.vscode
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
 
+# Rust
+tools/target/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Next.js / Dashboard (generated)
+dashboard/.next/
+dashboard/out/
+dashboard/dist/
+dashboard/.vercel/
+dashboard/node_modules/
+dashboard/public/gold/
+
+# Yarn - ignore everything inside .yarn (best way, per user)
+.yarn/*
+**/.yarn/*
+dashboard/.yarn/*
+!dashboard/yarn.lock
+!.yarnrc.yml
+
+# Data pipeline artifacts → HF bucket hf://buckets/swadhinbiswas/bangladeshi-jobs (public CDN)
+data/warehouse.duckdb
+data/parquet/
+data/gold/*.parquet
+# Keep data/gold/*.json for local fallback (small, 137B-499K). Uncomment to ignore all gold and use pure HF:
+# data/gold/
+
+# Crawl cache & logs
 job-postings.pages.md
-backup
-tmp
+backup/
+tmp/
+*.log
+.cache/
+
+# Env (HF_TOKEN, GEMINI_API_KEY/GEMINIAPIKEY via GitHub Secrets, never committed)
+.env
+.env.local
+.env.*.local
+dashboard/.env
+dashboard/.env.local
+
+# OS
+.DS_Store
+Thumbs.db

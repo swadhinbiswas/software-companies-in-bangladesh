@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_HF_DATASET": "swadhinbiswas/bangladeshi-jobs",
+    "NEXT_PUBLIC_HF_BUCKET": "hf://buckets/swadhinbiswas/bangladeshi-jobs"
+  }
+}
