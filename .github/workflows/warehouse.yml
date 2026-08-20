@@ -47,8 +47,8 @@ jobs:
           echo "Weekly full scrape: all 231 companies → hf://buckets/swadhinbiswas/bangladeshi-jobs (public)"
           if [ -n "$GEMINI_API_KEY" ] || [ -n "$ZEN_API_KEY" ]; then
             echo "GEMINI_API_KEY present: $([ -n \"$GEMINI_API_KEY\" ] && echo yes || echo no), ZEN_API_KEY: $([ -n \"$ZEN_API_KEY\" ] && echo yes || echo no)"
-            # Full crawl uses 24h cache but weekly >24h so cache stale → real full fetch; enhancer dedups
-            cargo run --manifest-path tools/Cargo.toml -- .. index --concurrent 8 || true
+            # Full crawl: dir=. (repo root), 24h cache but weekly >24h so stale → real full fetch; enhancer dedups
+            cargo run --manifest-path tools/Cargo.toml -- . index --concurrent 8 || true
             echo "Crawl done — $(jq 'to_entries|map(.value.jobs|length) | add' data/job-posts.json) jobs before dedup"
           else
             echo "No LLM key (set GEMINI_API_KEY or GEMINIAPIKEY in GitHub Secrets) — skipping crawl, using cached job-posts.json + enhancer re-run"

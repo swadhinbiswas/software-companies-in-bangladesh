@@ -244,6 +244,7 @@ pub fn enhance_batch(jobs: Vec<JobPost>, schema: Option<&Schema>) -> Vec<JobPost
 }
 
 /// Production prompt for optional LLM refinement (second pass, only for incomplete jobs)
+#[allow(dead_code)]
 pub const ENHANCER_PROMPT: &str = r#"You are a senior job-post QA. Given a job JSON, clean it to production quality:
 
 - Keep `title` exactly (fix only whitespace/casing if clearly wrong).
