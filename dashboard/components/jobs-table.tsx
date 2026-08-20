@@ -27,7 +27,6 @@ type Job = {
   experience?: string | null
 }
 
-// Fallback: if gold/recent_jobs doesn't have description, we fetch raw fact_job details via HF or keep as is
 export default function JobsTable({ jobs }: { jobs: Job[] }) {
   const [q, setQ] = useState("")
   const [company, setCompany] = useState<string>("all")

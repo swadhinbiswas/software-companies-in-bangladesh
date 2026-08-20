@@ -34,8 +34,8 @@ export default async function Page() {
           <div className="grid lg:grid-cols-3 gap-4">
             <Card className="lg:col-span-2">
               <CardHeader>
-                <CardTitle>🔥 Tech demand — top tags</CardTitle>
-                <CardDescription>From <code>bridge_job_tag</code> · {tech.length} distinct tags</CardDescription>
+                <CardTitle>Tech demand — top tags</CardTitle>
+                <CardDescription>{tech.length} distinct skills extracted from job descriptions</CardDescription>
               </CardHeader>
               <CardContent><TechBar data={tech.slice(0, 18)} /></CardContent>
             </Card>
@@ -81,8 +81,8 @@ export default async function Page() {
 
           <Card>
             <CardHeader>
-              <CardTitle>🏢 Hiring leaders — full table</CardTitle>
-              <CardDescription>Tech stacks from <code>dim_company.tech</code> (schema.toml taxonomy, implies pruned)</CardDescription>
+              <CardTitle>Hiring leaders</CardTitle>
+              <CardDescription>Companies with active job openings</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-auto">
@@ -111,12 +111,11 @@ export default async function Page() {
 
         <TabsContent value="jobs" className="mt-4">
           <JobsTable jobs={jobs} />
-          <p className="text-xs text-muted-foreground mt-2">Data: <code>gold/recent_jobs.json</code> (pre-aggregated, CDN) + <code>fact_job.description_md</code> on click. Source stays on HF parquet for full text.</p>
         </TabsContent>
 
         <TabsContent value="companies" className="mt-4">
           <Card>
-            <CardHeader><CardTitle>All companies — 231</CardTitle><CardDescription>From <code>dim_company</code> · filter by tech or name in Jobs tab</CardDescription></CardHeader>
+            <CardHeader><CardTitle>All companies — {perCompany.length}</CardTitle><CardDescription>Browse by tech stack or search in the Jobs tab</CardDescription></CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[560px] overflow-auto pr-1">
                 {perCompany.map((c: any) => (
@@ -134,22 +133,6 @@ export default async function Page() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      <Card className="bg-zinc-950 text-zinc-50 border-zinc-800">
-        <CardHeader><CardTitle className="text-zinc-50">⚡ Superfast architecture</CardTitle><CardDescription className="text-zinc-400">Vercel or Cloudflare Workers · Hugging Face as lakehouse</CardDescription></CardHeader>
-        <CardContent>
-          <pre className="text-[11px] leading-5 overflow-auto font-mono whitespace-pre-wrap">
-{`crawl.sh / cargo run -- index  (Rust: ATS API → JSON-LD → HTML+LLM batch, 24h zstd cache, 8 concur, 270s soft-deadline)
-  → data/job-posts.json (316 jobs × 70 companies)
-  → python warehouse/build.py → DuckDB warehouse.duckdb + data/parquet/*.parquet (zstd) + data/gold/*.json
-  → HF push (huggingface_hub) → datasets/<HF_DATASET>/{parquet,gold,warehouse.duckdb}  — CDN + Parquet viewer
-  → Dashboard (Next.js 14, shadcn/ui, ISR 60s) — Vercel edge or Cloudflare Workers via @cloudflare/next-on-pages
-       fetch gold/*.json via https://huggingface.co/datasets/.../resolve/main/gold/*.json  (<50ms, CDN)
-       optional DuckDB-WASM range-queries on parquet for ad-hoc SQL in browser (no server) — superfast after first chunk
-  → Crons: GitHub Actions daily crawl → HF → Vercel deploy hook → Cloudflare Pages — no DB server needed`}
-          </pre>
-        </CardContent>
-      </Card>
     </div>
   )
 }

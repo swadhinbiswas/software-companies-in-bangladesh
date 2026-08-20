@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge"
 
 export default function TechBar({ data }: { data: { tag: string; jobs: number; companies: number }[] }) {
-  if (!data.length) return <div className="text-sm text-muted-foreground">No tag data yet — run <code>python warehouse/build.py</code></div>
+  if (!data.length) return <div className="text-sm text-muted-foreground">No job data available yet.</div>
   const max = Math.max(...data.map(d => d.jobs))
   return (
     <div className="space-y-2">
