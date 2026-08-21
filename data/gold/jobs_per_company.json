@@ -10,8 +10,8 @@
       "TypeScript"
     ],
     "company_id":748234074,
-    "open_jobs":34,
-    "open_current":34
+    "open_jobs":43,
+    "open_current":43
   },
   {
     "name":"RiseUp Labs",
@@ -28,8 +28,53 @@
       "TypeScript"
     ],
     "company_id":552230250,
-    "open_jobs":16,
-    "open_current":16
+    "open_jobs":33,
+    "open_current":33
+  },
+  {
+    "name":"ShellBeeHaken",
+    "host":"shellbeehaken.com",
+    "tech":[
+      "Elasticsearch",
+      "Electron",
+      "Lambda",
+      "MongoDB",
+      "MySQL",
+      "NextJS",
+      "ReactNative",
+      "Redis",
+      "SQS",
+      "SpringBoot"
+    ],
+    "company_id":313080101,
+    "open_jobs":23,
+    "open_current":23
+  },
+  {
+    "name":"Ollyo",
+    "host":"ollyo.com",
+    "tech":[
+      "JoomShaper",
+      "Themeum"
+    ],
+    "company_id":772997501,
+    "open_jobs":21,
+    "open_current":21
+  },
+  {
+    "name":"SJ Innovation",
+    "host":"sjinnovation.com",
+    "tech":[
+      "Blockchain",
+      "Flutter",
+      "Java",
+      "Kotlin",
+      "React",
+      "Swift"
+    ],
+    "company_id":1063831328,
+    "open_jobs":21,
+    "open_current":21
   },
   {
     "name":"Appyfilab",
@@ -41,8 +86,92 @@
       "Nuxt"
     ],
     "company_id":1671660490,
+    "open_jobs":19,
+    "open_current":19
+  },
+  {
+    "name":"Pridesys IT Ltd.",
+    "host":"pridesys.com",
+    "tech":[
+      "MySQL",
+      "WordPress",
+      "jQuery"
+    ],
+    "company_id":1599240733,
     "open_jobs":16,
     "open_current":16
+  },
+  {
+    "name":"Therap (BD) Ltd.",
+    "host":"therap.recruiterbox.com",
+    "tech":[
+      "Java"
+    ],
+    "company_id":2010421534,
+    "open_jobs":15,
+    "open_current":15
+  },
+  {
+    "name":"ReliSource (USA)",
+    "host":"relisource.com",
+    "tech":[
+      "AWS"
+    ],
+    "company_id":881428345,
+    "open_jobs":14,
+    "open_current":14
+  },
+  {
+    "name":"Bdtask",
+    "host":"bdtask.com",
+    "tech":[
+      "Android",
+      "WordPress"
+    ],
+    "company_id":2145944633,
+    "open_jobs":14,
+    "open_current":14
+  },
+  {
+    "name":"Workspace InfoTech Ltd.",
+    "host":"orkspaceit.com",
+    "tech":[
+      "Angular",
+      "Django",
+      "Spring"
+    ],
+    "company_id":614135211,
+    "open_jobs":13,
+    "open_current":13
+  },
+  {
+    "name":"Bangladesh Software Solution",
+    "host":"bssoln.com",
+    "tech":[
+      "C#",
+      "VueJS"
+    ],
+    "company_id":2101367401,
+    "open_jobs":13,
+    "open_current":13
+  },
+  {
+    "name":"Brain Station 23 PLC",
+    "host":"brainstation-23.com",
+    "tech":[
+      "AEM",
+      "Android",
+      "Flutter",
+      "Odoo",
+      "PHP",
+      "React",
+      "Sitecore",
+      "Xamarin",
+      "iOS"
+    ],
+    "company_id":706466820,
+    "open_jobs":12,
+    "open_current":12
   },
   {
     "name":"Optimizely (Newscred) (USA)",
@@ -58,66 +187,81 @@
     "open_current":11
   },
   {
-    "name":"Bangladesh Software Solution",
-    "host":"bssoln.com",
+    "name":"InnoSpace",
+    "host":"innospace.tech",
     "tech":[
-      "C#",
-      "VueJS"
+      "Flutter",
+      "NodeJS"
     ],
-    "company_id":2101367401,
+    "company_id":237120501,
     "open_jobs":11,
     "open_current":11
   },
   {
-    "name":"Pridesys IT Ltd.",
-    "host":"pridesys.com",
+    "name":"Inument",
+    "host":"inument.com",
     "tech":[
-      "MySQL",
-      "WordPress",
-      "jQuery"
+      "AI",
+      "Flutter",
+      "Java",
+      "NodeJS",
+      "PHP",
+      "React",
+      "nopCommerce"
     ],
-    "company_id":1599240733,
+    "company_id":1439801998,
     "open_jobs":10,
     "open_current":10
   },
   {
-    "name":"SJ Innovation",
-    "host":"sjinnovation.com",
+    "name":"hSenid Mobile Solutions Ltd.",
+    "host":"hsenidmobile.com",
     "tech":[
-      "Blockchain",
-      "Flutter",
-      "Java",
+      "AWS",
+      "JUnit",
+      "Jenkins",
       "Kotlin",
-      "React",
-      "Swift"
+      "MySQL",
+      "NodeJS"
     ],
-    "company_id":1063831328,
+    "company_id":1304809295,
+    "open_jobs":10,
+    "open_current":10
+  },
+  {
+    "name":"Invento Software Ltd.",
+    "host":"invento.com.bd",
+    "tech":[
+      "Django",
+      "JavaScript",
+      "WordPress"
+    ],
+    "company_id":1270824599,
+    "open_jobs":10,
+    "open_current":10
+  },
+  {
+    "name":"HawarIT",
+    "host":"hawarit.com",
+    "tech":[
+      "C#"
+    ],
+    "company_id":410245794,
     "open_jobs":9,
     "open_current":9
   },
   {
-    "name":"Therap (BD) Ltd.",
-    "host":"therap.recruiterbox.com",
+    "name":"BJIT Ltd.",
+    "host":"bjitgroup.com",
     "tech":[
-      "Java"
-    ],
-    "company_id":2010421534,
-    "open_jobs":9,
-    "open_current":9
-  },
-  {
-    "name":"YOTECH Ltd.",
-    "host":"yotech.ltd",
-    "tech":[
+      "AI",
       "Android",
-      "Angular",
-      "Flutter",
-      "MongoDB",
-      "NodeJS",
-      "React",
+      "C#",
+      "Java",
+      "PHP",
       "iOS"
     ],
-    "company_id":1073124111,
+    "company_id":1189459348,
     "open_jobs":8,
     "open_current":8
   },
@@ -136,54 +280,93 @@
     "open_current":8
   },
   {
-    "name":"Inument",
-    "host":"inument.com",
+    "name":"YOTECH Ltd.",
+    "host":"yotech.ltd",
     "tech":[
-      "AI",
+      "Android",
+      "Angular",
       "Flutter",
-      "Java",
+      "MongoDB",
       "NodeJS",
-      "PHP",
       "React",
-      "nopCommerce"
+      "iOS"
     ],
-    "company_id":1439801998,
+    "company_id":1073124111,
     "open_jobs":8,
     "open_current":8
   },
   {
-    "name":"Ollyo",
-    "host":"ollyo.com",
+    "name":"Mevrik Ltd.",
+    "host":"mevrik.com",
     "tech":[
-      "JoomShaper",
-      "Themeum"
+      "AWS",
+      "Celery",
+      "ClickHouse",
+      "Django",
+      "Docker",
+      "Elasticsearch",
+      "FastAPI",
+      "GitHub",
+      "Gunicorn",
+      "Kafka",
+      "Kubernetes",
+      "LLM",
+      "Laravel",
+      "MongoDB",
+      "MySQL",
+      "Nginx",
+      "PostgreSQL",
+      "React",
+      "Redis",
+      "TailwindCSS"
     ],
-    "company_id":772997501,
+    "company_id":117774080,
+    "open_jobs":8,
+    "open_current":8
+  },
+  {
+    "name":"Genex Infosys Ltd.",
+    "host":"genexinfosys.com",
+    "tech":[
+      "Java",
+      "SQL"
+    ],
+    "company_id":997731474,
     "open_jobs":7,
     "open_current":7
   },
   {
-    "name":"Bdtask",
-    "host":"bdtask.com",
+    "name":"Audacity Ventures",
+    "host":"audacityventures.ca",
     "tech":[
       "Android",
-      "WordPress"
+      "ExpressJS",
+      "Flutter",
+      "Kotlin",
+      "MongoDB",
+      "Swift",
+      "VueJS"
     ],
-    "company_id":2145944633,
+    "company_id":995712151,
     "open_jobs":7,
     "open_current":7
   },
   {
-    "name":"Workspace InfoTech Ltd.",
-    "host":"orkspaceit.com",
+    "name":"Technohaven Company Ltd.",
+    "host":"technohaven.com",
     "tech":[
+      "Android",
       "Angular",
-      "Django",
-      "Spring"
+      "Blockchain",
+      "ML",
+      "NodeJS",
+      "React",
+      "Rust",
+      "iOS"
     ],
-    "company_id":614135211,
-    "open_jobs":6,
-    "open_current":6
+    "company_id":449877313,
+    "open_jobs":7,
+    "open_current":7
   },
   {
     "name":"iPay",
@@ -200,6 +383,23 @@
     "open_current":6
   },
   {
+    "name":"Furqan Software",
+    "host":"furqansoftware.com",
+    "tech":[
+      "Elasticsearch",
+      "Firebase",
+      "Go",
+      "Laravel",
+      "MongoDB",
+      "RabbitMQ",
+      "React",
+      "Redis"
+    ],
+    "company_id":321259876,
+    "open_jobs":6,
+    "open_current":6
+  },
+  {
     "name":"Gigalogy",
     "host":"gigalogy.com",
     "tech":[
@@ -212,27 +412,35 @@
     "open_current":6
   },
   {
-    "name":"ReliSource (USA)",
-    "host":"relisource.com",
+    "name":"Onecodesoft",
+    "host":"onecodesoft.com",
     "tech":[
-      "AWS"
+      "Flutter",
+      "Laravel",
+      "NodeJS",
+      "Python"
     ],
-    "company_id":881428345,
-    "open_jobs":6,
-    "open_current":6
+    "company_id":398217425,
+    "open_jobs":5,
+    "open_current":5
   },
   {
-    "name":"BJIT Ltd.",
-    "host":"bjitgroup.com",
+    "name":"Orange Toolz",
+    "host":"orangetoolz.com",
     "tech":[
-      "AI",
+      "AWS",
       "Android",
-      "C#",
-      "Java",
-      "PHP",
+      "AngularJS",
+      "Azure",
+      "CakePHP",
+      "Laravel",
+      "NodeJS",
+      "ReactNative",
+      "Xamarin",
+      "Zend",
       "iOS"
     ],
-    "company_id":1189459348,
+    "company_id":1970775610,
     "open_jobs":5,
     "open_current":5
   },
@@ -256,51 +464,67 @@
     "open_current":5
   },
   {
-    "name":"Audacity Ventures",
-    "host":"audacityventures.ca",
+    "name":"LeadSoft",
+    "host":"leads.com.bd",
     "tech":[
-      "Android",
-      "ExpressJS",
-      "Flutter",
-      "Kotlin",
-      "MongoDB",
-      "Swift",
-      "VueJS"
+      "Java",
+      "MySQL"
     ],
-    "company_id":995712151,
-    "open_jobs":5,
-    "open_current":5
-  },
-  {
-    "name":"InnoSpace",
-    "host":"innospace.tech",
-    "tech":[
-      "Flutter",
-      "NodeJS"
-    ],
-    "company_id":237120501,
-    "open_jobs":5,
-    "open_current":5
-  },
-  {
-    "name":"HawarIT",
-    "host":"hawarit.com",
-    "tech":[
-      "C#"
-    ],
-    "company_id":410245794,
+    "company_id":398146101,
     "open_jobs":4,
     "open_current":4
   },
   {
-    "name":"LeadSoft",
-    "host":"leads.com.bd",
+    "name":"Mediusware Ltd.",
+    "host":"mediusware.com",
     "tech":[
-
+      "Angular",
+      "NextJS",
+      "VueJS"
     ],
-    "company_id":398146101,
-    "open_jobs":3,
-    "open_current":3
+    "company_id":1417574406,
+    "open_jobs":4,
+    "open_current":4
+  },
+  {
+    "name":"Dynamic Solution Innovators Ltd. (DSi)",
+    "host":"dsinnovators.com",
+    "tech":[
+      "Android",
+      "AngularJS",
+      "Hibernate",
+      "NextJS",
+      "NodeJS",
+      "SpringBoot",
+      "iOS"
+    ],
+    "company_id":234359612,
+    "open_jobs":4,
+    "open_current":4
+  },
+  {
+    "name":"Wafi Solutions.",
+    "host":"afisolutions.com",
+    "tech":[
+      "Django"
+    ],
+    "company_id":1171750664,
+    "open_jobs":4,
+    "open_current":4
+  },
+  {
+    "name":"Silicon Orchard Ltd.",
+    "host":"siliconorchard.com",
+    "tech":[
+      "Android",
+      "Blockchain",
+      "NodeJS",
+      "PHP",
+      "iOS"
+    ],
+    "company_id":1173170130,
+    "open_jobs":4,
+    "open_current":4
   },
   {
     "name":"6sense Technologies",
@@ -319,56 +543,55 @@
     "open_current":3
   },
   {
+    "name":"NetCoden Inc",
+    "host":"netcoden.com",
+    "tech":[
+      "Android",
+      "C++",
+      "Laravel",
+      "NodeJS",
+      "React",
+      "SQL",
+      "VueJS"
+    ],
+    "company_id":1450058142,
+    "open_jobs":3,
+    "open_current":3
+  },
+  {
+    "name":"WPCommerz",
+    "host":"pcommerz.com",
+    "tech":[
+      "Laravel",
+      "VueJS",
+      "WordPress"
+    ],
+    "company_id":1320473381,
+    "open_jobs":3,
+    "open_current":3
+  },
+  {
+    "name":"Mamurjor IT",
+    "host":"mamurjor.com",
+    "tech":[
+      "C",
+      "Java",
+      "Linux",
+      "MySQL",
+      "NodeJS",
+      "PHP"
+    ],
+    "company_id":596110919,
+    "open_jobs":3,
+    "open_current":3
+  },
+  {
     "name":"FIGLAB",
     "host":"figlab.io",
     "tech":[
       "PHP"
     ],
     "company_id":1566813454,
-    "open_jobs":3,
-    "open_current":3
-  },
-  {
-    "name":"Silicon Orchard Ltd.",
-    "host":"siliconorchard.com",
-    "tech":[
-      "Android",
-      "Blockchain",
-      "NodeJS",
-      "PHP",
-      "iOS"
-    ],
-    "company_id":1173170130,
-    "open_jobs":3,
-    "open_current":3
-  },
-  {
-    "name":"Furqan Software",
-    "host":"furqansoftware.com",
-    "tech":[
-      "Elasticsearch",
-      "Firebase",
-      "Go",
-      "Laravel",
-      "MongoDB",
-      "RabbitMQ",
-      "React",
-      "Redis"
-    ],
-    "company_id":321259876,
-    "open_jobs":3,
-    "open_current":3
-  },
-  {
-    "name":"Onecodesoft",
-    "host":"onecodesoft.com",
-    "tech":[
-      "Flutter",
-      "Laravel",
-      "NodeJS",
-      "Python"
-    ],
-    "company_id":398217425,
     "open_jobs":3,
     "open_current":3
   },
@@ -393,44 +616,58 @@
       "iOS"
     ],
     "company_id":2140489917,
+    "open_jobs":3,
+    "open_current":3
+  },
+  {
+    "name":"Walton Hi-Tech Industries Ltd.",
+    "host":"altonbd.com",
+    "tech":[
+      "PHP",
+      "Spring",
+      "VueJS"
+    ],
+    "company_id":847110396,
     "open_jobs":2,
     "open_current":2
   },
   {
-    "name":"Tekarsh",
-    "host":"tekarsh.com",
+    "name":"TAPPWARE Solutions Ltd.",
+    "host":"tappware.com",
     "tech":[
-      "JavaScript",
-      "Spring"
+      ".NET",
+      "Android",
+      "C#",
+      "CakePHP",
+      "Django",
+      "Flutter",
+      "Ionic",
+      "Laravel",
+      "Less",
+      "MongoDB",
+      "MySQL",
+      "PostgreSQL",
+      "RabbitMQ",
+      "SCSS",
+      "Spring",
+      "VueJS",
+      "WordPress",
+      "jQuery"
     ],
-    "company_id":1920154168,
-    "open_jobs":1,
-    "open_current":1
+    "company_id":501063748,
+    "open_jobs":2,
+    "open_current":2
   },
   {
-    "name":"Flyte Solutions",
-    "host":"flytesolutions.com",
+    "name":"Welldev (Switzerland)",
+    "host":"elldev.io",
     "tech":[
       "Android",
-      "NodeJS",
-      "ReactNative",
       "iOS"
     ],
-    "company_id":185224376,
-    "open_jobs":1,
-    "open_current":1
-  },
-  {
-    "name":"Mediusware Ltd.",
-    "host":"mediusware.com",
-    "tech":[
-      "Angular",
-      "NextJS",
-      "VueJS"
-    ],
-    "company_id":1417574406,
-    "open_jobs":1,
-    "open_current":1
+    "company_id":1106766675,
+    "open_jobs":2,
+    "open_current":2
   },
   {
     "name":"Portonics Ltd.",
@@ -448,8 +685,23 @@
       "iOS"
     ],
     "company_id":1397524499,
-    "open_jobs":1,
-    "open_current":1
+    "open_jobs":2,
+    "open_current":2
+  },
+  {
+    "name":"LIILab",
+    "host":"liilab.com",
+    "tech":[
+      "Android",
+      "Django",
+      "Java",
+      "Kotlin",
+      "React",
+      "WordPress"
+    ],
+    "company_id":837093575,
+    "open_jobs":2,
+    "open_current":2
   },
   {
     "name":"Nogor Solutions Ltd.",
@@ -462,8 +714,37 @@
       "Vuex"
     ],
     "company_id":242743753,
-    "open_jobs":1,
-    "open_current":1
+    "open_jobs":2,
+    "open_current":2
+  },
+  {
+    "name":"Exabyting Technologies",
+    "host":"exabyting.com",
+    "tech":[
+      "Django",
+      "ExpressJS",
+      "Laravel",
+      "NoSQL",
+      "SNS",
+      "SQL",
+      "SQS",
+      "Spring"
+    ],
+    "company_id":444744065,
+    "open_jobs":2,
+    "open_current":2
+  },
+  {
+    "name":"Brac IT Services (biTS)",
+    "host":"bracits.com",
+    "tech":[
+      "Android",
+      "Java",
+      "PHP"
+    ],
+    "company_id":1694265542,
+    "open_jobs":2,
+    "open_current":2
   },
   {
     "name":"authLab",
@@ -477,23 +758,206 @@
       "jQuery"
     ],
     "company_id":1645636956,
+    "open_jobs":2,
+    "open_current":2
+  },
+  {
+    "name":"CodersTrust",
+    "host":"coderstrust.global",
+    "tech":[
+      "JavaScript",
+      "Kubernetes",
+      "Lambda",
+      "Python",
+      "Scala",
+      "WordPress"
+    ],
+    "company_id":1763373520,
     "open_jobs":1,
     "open_current":1
   },
   {
-    "name":"Technohaven Company Ltd.",
-    "host":"technohaven.com",
+    "name":"Flyte Solutions",
+    "host":"flytesolutions.com",
     "tech":[
       "Android",
-      "Angular",
-      "Blockchain",
-      "ML",
       "NodeJS",
-      "React",
-      "Rust",
+      "ReactNative",
       "iOS"
     ],
-    "company_id":449877313,
+    "company_id":185224376,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Jatri Services Ltd.",
+    "host":"jatri.co",
+    "tech":[
+      "Android",
+      "Flutter",
+      "NodeJS"
+    ],
+    "company_id":554501939,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"2A IT",
+    "host":"2aitbd.com",
+    "tech":[
+      "Android",
+      "Java",
+      "Laravel",
+      "MySQL",
+      "jQuery"
+    ],
+    "company_id":609832328,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Vivasoft Ltd.",
+    "host":"vivasoftltd.com",
+    "tech":[
+      "C#",
+      "Flutter",
+      "Go",
+      "Java",
+      "Python"
+    ],
+    "company_id":820967224,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Appnap",
+    "host":"appnap.io",
+    "tech":[
+      "iOS"
+    ],
+    "company_id":52182611,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Nagad",
+    "host":"nagad.com.bd",
+    "tech":[
+      "Android",
+      "Spring",
+      "iOS"
+    ],
+    "company_id":1326319833,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Tekarsh",
+    "host":"tekarsh.com",
+    "tech":[
+      "JavaScript",
+      "Spring"
+    ],
+    "company_id":1920154168,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Markopolo AI",
+    "host":"markopolo.ai",
+    "tech":[
+      "DeepLearning"
+    ],
+    "company_id":1662131695,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"IBOS Ltd.",
+    "host":"ibos.io",
+    "tech":[
+      "Java",
+      "MySQL",
+      "PHP",
+      "React"
+    ],
+    "company_id":854792806,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Samsung R&D Institute Bangladesh, Ltd.",
+    "host":"research.samsung.com",
+    "tech":[
+      "Android",
+      "C#",
+      "Kotlin",
+      "MFC",
+      "ML",
+      "Spring",
+      "Swift",
+      "Tizen",
+      "UWP",
+      "WPF",
+      "Windows",
+      "iOS"
+    ],
+    "company_id":570728153,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Nybbles System Ltd.",
+    "host":"nybsys.com",
+    "tech":[
+      "AngularJS",
+      "C#",
+      "Dart",
+      "Java",
+      "Kotlin",
+      "Swift"
+    ],
+    "company_id":1999312484,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Paperfly Ltd.",
+    "host":"paperfly.com.bd",
+    "tech":[
+      "Laravel",
+      "React",
+      "VueJS"
+    ],
+    "company_id":761454015,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Shopup",
+    "host":"shopup.com.bd",
+    "tech":[
+      "AWS",
+      "Docker",
+      "Flutter",
+      "MongoDB",
+      "MySQL",
+      "NodeJS",
+      "React"
+    ],
+    "company_id":912115453,
+    "open_jobs":1,
+    "open_current":1
+  },
+  {
+    "name":"Dcastalia Ltd.",
+    "host":"dcastalia.com",
+    "tech":[
+      "JavaScript",
+      "MySQL",
+      "PHP"
+    ],
+    "company_id":1555729908,
     "open_jobs":1,
     "open_current":1
   }

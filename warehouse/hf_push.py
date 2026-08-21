@@ -101,6 +101,12 @@ def push_to_hf(parquet_dir: Path, gold_dir: Path, db_path: Path):
         api.upload_file(path_or_fileobj=str(raw), path_in_repo="raw/job-posts.json", repo_id=dataset_id, repo_type="dataset")
         print("↑ raw/job-posts.json")
 
+    # dataset card (rendered by build.py with a live snapshot) → HF README
+    card = gold_dir / "README.md"
+    if card.exists():
+        api.upload_file(path_or_fileobj=str(card), path_in_repo="README.md", repo_id=dataset_id, repo_type="dataset")
+        print("↑ README.md (dataset card)")
+
 if __name__ == "__main__":
     from pathlib import Path
     push_to_hf(DATA/"parquet", DATA/"gold", DATA/"warehouse.duckdb")

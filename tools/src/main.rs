@@ -77,11 +77,7 @@ enum Command {
         force: bool,
 
         /// LLM provider: `gemini` or `zen`.
-        #[arg(
-            long,
-            default_value = "gemini",
-            value_name = "PROVIDER"
-        )]
+        #[arg(long, default_value = "gemini", value_name = "PROVIDER")]
         provider: String,
 
         /// LLM model to use.
@@ -103,6 +99,14 @@ enum Command {
         /// Soft deadline for the whole crawl in seconds.
         #[arg(long, default_value_t = jobs::DEFAULT_DEADLINE_SECS, value_name = "SECS")]
         deadline_secs: u64,
+
+        /// AI refinement pass (data cleaning) after collection.
+        #[arg(long, default_value_t = true, action = clap::ArgAction::Set, value_name = "BOOL")]
+        refine: bool,
+
+        /// Ingest IT jobs from the BDJobs board (public API).
+        #[arg(long, default_value_t = true, action = clap::ArgAction::Set, value_name = "BOOL")]
+        board: bool,
 
         /// Also build warehouse after crawl
         #[arg(long, default_value_t = true, action = clap::ArgAction::Set, value_name = "BOOL")]
@@ -194,6 +198,8 @@ fn cli() -> Result {
             concurrent,
             provider,
             deadline_secs,
+            refine,
+            board,
             warehouse: wh,
         }) => {
             if force {
@@ -201,9 +207,19 @@ fn cli() -> Result {
                 jobs::clear_cache()?;
             }
             let provider = jobs::llm::Provider::parse(&provider)?;
-            log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}; Deadline: {deadline_secs}s");
+            log::info!(
+                "Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}; Deadline: {deadline_secs}s; Refine: {refine}; Board: {board}"
+            );
             let discovered = jobs::run(
-                provider, model, &dir, &companies, log_file, concurrent, deadline_secs,
+                provider,
+                model,
+                &dir,
+                &companies,
+                log_file,
+                concurrent,
+                deadline_secs,
+                refine,
+                board,
             )?;
 
             // Persist discovered career URLs through the parsed struct (not

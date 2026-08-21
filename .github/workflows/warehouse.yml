@@ -35,7 +35,7 @@ jobs:
           cache-dependency-path: warehouse/requirements.txt
       - name: Install Python deps
         run: pip install -r warehouse/requirements.txt
-      - name: Crawl (weekly FULL — 231 sites, AI-enhanced, deduped)
+      - name: Crawl (weekly FULL — all sites, AI-enhanced, deduped)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINIAPIKEY: ${{ secrets.GEMINIAPIKEY }}
@@ -44,16 +44,35 @@ jobs:
         run: |
           # Accept both GEMINI_API_KEY and GEMINIAPIKEY (user may set either in GitHub Secrets)
           export GEMINI_API_KEY="${GEMINI_API_KEY:-$GEMINIAPIKEY}"
-          echo "Weekly full scrape: all 231 companies → hf://buckets/swadhinbiswas/bangladeshi-jobs (public)"
-          if [ -n "$GEMINI_API_KEY" ] || [ -n "$ZEN_API_KEY" ]; then
-            echo "GEMINI_API_KEY present: $([ -n \"$GEMINI_API_KEY\" ] && echo yes || echo no), ZEN_API_KEY: $([ -n \"$ZEN_API_KEY\" ] && echo yes || echo no)"
-          # Full crawl: dir=. (repo root), 24h cache but weekly >24h so stale → real full fetch; enhancer dedups
-          # --deadline-secs 1500 keeps the crawl ~25min, well under the 45min job timeout,
-          # leaving room for the warehouse build + HF push. Re-runs fill gaps via the 24h cache.
-          cargo run --manifest-path tools/Cargo.toml -- . index --concurrent 8 --deadline-secs 1500 || true
-            echo "Crawl done — $(jq 'to_entries|map(.value.jobs|length) | add' data/job-posts.json) jobs before dedup"
+          # Auto-select a FREE provider so the pipeline never hard-fails:
+          #   1. Gemini free tier (gemini-3.5-flash-lite)
+          #   2. OpenCode Zen gateway (grok-code — free model)
+          if [ -n "$GEMINI_API_KEY" ]; then
+            PROVIDER=gemini; MODEL=gemini-3.5-flash-lite
+          elif [ -n "$ZEN_API_KEY" ]; then
+            PROVIDER=zen; MODEL=grok-code
           else
-            echo "No LLM key (set GEMINI_API_KEY or GEMINIAPIKEY in GitHub Secrets) — skipping crawl, using cached job-posts.json + enhancer re-run"
+            PROVIDER=""
+          fi
+          if [ -n "$PROVIDER" ]; then
+            echo "Crawling with provider=$PROVIDER model=$MODEL"
+            BEFORE=$(jq 'to_entries|map(.value.jobs|length) | add // 0' data/job-posts.json)
+            # --deadline-secs keeps the crawl ~25min, well under the 45min job
+            # timeout; re-runs fill gaps via the 24h cache.
+            cargo run --manifest-path tools/Cargo.toml -- . index \
+              --provider "$PROVIDER" --model "$MODEL" \
+              --concurrent 8 --deadline-secs 1500 || true
+            AFTER=$(jq 'to_entries|map(.value.jobs|length) | add // 0' data/job-posts.json)
+            echo "Crawl done — $BEFORE → $AFTER jobs"
+            # The crawl never fails the step (|| true), so surface a dead run
+            # loudly instead of silently publishing stale data.
+            if [ "${AFTER:-0}" -eq 0 ]; then
+              echo "::error::Crawl produced 0 jobs — LLM/provider likely failed (check model name, quota, key)"
+            elif [ "${AFTER:-0}" -lt "$BEFORE" ]; then
+              echo "::warning::Crawl LOST jobs ($BEFORE → $AFTER) — investigate before trusting this snapshot"
+            fi
+          else
+            echo "No LLM key (set GEMINI_API_KEY or ZEN_API_KEY) — skipping crawl, using cached job-posts.json"
           fi
       - name: Build DuckDB warehouse (idempotent, no duplicates)
         env:

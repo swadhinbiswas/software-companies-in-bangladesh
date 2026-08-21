@@ -15,9 +15,12 @@ pub fn build_warehouse(dir: &Path) -> crate::Result {
     log::info!("Building DuckDB warehouse via warehouse/build.py ...");
     let status = Command::new("python3")
         .arg(&script)
-        .arg("--db").arg(dir.join("data/warehouse.duckdb"))
-        .arg("--parquet").arg(dir.join("data/parquet"))
-        .arg("--gold").arg(dir.join("data/gold"))
+        .arg("--db")
+        .arg(dir.join("data/warehouse.duckdb"))
+        .arg("--parquet")
+        .arg(dir.join("data/parquet"))
+        .arg("--gold")
+        .arg(dir.join("data/gold"))
         .current_dir(dir)
         .status()?;
 

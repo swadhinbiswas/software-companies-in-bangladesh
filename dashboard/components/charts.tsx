@@ -1,5 +1,5 @@
 "use client"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area, CartesianGrid } from "recharts"
 
 export function TechDemandChart({ data }: { data: { tag: string; jobs: number }[] }) {
   const slice = data.slice(0, 12)
@@ -30,6 +30,46 @@ export function EmploymentPie({ data }: { data: { employment_type: string | null
           </Pie>
           <Tooltip />
         </PieChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+// Postings first-seen per week over the last N weeks — hiring momentum.
+export function MomentumChart({ data }: { data: { week: string; jobs: number }[] }) {
+  return (
+    <div className="h-[220px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ left: -20, right: 10, top: 5, bottom: 0 }}>
+          <defs>
+            <linearGradient id="mom" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+          <XAxis dataKey="week" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+          <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
+          <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))" }} />
+          <Area type="monotone" dataKey="jobs" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#mom)" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+// Salary distribution histogram from explicit salary_max figures (BDT).
+export function SalaryHistogram({ data }: { data: { range: string; jobs: number }[] }) {
+  return (
+    <div className="h-[220px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ left: -20, right: 10, top: 5, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+          <XAxis dataKey="range" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+          <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} allowDecimals={false} />
+          <Tooltip cursor={{ fill: "hsl(var(--muted))" }} contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))" }} />
+          <Bar dataKey="jobs" radius={[8, 8, 0, 0]} fill="hsl(var(--chart-2))" />
+        </BarChart>
       </ResponsiveContainer>
     </div>
   )

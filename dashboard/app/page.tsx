@@ -1,36 +1,164 @@
-import { getStats, getTechDemand, getRecentJobs, getJobsPerCompany, getLocationHeatmap, getEmploymentBreakdown } from "@/lib/data"
+import { getStats, getTechDemand, getRecentJobs, getJobsPerCompany, getLocationHeatmap, getEmploymentBreakdown, getSalaryStats, getCompanies, getFallbackStats } from "@/lib/data"
 import JobsTable from "@/components/jobs-table"
 import TechBar from "@/components/tech-bar"
 import { KpiCards } from "@/components/kpi-cards"
+import { DataPlatform } from "@/components/data-platform"
+import CompanyGrid from "@/components/company-grid"
+import { MomentumChart, SalaryHistogram } from "@/components/charts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { SITE_URL } from "@/lib/site"
 
 export const revalidate = 60
 
+function deriveExtras(jobs: any[], salary: any[], tech: any[]) {
+  const weekMs = 7 * 24 * 3600 * 1000
+  const now = Date.now()
+  const withSalary = jobs.filter((j) => j.salary_max > 0)
+  const remote = jobs.filter((j) => j.location_type === "Remote").length
+  return {
+    medianSalary: salary.length ? Math.max(...salary.map((s: any) => s.median_max || 0)) || null : null,
+    remoteShare: jobs.length ? Math.round((remote / jobs.length) * 100) : null,
+    newThisWeek: jobs.filter((j) => j.last_seen_at && now - new Date(j.last_seen_at).getTime() < weekMs).length,
+    skillsCount: tech.length,
+  }
+}
+
+// Postings first-seen per week (last 8 weeks) for the momentum chart.
+function weeklyMomentum(jobs: any[]) {
+  const weeks: { week: string; jobs: number }[] = []
+  const now = new Date()
+  for (let i = 7; i >= 0; i--) {
+    const d = new Date(now.getTime() - i * 7 * 24 * 3600 * 1000)
+    weeks.push({ week: `${d.getMonth() + 1}/${d.getDate()}`, jobs: 0 })
+  }
+  const start = now.getTime() - 8 * 7 * 24 * 3600 * 1000
+  for (const j of jobs) {
+    if (!j.last_seen_at) continue
+    const t = new Date(j.last_seen_at).getTime()
+    if (t < start) continue
+    const idx = Math.min(7, Math.floor((t - start) / (7 * 24 * 3600 * 1000)))
+    weeks[idx].jobs++
+  }
+  return weeks
+}
+
+// Salary distribution in 25k BDT buckets from explicit salary_max figures.
+function salaryBuckets(jobs: any[]) {
+  const edges = [0, 25, 50, 75, 100, 150, 200, 999]
+  const labels = ["<25k", "25–50k", "50–75k", "75–100k", "100–150k", "150–200k", "200k+"]
+  const counts = new Array(labels.length).fill(0)
+  for (const j of jobs) {
+    if (!j.salary_max || j.salary_currency !== "BDT") continue
+    const k = j.salary_max / 1000
+    const idx = edges.findIndex((e, i) => i < edges.length - 1 && k >= e && k < edges[i + 1])
+    if (idx >= 0) counts[idx]++
+  }
+  return labels.map((range, i) => ({ range, jobs: counts[i] }))
+}
+
 export default async function Page() {
-  const [stats, tech, jobs, perCompany, loc, emp] = await Promise.all([
-    getStats().catch(() => ({ total_companies: 231, companies_with_jobs: 70, open_jobs: 316, total_jobs: 316, hiring_companies: 50 })),
+  const [stats, tech, jobs, perCompany, loc, emp, salary, companies] = await Promise.all([
+    getStats().catch(() => getFallbackStats()),
     getTechDemand().catch(() => []),
     getRecentJobs().catch(() => []),
     getJobsPerCompany().catch(() => []),
     getLocationHeatmap().catch(() => []),
     getEmploymentBreakdown().catch(() => []),
+    getSalaryStats().catch(() => []),
+    getCompanies().catch(() => []),
   ])
+  const extras = deriveExtras(jobs, salary, tech)
+  // Merge career URLs from the registry into the hiring-velocity rows.
+  const companyRows = perCompany.map((c: any) => ({
+    ...c,
+    job_url: companies.find((r: any) => r.name === c.name)?.job_url ?? null,
+  }))
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: "BD Software Jobs",
+        url: SITE_URL,
+        description: "Live job dashboard for Bangladeshi software companies.",
+      },
+      {
+        "@type": "Dataset",
+        name: "Bangladeshi Tech Jobs — Open Dataset",
+        description: `Weekly-refreshed collection of ${stats.open_jobs} open job postings from Bangladeshi software companies, with tech demand, salary and location analytics.`,
+        url: "https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs",
+        license: "https://creativecommons.org/licenses/by/4.0/",
+        creator: { "@type": "Person", name: "swadhinbiswas" },
+        distribution: [
+          {
+            "@type": "DataDownload",
+            encodingFormat: "application/json",
+            contentUrl:
+              "https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs/resolve/main/gold/recent_jobs.json",
+          },
+          {
+            "@type": "DataDownload",
+            encodingFormat: "application/x-parquet",
+            contentUrl:
+              "https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs/resolve/main/parquet/fact_job.parquet",
+          },
+        ],
+        isAccessibleForFree: true,
+        keywords: ["jobs", "Bangladesh", "tech", "software", "hiring", "salary"],
+      },
+    ],
+  }
 
   return (
     <div className="space-y-6">
-      <KpiCards stats={stats} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Bangladeshi Software Jobs Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Live openings from {stats.total_companies}+ companies · tech demand, salaries & remote roles ·
+            open data refreshed weekly
+          </p>
+        </div>
+        <Badge variant="outline" className="gap-1.5 text-emerald-600 border-emerald-600/30 bg-emerald-500/10">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          {stats.open_jobs} open jobs · updated weekly
+        </Badge>
+      </div>
+
+      <KpiCards stats={stats} extra={extras} />
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:w-[420px]">
+        <TabsList className="grid w-full grid-cols-4 lg:w-[560px]">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="jobs">Jobs ({jobs.length})</TabsTrigger>
           <TabsTrigger value="companies">Companies</TabsTrigger>
+          <TabsTrigger value="data">Open Data</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4 mt-4">
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Hiring momentum</CardTitle>
+                <CardDescription>Postings first seen per week (last 8 weeks)</CardDescription>
+              </CardHeader>
+              <CardContent><MomentumChart data={weeklyMomentum(jobs)} /></CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Salary distribution</CardTitle>
+                <CardDescription>Explicit monthly salary ceilings (BDT)</CardDescription>
+              </CardHeader>
+              <CardContent><SalaryHistogram data={salaryBuckets(jobs)} /></CardContent>
+            </Card>
+          </div>
+
           <div className="grid lg:grid-cols-3 gap-4">
             <Card className="lg:col-span-2">
               <CardHeader>
@@ -60,6 +188,25 @@ export default async function Page() {
                       </div>
                     ))}
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2"><CardTitle className="text-sm">Salary ranges (BDT)</CardTitle><CardDescription>Explicit figures only</CardDescription></CardHeader>
+                <CardContent>
+                  {salary.length ? (
+                    <div className="space-y-2 text-sm">
+                      {salary.slice(0, 6).map((s: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center">
+                          <span className="text-muted-foreground">{s.salary_currency} · median</span>
+                          <span className="font-mono">{Math.round(s.median_min / 1000)}k – {Math.round(s.median_max / 1000)}k</span>
+                        </div>
+                      ))}
+                      <p className="text-xs text-muted-foreground pt-1 border-t">n = {salary[0]?.n ?? 0} postings with explicit salary</p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No salary data yet</p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -114,23 +261,11 @@ export default async function Page() {
         </TabsContent>
 
         <TabsContent value="companies" className="mt-4">
-          <Card>
-            <CardHeader><CardTitle>All companies — {perCompany.length}</CardTitle><CardDescription>Browse by tech stack or search in the Jobs tab</CardDescription></CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[560px] overflow-auto pr-1">
-                {perCompany.map((c: any) => (
-                  <div key={c.name} className="rounded-lg border p-3 hover:bg-accent/50 transition-colors">
-                    <div className="font-medium text-sm leading-tight">{c.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">{c.host || ""}</div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {(c.tech || []).slice(0, 5).map((t: string) => <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>)}
-                    </div>
-                    <div className="text-xs mt-2"><Badge variant={c.open_jobs ? "default" : "outline"}>{c.open_jobs ? `${c.open_jobs} open` : "No open jobs"}</Badge></div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <CompanyGrid rows={companyRows} />
+        </TabsContent>
+
+        <TabsContent value="data">
+          <DataPlatform />
         </TabsContent>
       </Tabs>
     </div>

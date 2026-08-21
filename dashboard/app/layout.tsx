@@ -3,14 +3,52 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
+import { SITE_URL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
-  title: "BD Software Jobs",
-  description: "Live jobs from 230+ Bangladeshi software companies. Tech demand, salary, location analytics.",
-  openGraph: { title: "BD Software Jobs", description: "230+ companies, 300+ open jobs — tech demand analytics." },
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "BD Software Jobs — Live Bangladeshi Tech Job Dashboard",
+    template: "%s · BD Software Jobs",
+  },
+  description:
+    "Live job openings from 230+ Bangladeshi software companies. Track tech demand, salary ranges, remote roles and hiring trends — updated weekly from an open-data pipeline.",
+  keywords: [
+    "Bangladesh software jobs",
+    "BD tech jobs",
+    "Dhaka developer jobs",
+    "Bangladeshi IT careers",
+    "software engineer salary Bangladesh",
+    "remote jobs Bangladesh",
+    "tech job dashboard",
+  ],
+  authors: [{ name: "swadhinbiswas", url: "https://github.com/nurmohammed840" }],
+  creator: "swadhinbiswas",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "BD Software Jobs",
+    title: "BD Software Jobs — Live Bangladeshi Tech Job Dashboard",
+    description:
+      "Live openings from 230+ Bangladeshi software companies with tech demand, salary and location analytics. Open data, refreshed weekly.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BD Software Jobs — Live Bangladeshi Tech Job Dashboard",
+    description:
+      "Live openings from 230+ Bangladeshi software companies with tech demand, salary and location analytics.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  category: "technology",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -26,8 +64,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               <nav className="hidden sm:flex items-center gap-1 text-sm">
                 <a href="/" className="px-3 py-1.5 rounded-md hover:bg-accent transition-colors font-medium">Dashboard</a>
-                <a href="#jobs" className="px-3 py-1.5 rounded-md hover:bg-accent transition-colors">Jobs</a>
-                <a href="https://github.com/nurmohammed840/software-companies-in-bangladesh" target="_blank" className="px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">GitHub</a>
+                <a href="https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs" target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-md hover:bg-accent transition-colors">Dataset</a>
+                <a href="https://github.com/nurmohammed840/software-companies-in-bangladesh" target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">GitHub</a>
               </nav>
               <div className="flex items-center gap-2">
                 <ModeToggle />

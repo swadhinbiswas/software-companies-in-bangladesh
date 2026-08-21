@@ -29,7 +29,10 @@ impl Ats {
     pub fn detect(url: &Url) -> Option<Self> {
         let host = url.host_str()?.to_ascii_lowercase();
         let path = |i: usize| {
-            url.path_segments()?.nth(i).filter(|s| !s.is_empty()).map(String::from)
+            url.path_segments()?
+                .nth(i)
+                .filter(|s| !s.is_empty())
+                .map(String::from)
         };
         let sub = || {
             host.split('.')
@@ -58,7 +61,8 @@ impl Ats {
     pub async fn fetch_jobs(&self, http: &Http) -> Result<Option<Vec<JobPost>>> {
         let jobs = match self {
             Self::Greenhouse(org) => {
-                let url = format!("https://boards-api.greenhouse.io/v1/boards/{org}/jobs?content=true");
+                let url =
+                    format!("https://boards-api.greenhouse.io/v1/boards/{org}/jobs?content=true");
                 match http.get_json::<GreenhouseBoard>(&parse(&url)?).await {
                     Ok(board) => board.jobs.into_iter().map(Into::into).collect(),
                     Err(err) => return err_no_data(err),
@@ -95,8 +99,9 @@ impl Ats {
                 }
             }
             Self::SmartRecruiters(org) => {
-                let url =
-                    format!("https://api.smartrecruiters.com/v1/companies/{org}/postings?limit=100");
+                let url = format!(
+                    "https://api.smartrecruiters.com/v1/companies/{org}/postings?limit=100"
+                );
                 match http.get_json::<SmartRecruitersBoard>(&parse(&url)?).await {
                     Ok(board) => board.content.into_iter().map(Into::into).collect(),
                     Err(err) => return err_no_data(err),
@@ -167,10 +172,15 @@ impl From<GreenhouseJob> for JobPost {
             salary: None,
             vacancies: None,
             tags: vec![],
-            apply: job.absolute_url.as_deref().map(apply_website).unwrap_or_default(),
+            apply: job
+                .absolute_url
+                .as_deref()
+                .map(apply_website)
+                .unwrap_or_default(),
             source: job.absolute_url,
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -220,15 +230,17 @@ impl From<LeverPosting> for JobPost {
     fn from(job: LeverPosting) -> Self {
         JobPost {
             title: job.title,
-            description: job
-                .descriptionPlain
-                .or(job.description)
-                .unwrap_or_default(),
+            description: job.descriptionPlain.or(job.description).unwrap_or_default(),
             employment_type: job.employmentType.as_deref().and_then(parse_employment),
             role: None,
             posted_at: job.publishedAt.map(|secs| {
                 use chrono::{TimeZone, Utc};
-                PostedAt::Absolute(Utc.timestamp_opt(secs, 0).single().map(|d| d.format("%Y-%m-%d").to_string()).unwrap_or_default())
+                PostedAt::Absolute(
+                    Utc.timestamp_opt(secs, 0)
+                        .single()
+                        .map(|d| d.format("%Y-%m-%d").to_string())
+                        .unwrap_or_default(),
+                )
             }),
             category: job.department.as_deref().map(department_other),
             deadline: None,
@@ -241,10 +253,15 @@ impl From<LeverPosting> for JobPost {
             }),
             vacancies: None,
             tags: vec![],
-            apply: job.applyUrl.as_deref().map(apply_website).unwrap_or_default(),
+            apply: job
+                .applyUrl
+                .as_deref()
+                .map(apply_website)
+                .unwrap_or_default(),
             source: job.hostedUrl.or(job.applyUrl),
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -292,11 +309,18 @@ impl From<WorkableJob> for JobPost {
             posted_at: job.published_at.map(PostedAt::Absolute),
             category: job.department.as_deref().map(department_other),
             deadline: None,
-            location: location(&Some(format!(
-                "{} {}",
-                job.location.as_ref().and_then(|l| l.city.clone()).unwrap_or_default(),
-                job.location.as_ref().and_then(|l| l.country.clone()).unwrap_or_default()
-            )),
+            location: location(
+                &Some(format!(
+                    "{} {}",
+                    job.location
+                        .as_ref()
+                        .and_then(|l| l.city.clone())
+                        .unwrap_or_default(),
+                    job.location
+                        .as_ref()
+                        .and_then(|l| l.country.clone())
+                        .unwrap_or_default()
+                )),
                 Some(if job.remote { "remote" } else { "on_site" }),
             ),
             experience: None,
@@ -307,6 +331,7 @@ impl From<WorkableJob> for JobPost {
             source: job.url,
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -357,11 +382,14 @@ struct AshbyTier {
 
 impl From<AshbyJob> for JobPost {
     fn from(job: AshbyJob) -> Self {
-        let salary = job.compensation.and_then(|c| c.compensationTierSummary).map(|t| Salary {
-            min: t.minimum.map(|v| v as u32),
-            max: t.maximum.map(|v| v as u32),
-            currency: t.currency,
-        });
+        let salary = job
+            .compensation
+            .and_then(|c| c.compensationTierSummary)
+            .map(|t| Salary {
+                min: t.minimum.map(|v| v as u32),
+                max: t.maximum.map(|v| v as u32),
+                currency: t.currency,
+            });
         JobPost {
             title: job.title,
             description: html_to_markdown(job.descriptionHtml.as_deref().unwrap_or("")),
@@ -370,7 +398,10 @@ impl From<AshbyJob> for JobPost {
             posted_at: job.publishedAt.map(PostedAt::Absolute),
             category: job.department.as_deref().map(department_other),
             deadline: None,
-            location: location(&job.location, Some(if job.isRemote { "remote" } else { "on_site" })),
+            location: location(
+                &job.location,
+                Some(if job.isRemote { "remote" } else { "on_site" }),
+            ),
             experience: None,
             salary,
             vacancies: None,
@@ -379,6 +410,7 @@ impl From<AshbyJob> for JobPost {
             source: job.jobUrl,
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -420,15 +452,23 @@ impl From<RecruiteeOffer> for JobPost {
             posted_at: offer.published_at.map(PostedAt::Absolute),
             category: None,
             deadline: None,
-            location: location(&offer.location, Some(if offer.remote { "remote" } else { "on_site" })),
+            location: location(
+                &offer.location,
+                Some(if offer.remote { "remote" } else { "on_site" }),
+            ),
             experience: None,
             salary: None,
             vacancies: None,
             tags: vec![],
-            apply: offer.careers_url.as_deref().map(apply_website).unwrap_or_default(),
+            apply: offer
+                .careers_url
+                .as_deref()
+                .map(apply_website)
+                .unwrap_or_default(),
             source: offer.careers_url,
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -465,7 +505,11 @@ struct SmartLocation {
 
 impl From<SmartRecruitersPosting> for JobPost {
     fn from(post: SmartRecruitersPosting) -> Self {
-        let remote = post.location.as_ref().and_then(|l| l.remote).unwrap_or(false);
+        let remote = post
+            .location
+            .as_ref()
+            .and_then(|l| l.remote)
+            .unwrap_or(false);
         JobPost {
             title: post.name,
             description: String::new(),
@@ -474,21 +518,33 @@ impl From<SmartRecruitersPosting> for JobPost {
             posted_at: post.releasedDate.map(PostedAt::Absolute),
             category: None,
             deadline: None,
-            location: location(&Some(format!(
-                "{} {}",
-                post.location.as_ref().and_then(|l| l.city.clone()).unwrap_or_default(),
-                post.location.as_ref().and_then(|l| l.country.clone()).unwrap_or_default()
-            )),
+            location: location(
+                &Some(format!(
+                    "{} {}",
+                    post.location
+                        .as_ref()
+                        .and_then(|l| l.city.clone())
+                        .unwrap_or_default(),
+                    post.location
+                        .as_ref()
+                        .and_then(|l| l.country.clone())
+                        .unwrap_or_default()
+                )),
                 Some(if remote { "remote" } else { "on_site" }),
             ),
             experience: None,
             salary: None,
             vacancies: None,
             tags: vec![],
-            apply: post.applyUrl.as_deref().map(apply_website).unwrap_or_default(),
+            apply: post
+                .applyUrl
+                .as_deref()
+                .map(apply_website)
+                .unwrap_or_default(),
             source: post.applyUrl,
             needs_fetch: false,
             confidence: 1.0,
+            last_seen: None,
         }
     }
 }
@@ -522,9 +578,7 @@ fn department_other(name: &str) -> Category {
 fn location(raw: &Option<String>, kind: Option<&str>) -> Option<JobLocation> {
     let text = raw.as_deref().unwrap_or("").trim();
 
-    let is_remote = kind
-        .map(|k| k.contains("remote"))
-        .unwrap_or(false)
+    let is_remote = kind.map(|k| k.contains("remote")).unwrap_or(false)
         || text.to_ascii_lowercase().contains("remote");
 
     if is_remote && text.trim().is_empty() {
@@ -644,12 +698,19 @@ fn extract_jobposting(value: json::Value) -> Option<JobPost> {
     let location = value
         .pointer("/jobLocation/address")
         .map(|addr| {
-            let city = addr.pointer("/addressLocality").and_then(json::Value::as_str);
-            let country = addr.pointer("/addressCountry").and_then(json::Value::as_str);
+            let city = addr
+                .pointer("/addressLocality")
+                .and_then(json::Value::as_str);
+            let country = addr
+                .pointer("/addressCountry")
+                .and_then(json::Value::as_str);
             format!(
                 "{} {}",
                 city.unwrap_or_default().trim(),
-                country.as_ref().map(|c| if c.len() == 2 { "" } else { c }).unwrap_or_default()
+                country
+                    .as_ref()
+                    .map(|c| if c.len() == 2 { "" } else { c })
+                    .unwrap_or_default()
             )
             .trim()
             .to_string()
@@ -739,5 +800,6 @@ fn extract_jobposting(value: json::Value) -> Option<JobPost> {
         source: url,
         needs_fetch: false,
         confidence: 1.0,
+        last_seen: None,
     })
 }

@@ -115,6 +115,61 @@ def location_normalize(loc_obj):
             return json.dumps(loc_obj), t, "OnSite"
     return json.dumps(loc_obj), str(loc_obj), "Unknown"
 
+def render_dataset_card(con, gold_dir: Path):
+    """Fill the SNAPSHOT section of warehouse/dataset_card.template.md with
+    live numbers and write the result to gold/README.md (uploaded by
+    hf_push.py as the HF dataset card)."""
+    template = Path(__file__).resolve().parent / "dataset_card.template.md"
+    card = template.read_text(encoding="utf-8")
+
+    s = con.execute("""
+        SELECT (SELECT COUNT(*) FROM dim_company) AS total_companies,
+               (SELECT COUNT(*) FROM dim_company WHERE has_job_page) AS companies_with_jobs,
+               (SELECT COUNT(*) FROM fact_job WHERE is_open) AS open_jobs,
+               (SELECT COUNT(*) FROM fact_job) AS total_jobs,
+               (SELECT COUNT(DISTINCT company_id) FROM fact_job WHERE is_open) AS hiring_companies,
+               (SELECT COUNT(DISTINCT tag) FROM bridge_job_tag b JOIN fact_job j USING(job_id) WHERE j.is_open) AS skills,
+               (SELECT COUNT(*) FROM fact_job WHERE is_open AND location_type = 'Remote') AS remote_jobs,
+               (SELECT MEDIAN(salary_max) FROM fact_job WHERE is_open AND salary_max IS NOT NULL) AS median_salary
+    """).fetchone()
+    top_company = con.execute(
+        "SELECT company_name FROM fact_job WHERE is_open GROUP BY 1 ORDER BY COUNT(*) DESC LIMIT 1"
+    ).fetchone()
+    top_skill = con.execute(
+        "SELECT tag FROM bridge_job_tag b JOIN fact_job j USING(job_id) WHERE j.is_open GROUP BY 1 ORDER BY COUNT(*) DESC LIMIT 1"
+    ).fetchone()
+
+    def fmt(n) -> str:
+        return f"{int(n):,}" if n is not None else "—"
+
+    snapshot = f"""## Snapshot ({date.today().isoformat()})
+
+> 🤖 **Auto-generated on every build** — these numbers are never edited by hand.
+
+| Metric | Value |
+|---|---|
+| Registered companies | {fmt(s[0])} |
+| Companies with verified career page | {fmt(s[1])} |
+| Hiring right now | {fmt(s[4])} |
+| Open postings | {fmt(s[2])} |
+| Total postings tracked | {fmt(s[3])} |
+| Distinct skills demanded | {fmt(s[5])} |
+| Remote-friendly postings | {fmt(s[6])} |
+| Median max salary (explicit figures) | {"৳" + fmt(s[7]) if s[7] else "—"} / month |
+| Most active hirer | {top_company[0] if top_company else "—"} |
+| Most in-demand skill | {top_skill[0] if top_skill else "—"} |
+"""
+    marker_start = "<!-- SNAPSHOT:START -->"
+    marker_end = "<!-- SNAPSHOT:END -->"
+    if marker_start not in card or marker_end not in card:
+        raise ValueError("dataset_card.template.md is missing SNAPSHOT markers")
+    head, rest = card.split(marker_start, 1)
+    _, tail = rest.split(marker_end, 1)
+    out = gold_dir / "README.md"
+    out.write_text(f"{head}{marker_start}\n\n{snapshot}\n{marker_end}{tail}", encoding="utf-8")
+    print(f"gold/README.md: dataset card rendered (snapshot {date.today().isoformat()})")
+
+
 def build(db_path: Path, parquet_dir: Path, gold_dir: Path, push: bool=False):
     db_path.parent.mkdir(parents=True, exist_ok=True)
     parquet_dir.mkdir(parents=True, exist_ok=True)
@@ -128,6 +183,20 @@ def build(db_path: Path, parquet_dir: Path, gold_dir: Path, push: bool=False):
         jobs_raw = json.load(f)
 
     crawl_id = datetime.now(timezone.utc).isoformat()
+
+    # Preserve first-seen history: schema.sql DROPs all tables on every
+    # build, so carry the earliest first_seen_at per job across rebuilds —
+    # otherwise "new this week" and job_snapshot history are meaningless.
+    first_seen_map = {}
+    if db_path.exists():
+        try:
+            prev = duckdb.connect(str(db_path), read_only=True)
+            first_seen_map = dict(
+                prev.execute("SELECT job_id, MIN(first_seen_at) FROM fact_job GROUP BY 1").fetchall()
+            )
+            prev.close()
+        except Exception as e:
+            print(f"no prior warehouse history to preserve: {e}")
 
     # prepare rows
     dim_rows = []
@@ -224,7 +293,7 @@ def build(db_path: Path, parquet_dir: Path, gold_dir: Path, push: bool=False):
                 job.get("tags", []),
                 json.dumps(apply_json), resolved_apply,
                 source, float(job.get("confidence", 1.0)), bool(job.get("needsFetch", False)),
-                now, now, crawl_id
+                first_seen_map.get(jid, now), now, crawl_id
             ))
             for tag in job.get("tags", []):
                 bridge_rows.append((jid, tag))
@@ -279,7 +348,9 @@ def build(db_path: Path, parquet_dir: Path, gold_dir: Path, push: bool=False):
         "location_heatmap": "SELECT * FROM v_location_heatmap LIMIT 50",
         "salary_stats": "SELECT * FROM v_salary_stats",
         "employment_breakdown": "SELECT * FROM v_employment_breakdown",
-        "recent_jobs": "SELECT company_name, title, location_text, location_type, employment_type, salary_min, salary_max, salary_currency, tags, source_url, apply_links, last_seen_at, SUBSTRING(description_md, 1, 6000) AS description_md, experience FROM fact_job WHERE is_open ORDER BY last_seen_at DESC LIMIT 150",
+        # ALL open jobs — the dashboard's Jobs tab must list everything,
+        # not a 150-row sample. Descriptions capped per row to bound size.
+        "recent_jobs": "SELECT company_name, title, location_text, location_type, employment_type, salary_min, salary_max, salary_currency, tags, source_url, apply_links, last_seen_at, SUBSTRING(description_md, 1, 4000) AS description_md, experience FROM fact_job WHERE is_open ORDER BY last_seen_at DESC",
         "companies": "SELECT company_id, name, website, job_url, host, tech, company_type, has_job_page FROM dim_company ORDER BY name",
     }
     import pandas as pd
@@ -295,6 +366,13 @@ def build(db_path: Path, parquet_dir: Path, gold_dir: Path, push: bool=False):
     stats = con.execute(gold_queries["stats"]).fetchone()
     print(f"Warehouse: {len(dim_rows)} companies, {len(fact_rows)} jobs, {len(bridge_rows)} tags")
     print(f"DuckDB: {db_path}  Parquet: {parquet_dir}  Gold: {gold_dir}")
+
+    # dataset card with a live snapshot table — regenerated on every build so
+    # the HF README never goes stale (no more manual number updates).
+    try:
+        render_dataset_card(con, gold_dir)
+    except Exception as e:
+        print(f"dataset card render failed: {e}", file=sys.stderr)
 
     con.close()
 

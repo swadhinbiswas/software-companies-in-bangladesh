@@ -8,8 +8,8 @@
 #[cfg(feature = "crawler")]
 use crate::Result;
 use log::{debug, warn};
-use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
 use reqwest::Client;
+use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, OnceLock};
@@ -55,13 +55,29 @@ impl Http {
     }
 
     /// Fetch a URL as text with retries and per-host politeness.
+    /// Falls back to the alternate `www.`/apex host when the server's
+    /// certificate doesn't cover the requested hostname.
     pub async fn get(&self, url: &Url) -> Result<String> {
-        self.fetch(url).await?.error_for_status()?.text().await.map_err(Into::into)
-    }
-
-    /// Access to the underlying reqwest client (for custom requests).
-    pub fn raw_client(&self) -> &Client {
-        &self.client
+        match self.fetch(url).await {
+            Ok(response) => response
+                .error_for_status()?
+                .text()
+                .await
+                .map_err(Into::into),
+            Err(err) if is_tls_error_msg(&err.to_string()) => match alternate_www_host(url) {
+                Some(alt) => {
+                    warn!("[TLS] {url}: certificate rejected; retrying via {alt}");
+                    let response = self.fetch(&alt).await?;
+                    response
+                        .error_for_status()?
+                        .text()
+                        .await
+                        .map_err(Into::into)
+                }
+                None => Err(err),
+            },
+            Err(err) => Err(err),
+        }
     }
 
     /// Fetch a URL and parse the response as JSON.
@@ -69,6 +85,30 @@ impl Http {
         let response = self.fetch(url).await?.error_for_status()?;
         let body = response.bytes().await?;
         Ok(serde_json::from_slice(&body)?)
+    }
+
+    /// Access to the underlying reqwest client (for custom requests).
+    pub fn raw_client(&self) -> &Client {
+        &self.client
+    }
+
+    /// Cheap reachability probe with the same TLS fallback as `get`.
+    pub async fn head_ok(&self, url: &Url) -> bool {
+        use reqwest::Method;
+        let send = |u: Url| {
+            self.raw_client()
+                .request(Method::HEAD, u)
+                .timeout(Duration::from_secs(5))
+                .send()
+        };
+        match send(url.clone()).await {
+            Ok(r) => r.status().is_success(),
+            Err(err) if is_tls_error_msg(&err.to_string()) => match alternate_www_host(url) {
+                Some(alt) => matches!(send(alt).await, Ok(r) if r.status().is_success()),
+                None => false,
+            },
+            Err(_) => false,
+        }
     }
 
     async fn fetch(&self, url: &Url) -> Result<reqwest::Response> {
@@ -81,7 +121,8 @@ impl Http {
             match self.client.get(url.clone()).send().await {
                 Ok(response) => {
                     let status = response.status();
-                    if status.is_server_error() || status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+                    if status.is_server_error() || status == reqwest::StatusCode::TOO_MANY_REQUESTS
+                    {
                         let retryable = attempt < MAX_RETRIES;
                         warn!(
                             "[RETRY {attempt}] {} -> {status}",
@@ -101,7 +142,10 @@ impl Http {
             }
 
             attempt += 1;
-            tokio::time::sleep(Duration::from_millis(BASE_BACKOFF_MS * (1 << (attempt - 1)))).await;
+            tokio::time::sleep(Duration::from_millis(
+                BASE_BACKOFF_MS * (1 << (attempt - 1)),
+            ))
+            .await;
         }
     }
 
@@ -146,11 +190,33 @@ fn fastrandish() -> u64 {
 
 static GLOBAL: OnceLock<Arc<Http>> = OnceLock::new();
 
+/// True when a request failed inside TLS verification (e.g. a certificate
+/// that doesn't cover the requested `www.` hostname).
+fn is_tls_error_msg(msg: &str) -> bool {
+    msg.contains("failed to verify TLS certificate")
+        || msg.contains("invalid peer certificate")
+        || (msg.contains("certificate") && (msg.contains("connect") || msg.contains("request")))
+}
+
+/// The same URL served by the alternate host: `www.example.com` ↔
+/// `example.com`. Used as a one-shot fallback for certificate mismatches.
+fn alternate_www_host(url: &Url) -> Option<Url> {
+    let host = url.host_str()?;
+    let alt: Option<String> = if let Some(rest) = host.strip_prefix("www.") {
+        Some(rest.to_string())
+    } else if host.split('.').count() == 2 {
+        Some(format!("www.{host}"))
+    } else {
+        None
+    };
+    let mut out = url.clone();
+    out.set_host(alt.as_deref()).ok()?;
+    Some(out)
+}
+
 /// The process-wide shared client, created on first use.
 pub fn global() -> &'static Arc<Http> {
-    GLOBAL.get_or_init(|| {
-        Arc::new(Http::new(8).expect("failed to build http client"))
-    })
+    GLOBAL.get_or_init(|| Arc::new(Http::new(8).expect("failed to build http client")))
 }
 
 /// Replace the global client (used to set the concurrency cap from CLI).

@@ -1,58 +1,58 @@
 [
   {
     "tech":"Android",
-    "companies":72
+    "companies":74
   },
   {
     "tech":"NodeJS",
-    "companies":57
+    "companies":61
   },
   {
     "tech":"Java",
-    "companies":52
+    "companies":56
   },
   {
     "tech":"React",
-    "companies":51
+    "companies":53
   },
   {
     "tech":"Flutter",
+    "companies":46
+  },
+  {
+    "tech":"Laravel",
     "companies":44
   },
   {
     "tech":"iOS",
-    "companies":41
-  },
-  {
-    "tech":"Laravel",
-    "companies":41
+    "companies":42
   },
   {
     "tech":"PHP",
-    "companies":39
+    "companies":41
   },
   {
     "tech":"Python",
+    "companies":35
+  },
+  {
+    "tech":"MySQL",
     "companies":34
   },
   {
     "tech":"WordPress",
-    "companies":30
+    "companies":32
   },
   {
     "tech":"VueJS",
-    "companies":30
+    "companies":31
   },
   {
-    "tech":"MySQL",
+    "tech":"Spring",
     "companies":29
   },
   {
     "tech":"AWS",
-    "companies":27
-  },
-  {
-    "tech":"Spring",
     "companies":27
   },
   {
@@ -64,23 +64,31 @@
     "companies":23
   },
   {
+    "tech":"MongoDB",
+    "companies":22
+  },
+  {
     "tech":"Angular",
     "companies":22
   },
   {
-    "tech":"MongoDB",
-    "companies":22
+    "tech":"JavaScript",
+    "companies":19
   },
   {
     "tech":"C#",
     "companies":19
   },
   {
-    "tech":"JavaScript",
+    "tech":"NextJS",
     "companies":17
   },
   {
-    "tech":"NextJS",
+    "tech":"SQL",
+    "companies":17
+  },
+  {
+    "tech":"PostgreSQL",
     "companies":17
   },
   {
@@ -88,16 +96,8 @@
     "companies":17
   },
   {
-    "tech":"PostgreSQL",
-    "companies":16
-  },
-  {
     "tech":"AngularJS",
     "companies":15
-  },
-  {
-    "tech":"SQL",
-    "companies":14
   },
   {
     "tech":"Go",
@@ -132,7 +132,7 @@
     "companies":8
   },
   {
-    "tech":"Blockchain",
+    "tech":"TypeScript",
     "companies":7
   },
   {
@@ -140,19 +140,15 @@
     "companies":7
   },
   {
-    "tech":"TypeScript",
+    "tech":"Blockchain",
     "companies":7
   },
   {
-    "tech":"Linux",
-    "companies":4
-  },
-  {
-    "tech":"C",
-    "companies":4
-  },
-  {
     "tech":"Magento",
+    "companies":4
+  },
+  {
+    "tech":"Firebase",
     "companies":4
   },
   {
@@ -160,11 +156,7 @@
     "companies":4
   },
   {
-    "tech":"CakePHP",
-    "companies":4
-  },
-  {
-    "tech":"Firebase",
+    "tech":"Linux",
     "companies":4
   },
   {
@@ -176,7 +168,7 @@
     "companies":4
   },
   {
-    "tech":"ExpressJS",
+    "tech":"CakePHP",
     "companies":4
   },
   {
@@ -188,11 +180,19 @@
     "companies":4
   },
   {
-    "tech":"Unity",
+    "tech":"C",
+    "companies":4
+  },
+  {
+    "tech":"ExpressJS",
+    "companies":4
+  },
+  {
+    "tech":"Azure",
     "companies":3
   },
   {
-    "tech":"Ruby",
+    "tech":"NoSQL",
     "companies":3
   },
   {
@@ -200,7 +200,7 @@
     "companies":3
   },
   {
-    "tech":"Redis",
+    "tech":"Joomla",
     "companies":3
   },
   {
@@ -212,7 +212,7 @@
     "companies":3
   },
   {
-    "tech":"Joomla",
+    "tech":"Ruby",
     "companies":3
   },
   {
@@ -220,55 +220,15 @@
     "companies":3
   },
   {
-    "tech":"Azure",
+    "tech":"Unity",
     "companies":3
   },
   {
-    "tech":"NoSQL",
+    "tech":"Redis",
     "companies":3
-  },
-  {
-    "tech":"Cypress",
-    "companies":2
-  },
-  {
-    "tech":"Redux",
-    "companies":2
-  },
-  {
-    "tech":"TailwindCSS",
-    "companies":2
-  },
-  {
-    "tech":"Figma",
-    "companies":2
   },
   {
     "tech":"Hibernate",
-    "companies":2
-  },
-  {
-    "tech":"Rails",
-    "companies":2
-  },
-  {
-    "tech":"Flask",
-    "companies":2
-  },
-  {
-    "tech":"Kafka",
-    "companies":2
-  },
-  {
-    "tech":"SCSS",
-    "companies":2
-  },
-  {
-    "tech":"Less",
-    "companies":2
-  },
-  {
-    "tech":"AR",
     "companies":2
   },
   {
@@ -276,7 +236,11 @@
     "companies":2
   },
   {
-    "tech":"Dart",
+    "tech":"Flask",
+    "companies":2
+  },
+  {
+    "tech":"Figma",
     "companies":2
   },
   {
@@ -284,31 +248,7 @@
     "companies":2
   },
   {
-    "tech":"LLM",
-    "companies":2
-  },
-  {
-    "tech":"Lambda",
-    "companies":2
-  },
-  {
-    "tech":"RabbitMQ",
-    "companies":2
-  },
-  {
-    "tech":"DeepLearning",
-    "companies":2
-  },
-  {
-    "tech":"Scala",
-    "companies":2
-  },
-  {
-    "tech":"MFC",
-    "companies":2
-  },
-  {
-    "tech":"MQTT",
+    "tech":"AR",
     "companies":2
   },
   {
@@ -316,35 +256,75 @@
     "companies":2
   },
   {
-    "tech":"Vuex",
-    "companies":1
+    "tech":"TailwindCSS",
+    "companies":2
   },
   {
-    "tech":"CloudComputing",
-    "companies":1
+    "tech":"MQTT",
+    "companies":2
   },
   {
-    "tech":"Jenkins",
-    "companies":1
+    "tech":"Less",
+    "companies":2
   },
   {
-    "tech":"JMS",
-    "companies":1
+    "tech":"Lambda",
+    "companies":2
   },
   {
-    "tech":"Testsigma",
-    "companies":1
+    "tech":"Kafka",
+    "companies":2
   },
   {
-    "tech":"nopCommerce",
-    "companies":1
+    "tech":"LLM",
+    "companies":2
+  },
+  {
+    "tech":"DeepLearning",
+    "companies":2
+  },
+  {
+    "tech":"MFC",
+    "companies":2
+  },
+  {
+    "tech":"Redux",
+    "companies":2
+  },
+  {
+    "tech":"Scala",
+    "companies":2
   },
   {
     "tech":"GoogleMaps",
+    "companies":2
+  },
+  {
+    "tech":"RabbitMQ",
+    "companies":2
+  },
+  {
+    "tech":"SCSS",
+    "companies":2
+  },
+  {
+    "tech":"Dart",
+    "companies":2
+  },
+  {
+    "tech":"Cypress",
+    "companies":2
+  },
+  {
+    "tech":"Rails",
+    "companies":2
+  },
+  {
+    "tech":"Celery",
     "companies":1
   },
   {
-    "tech":"Tomcat",
+    "tech":"Gunicorn",
     "companies":1
   },
   {
@@ -352,35 +332,15 @@
     "companies":1
   },
   {
-    "tech":"JSP",
-    "companies":1
-  },
-  {
     "tech":"ArcGIS",
     "companies":1
   },
   {
-    "tech":"Nginx",
+    "tech":"Tomcat",
     "companies":1
   },
   {
-    "tech":"WPF",
-    "companies":1
-  },
-  {
-    "tech":"Tizen",
-    "companies":1
-  },
-  {
-    "tech":"FastAPI",
-    "companies":1
-  },
-  {
-    "tech":"JoomShaper",
-    "companies":1
-  },
-  {
-    "tech":"Mongoose",
+    "tech":"AEM",
     "companies":1
   },
   {
@@ -388,7 +348,47 @@
     "companies":1
   },
   {
-    "tech":"UWP",
+    "tech":"Solidity",
+    "companies":1
+  },
+  {
+    "tech":"GoogleNLP",
+    "companies":1
+  },
+  {
+    "tech":"Zend",
+    "companies":1
+  },
+  {
+    "tech":"FastAPI",
+    "companies":1
+  },
+  {
+    "tech":"GitHub",
+    "companies":1
+  },
+  {
+    "tech":"Nginx",
+    "companies":1
+  },
+  {
+    "tech":"Rust",
+    "companies":1
+  },
+  {
+    "tech":"Servlet",
+    "companies":1
+  },
+  {
+    "tech":"Symfony",
+    "companies":1
+  },
+  {
+    "tech":"ClickHouse",
+    "companies":1
+  },
+  {
+    "tech":"GraphQL",
     "companies":1
   },
   {
@@ -400,27 +400,11 @@
     "companies":1
   },
   {
-    "tech":"Windows",
+    "tech":"Vuex",
     "companies":1
   },
   {
-    "tech":"Rust",
-    "companies":1
-  },
-  {
-    "tech":"GCP",
-    "companies":1
-  },
-  {
-    "tech":"Odoo",
-    "companies":1
-  },
-  {
-    "tech":"GoogleNLP",
-    "companies":1
-  },
-  {
-    "tech":"PyTorch",
+    "tech":"CloudComputing",
     "companies":1
   },
   {
@@ -428,51 +412,7 @@
     "companies":1
   },
   {
-    "tech":"Electron",
-    "companies":1
-  },
-  {
-    "tech":"Symfony",
-    "companies":1
-  },
-  {
-    "tech":"Selenium",
-    "companies":1
-  },
-  {
-    "tech":"Sitecore",
-    "companies":1
-  },
-  {
-    "tech":"JPA",
-    "companies":1
-  },
-  {
-    "tech":"JSTL",
-    "companies":1
-  },
-  {
-    "tech":"Gatsby",
-    "companies":1
-  },
-  {
-    "tech":"TensorFlow",
-    "companies":1
-  },
-  {
-    "tech":"Solidity",
-    "companies":1
-  },
-  {
-    "tech":"Shopify",
-    "companies":1
-  },
-  {
-    "tech":"AEM",
-    "companies":1
-  },
-  {
-    "tech":"GraphQL",
+    "tech":"Tizen",
     "companies":1
   },
   {
@@ -480,23 +420,35 @@
     "companies":1
   },
   {
-    "tech":"ClickHouse",
+    "tech":"Jenkins",
     "companies":1
   },
   {
-    "tech":"Gunicorn",
+    "tech":"Windows",
     "companies":1
   },
   {
-    "tech":"Servlet",
+    "tech":"Gatsby",
     "companies":1
   },
   {
-    "tech":"Celery",
+    "tech":"Shopify",
     "companies":1
   },
   {
-    "tech":"Zend",
+    "tech":"JSP",
+    "companies":1
+  },
+  {
+    "tech":"Mongoose",
+    "companies":1
+  },
+  {
+    "tech":"JPA",
+    "companies":1
+  },
+  {
+    "tech":"UWP",
     "companies":1
   },
   {
@@ -504,7 +456,55 @@
     "companies":1
   },
   {
-    "tech":"GitHub",
+    "tech":"PyTorch",
+    "companies":1
+  },
+  {
+    "tech":"JSTL",
+    "companies":1
+  },
+  {
+    "tech":"Selenium",
+    "companies":1
+  },
+  {
+    "tech":"Testsigma",
+    "companies":1
+  },
+  {
+    "tech":"Odoo",
+    "companies":1
+  },
+  {
+    "tech":"TensorFlow",
+    "companies":1
+  },
+  {
+    "tech":"GCP",
+    "companies":1
+  },
+  {
+    "tech":"JoomShaper",
+    "companies":1
+  },
+  {
+    "tech":"nopCommerce",
+    "companies":1
+  },
+  {
+    "tech":"Sitecore",
+    "companies":1
+  },
+  {
+    "tech":"WPF",
+    "companies":1
+  },
+  {
+    "tech":"Electron",
+    "companies":1
+  },
+  {
+    "tech":"JMS",
     "companies":1
   }
 ]

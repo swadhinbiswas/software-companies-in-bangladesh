@@ -1,22 +1,22 @@
 [
   {
     "employment_type":"FullTime",
-    "jobs":199
-  },
-  {
-    "employment_type":"Internship",
-    "jobs":19
+    "jobs":371
   },
   {
     "employment_type":null,
-    "jobs":8
+    "jobs":67
+  },
+  {
+    "employment_type":"Internship",
+    "jobs":30
   },
   {
     "employment_type":"Contract",
-    "jobs":4
+    "jobs":6
   },
   {
     "employment_type":"PartTime",
-    "jobs":2
+    "jobs":4
   }
 ]

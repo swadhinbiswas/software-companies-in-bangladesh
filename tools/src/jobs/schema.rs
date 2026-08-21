@@ -65,6 +65,14 @@ pub struct JobPost {
 
     #[schemars(range(min = 0.0, max = 1.0))]
     pub confidence: f32,
+
+    /// Crawler bookkeeping: ISO date (YYYY-MM-DD) this posting was last
+    /// observed on its source page. Managed by the pipeline — never
+    /// extracted from the LLM, hence excluded from the generated schema.
+    /// Drives pruning of stale postings at save time.
+    #[serde(default)]
+    #[schemars(skip)]
+    pub last_seen: Option<String>,
 }
 
 /// Broad job category or professional domain.
@@ -74,7 +82,7 @@ pub enum Category {
     Technology,
     Sales,
     Marketing,
-    Other(String)
+    Other(String),
 }
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
@@ -209,6 +217,19 @@ impl JobPost {
             .as_ref()
             .is_none_or(|deadline| !deadline.is_expired())
     }
+
+    /// Stamp with today's date — called by the pipeline for every posting
+    /// observed during this run.
+    pub fn mark_seen(&mut self) {
+        self.last_seen = Some(chrono::Utc::now().date_naive().to_string());
+    }
+
+    /// True when the deadline has passed.
+    pub fn is_expired(&self) -> bool {
+        self.deadline
+            .as_ref()
+            .is_some_and(|deadline| deadline.is_expired())
+    }
 }
 
 fn fmt_salary(amount: u32) -> u32 {
@@ -282,7 +303,22 @@ fn print_post(o: &mut String, source: &str, job: &JobPost) -> Result {
 
 pub fn gen_readme(dir: PathBuf) -> Result {
     let file = TextFile::read(dir.join("data/job-posts.json"))?;
-    let jobs: Jobs = json::from_str(&file.text)?;
+    let mut jobs: Jobs = json::from_str(&file.text)?;
+
+    // Collapse content-duplicates so counts match the warehouse, which keys
+    // rows by hash(company|title|source). Same logical identity, std hasher.
+    fn dup_key(company: &str, job: &JobPost) -> u64 {
+        use std::hash::{Hash, Hasher};
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        company.hash(&mut h);
+        job.title.hash(&mut h);
+        job.source.hash(&mut h);
+        h.finish()
+    }
+    let mut seen: HashSet<u64> = HashSet::new();
+    for (name, entry) in jobs.iter_mut() {
+        entry.jobs.retain(|job| seen.insert(dup_key(name, job)));
+    }
 
     let mut o = String::new();
 

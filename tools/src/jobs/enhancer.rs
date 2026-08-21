@@ -30,15 +30,15 @@ fn normalize_tag(tag: &str, schema: Option<&Schema>) -> Option<String> {
     }
     // If schema provided, check if tag is known or hint to closest; but enhancer keeps LLM tags as-is,
     // warehouse will map. We just ensure it looks like a tech.
-    if let Some(schema) = schema {
-        if schema.is_unknown_technology(trimmed) {
-            // Allow but warn; maybe it's a new tech like "n8n" — keep if plausible (alphanum + ./#+)
-            if !trimmed.chars().any(|c| c.is_alphanumeric()) {
-                return None;
-            }
-            // If very far from known tech, maybe hallucinated — keep but flag
-            // We keep it; warehouse check will error if truly unknown
+    if let Some(schema) = schema
+        && schema.is_unknown_technology(trimmed)
+    {
+        // Allow but warn; maybe it's a new tech like "n8n" — keep if plausible (alphanum + ./#+)
+        if !trimmed.chars().any(|c| c.is_alphanumeric()) {
+            return None;
         }
+        // If very far from known tech, maybe hallucinated — keep but flag
+        // We keep it; warehouse check will error if truly unknown
     }
     Some(trimmed.to_string())
 }
@@ -73,7 +73,11 @@ pub fn enhance_job_deterministic(mut job: JobPost, schema: Option<&Schema>) -> O
         if job.needs_fetch {
             // Keep but will be detailed later; don't drop
         } else {
-            debug!("drop job with too-short description: {} - {}", job.title, desc.len());
+            debug!(
+                "drop job with too-short description: {} - {}",
+                job.title,
+                desc.len()
+            );
             // Keep low-confidence jobs but lower confidence
             job.confidence = (job.confidence * 0.5).min(0.4);
             if job.confidence < 0.5 {
@@ -99,13 +103,16 @@ pub fn enhance_job_deterministic(mut job: JobPost, schema: Option<&Schema>) -> O
         }
     }
     // If tags empty but description contains obvious tech, try simple keyword scan
-    if cleaned_tags.is_empty() && schema.is_some() {
-        if let Some(s) = schema {
-            let desc_lower = job.description.to_ascii_lowercase();
-            for tech in s.technologies.keys() {
-                if desc_lower.contains(&tech.to_ascii_lowercase()) && tech.len() > 2 {
-                    cleaned_tags.push(tech.clone());
-                    if cleaned_tags.len() >= 5 { break; }
+    if cleaned_tags.is_empty()
+        && schema.is_some()
+        && let Some(s) = schema
+    {
+        let desc_lower = job.description.to_ascii_lowercase();
+        for tech in s.technologies.keys() {
+            if desc_lower.contains(&tech.to_ascii_lowercase()) && tech.len() > 2 {
+                cleaned_tags.push(tech.clone());
+                if cleaned_tags.len() >= 5 {
+                    break;
                 }
             }
         }
@@ -114,10 +121,10 @@ pub fn enhance_job_deterministic(mut job: JobPost, schema: Option<&Schema>) -> O
 
     // 4. Salary: ensure min <= max, currency uppercase, drop if both None
     if let Some(s) = job.salary.as_mut() {
-        if let (Some(min), Some(max)) = (s.min, s.max) {
-            if min > max {
-                std::mem::swap(&mut s.min, &mut s.max);
-            }
+        if let (Some(min), Some(max)) = (s.min, s.max)
+            && min > max
+        {
+            std::mem::swap(&mut s.min, &mut s.max);
         }
         if let Some(c) = s.currency.as_mut() {
             *c = c.trim().to_ascii_uppercase();
@@ -136,16 +143,22 @@ pub fn enhance_job_deterministic(mut job: JobPost, schema: Option<&Schema>) -> O
         match loc {
             JobLocation::OnSite(s) | JobLocation::Hybrid(s) => {
                 let t = s.trim().to_string();
-                if t.is_empty() || t.to_ascii_lowercase() == "bangladesh" {
+                if t.is_empty() || t.eq_ignore_ascii_case("bangladesh") {
                     *s = t;
                 } else {
                     // Deduplicate "Dhaka, Dhaka"
-                    let parts: Vec<&str> = t.split(',').map(|p| p.trim()).filter(|p| !p.is_empty()).collect();
+                    let parts: Vec<&str> = t
+                        .split(',')
+                        .map(|p| p.trim())
+                        .filter(|p| !p.is_empty())
+                        .collect();
                     let mut uniq = Vec::new();
                     let mut seen = HashSet::new();
                     for p in parts {
                         let l = p.to_ascii_lowercase();
-                        if seen.insert(l) { uniq.push(p); }
+                        if seen.insert(l) {
+                            uniq.push(p);
+                        }
                     }
                     *s = uniq.join(", ");
                 }
@@ -169,26 +182,41 @@ pub fn enhance_job_deterministic(mut job: JobPost, schema: Option<&Schema>) -> O
 
     // 7. Confidence recalibration based on completeness
     let mut completeness = 0.0;
-    if !job.description.is_empty() { completeness += 0.3; }
-    if job.location.is_some() { completeness += 0.2; }
-    if job.salary.is_some() { completeness += 0.1; }
-    if !job.apply.is_empty() || job.source.is_some() { completeness += 0.2; }
-    if !job.tags.is_empty() { completeness += 0.1; }
-    if job.employment_type.is_some() { completeness += 0.1; }
+    if !job.description.is_empty() {
+        completeness += 0.3;
+    }
+    if job.location.is_some() {
+        completeness += 0.2;
+    }
+    if job.salary.is_some() {
+        completeness += 0.1;
+    }
+    if !job.apply.is_empty() || job.source.is_some() {
+        completeness += 0.2;
+    }
+    if !job.tags.is_empty() {
+        completeness += 0.1;
+    }
+    if job.employment_type.is_some() {
+        completeness += 0.1;
+    }
     // Blend original confidence with completeness (weighted)
     let blended = job.confidence * 0.6 + completeness * 0.4;
     job.confidence = blended.clamp(0.0, 1.0);
     // Drop if blended still <0.5
     if job.confidence < 0.5 {
-        debug!("drop low confidence after enhance: {} {:.2}", job.title, job.confidence);
+        debug!(
+            "drop low confidence after enhance: {} {:.2}",
+            job.title, job.confidence
+        );
         return None;
     }
 
     // 8. Vacancies: cap realistic (1-100)
-    if let Some(v) = job.vacancies {
-        if v == 0 || v > 200 {
-            job.vacancies = None;
-        }
+    if let Some(v) = job.vacancies
+        && (v == 0 || v > 200)
+    {
+        job.vacancies = None;
     }
 
     Some(job)
@@ -202,13 +230,15 @@ impl JobPost {
 pub fn dedup_jobs(mut jobs: Vec<JobPost>) -> Vec<JobPost> {
     let mut map: HashMap<String, JobPost> = HashMap::new();
     for job in jobs.drain(..) {
-        let key = format!("{}|{:?}|{:?}", job.title.to_ascii_lowercase(), job.location, job.employment_type.is_some());
+        let key = dedup_key(&job);
         // Use entry to keep highest confidence
         map.entry(key)
             .and_modify(|existing| {
                 if job.confidence > existing.confidence {
                     *existing = job.clone();
-                } else if job.description.len() > existing.description.len() && (job.confidence - existing.confidence).abs() < 0.1 {
+                } else if job.description.len() > existing.description.len()
+                    && (job.confidence - existing.confidence).abs() < 0.1
+                {
                     // Prefer longer description if confidence close
                     *existing = job.clone();
                 }
@@ -216,8 +246,28 @@ pub fn dedup_jobs(mut jobs: Vec<JobPost>) -> Vec<JobPost> {
             .or_insert(job);
     }
     let mut out: Vec<JobPost> = map.into_values().collect();
-    out.sort_by(|a, b| b.confidence.partial_cmp(&a.confidence).unwrap_or(std::cmp::Ordering::Equal));
+    out.sort_by(|a, b| {
+        b.confidence
+            .partial_cmp(&a.confidence)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     out
+}
+
+/// Dedup identity: normalized (title, location). Raw `{:?}` of the location
+/// enum leaked duplicates through representation noise ("Dhaka" vs "Dhaka ",
+/// case differences) — normalize both sides.
+fn dedup_key(job: &JobPost) -> String {
+    let title = job.title.trim().to_ascii_lowercase();
+    let location = job.location.as_ref().map(|l| match l {
+        JobLocation::Remote => "remote".to_string(),
+        JobLocation::Hybrid(s) | JobLocation::OnSite(s) => s
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join(" ")
+            .to_ascii_lowercase(),
+    });
+    format!("{title}|{location:?}|{}", job.employment_type.is_some())
 }
 
 /// Full batch enhancer — deterministic + optional LLM refinement for low-confidence jobs.
@@ -228,7 +278,11 @@ pub fn enhance_batch(jobs: Vec<JobPost>, schema: Option<&Schema>) -> Vec<JobPost
     for job in jobs {
         let title = job.title.clone();
         match enhance_job_deterministic(job, schema) {
-            Some(j) => enhanced.push(j),
+            Some(mut j) => {
+                // Observed this run — drives stale-posting pruning later.
+                j.mark_seen();
+                enhanced.push(j);
+            }
             None => {
                 warn!("enhancer dropped job: {}", title);
                 dropped += 1;
@@ -238,7 +292,12 @@ pub fn enhance_batch(jobs: Vec<JobPost>, schema: Option<&Schema>) -> Vec<JobPost
     let before = enhanced.len();
     let deduped = dedup_jobs(enhanced);
     if dropped > 0 || deduped.len() < before {
-        debug!("enhancer: dropped {} low-quality, deduped {} → {}", dropped, before, deduped.len());
+        debug!(
+            "enhancer: dropped {} low-quality, deduped {} → {}",
+            dropped,
+            before,
+            deduped.len()
+        );
     }
     deduped
 }
@@ -267,14 +326,68 @@ mod tests {
     use super::*;
     #[test]
     fn test_dedup() {
-        let a = JobPost { title: "Backend Engineer".into(), description: "Go + Python role".into(), employment_type: Some(EmploymentType::FullTime), role: None, posted_at: None, category: None, deadline: None, location: Some(JobLocation::OnSite("Dhaka".into())), experience: None, salary: None, vacancies: None, tags: vec!["Go".into()], apply: vec![], source: None, needs_fetch: false, confidence: 0.9 };
-        let b = JobPost { title: "backend engineer".into(), description: "Go Python role longer description with more details".into(), employment_type: Some(EmploymentType::FullTime), role: None, posted_at: None, category: None, deadline: None, location: Some(JobLocation::OnSite("Dhaka".into())), experience: None, salary: None, vacancies: None, tags: vec!["Go".into(), "Python".into()], apply: vec![], source: None, needs_fetch: false, confidence: 0.85 };
-        let out = dedup_jobs(vec![a,b]);
+        let a = JobPost {
+            title: "Backend Engineer".into(),
+            description: "Go + Python role".into(),
+            employment_type: Some(EmploymentType::FullTime),
+            role: None,
+            posted_at: None,
+            category: None,
+            deadline: None,
+            location: Some(JobLocation::OnSite("Dhaka".into())),
+            experience: None,
+            salary: None,
+            vacancies: None,
+            tags: vec!["Go".into()],
+            apply: vec![],
+            source: None,
+            needs_fetch: false,
+            confidence: 0.9,
+            last_seen: None,
+        };
+        let b = JobPost {
+            title: "backend engineer".into(),
+            description: "Go Python role longer description with more details".into(),
+            employment_type: Some(EmploymentType::FullTime),
+            role: None,
+            posted_at: None,
+            category: None,
+            deadline: None,
+            location: Some(JobLocation::OnSite("Dhaka".into())),
+            experience: None,
+            salary: None,
+            vacancies: None,
+            tags: vec!["Go".into(), "Python".into()],
+            apply: vec![],
+            source: None,
+            needs_fetch: false,
+            confidence: 0.85,
+            last_seen: None,
+        };
+        let out = dedup_jobs(vec![a, b]);
         assert_eq!(out.len(), 1);
     }
     #[test]
     fn test_enhance_filters_junk() {
-        let j = JobPost { title: "Test".into(), description: "x".into(), employment_type: None, role: None, posted_at: None, category: None, deadline: None, location: None, experience: None, salary: None, vacancies: Some(999), tags: vec!["hiring".into(), "Job".into(), "React".into()], apply: vec![], source: None, needs_fetch: false, confidence: 0.9 };
+        let j = JobPost {
+            title: "Test".into(),
+            description: "x".into(),
+            employment_type: None,
+            role: None,
+            posted_at: None,
+            category: None,
+            deadline: None,
+            location: None,
+            experience: None,
+            salary: None,
+            vacancies: Some(999),
+            tags: vec!["hiring".into(), "Job".into(), "React".into()],
+            apply: vec![],
+            source: None,
+            needs_fetch: false,
+            confidence: 0.9,
+            last_seen: None,
+        };
         let out = enhance_job_deterministic(j, None);
         // Title too short → dropped
         assert!(out.is_none());

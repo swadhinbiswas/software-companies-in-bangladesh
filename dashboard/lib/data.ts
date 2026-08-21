@@ -75,6 +75,33 @@ export async function getStats(): Promise<Stats> {
   if (Array.isArray(rows) && rows.length) return rows[0] as Stats;
   return rows as unknown as Stats;
 }
+
+/// Last-resort stats computed from the committed crawl output, so the
+/// dashboard never shows stale hardcoded numbers when gold files are
+/// missing (fresh checkout, deploy without warehouse artifacts).
+export async function getFallbackStats(): Promise<Stats> {
+  const empty: Stats = { total_companies: 0, companies_with_jobs: 0, open_jobs: 0, total_jobs: 0, hiring_companies: 0 };
+  if (typeof window !== "undefined") return empty;
+  try {
+    const { readFile } = await import("fs/promises");
+    const { join } = await import("path");
+    const cwd = process.cwd();
+    const candidates = [
+      join(cwd, "..", "data", "job-posts.json"),
+      join(cwd, "data", "job-posts.json"),
+      join(cwd, "..", "..", "data", "job-posts.json"),
+    ];
+    for (const p of candidates) {
+      try {
+        const data = JSON.parse(await readFile(p, "utf-8")) as Record<string, { jobs: unknown[] }>;
+        const companies = Object.keys(data).length;
+        const total = Object.values(data).reduce((n, c) => n + (c.jobs?.length ?? 0), 0);
+        return { total_companies: companies, companies_with_jobs: companies, open_jobs: total, total_jobs: total, hiring_companies: companies };
+      } catch {}
+    }
+  } catch {}
+  return empty;
+}
 export async function getTechDemand(): Promise<TechDemand[]> { return fetchGold<TechDemand[]>("tech_demand"); }
 export async function getJobsPerCompany(): Promise<CompanyRow[]> { return fetchGold<CompanyRow[]>("jobs_per_company"); }
 export async function getRecentJobs(): Promise<JobRow[]> { return fetchGold<JobRow[]>("recent_jobs"); }

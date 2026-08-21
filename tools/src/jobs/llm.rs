@@ -196,7 +196,10 @@ impl Llm {
 
         let cleaned = sanitize_json(&content);
         let value = json::from_str::<json::Value>(&cleaned).map_err(|err| {
-            format!("LLM returned invalid JSON after sanitize: {err}\n{}", truncate(&cleaned, 600))
+            format!(
+                "LLM returned invalid JSON after sanitize: {err}\n{}",
+                truncate(&cleaned, 600)
+            )
         })?;
 
         debug!("LLM call took {:.1}s", started.elapsed().as_secs_f64());
@@ -220,16 +223,18 @@ impl Llm {
         let mut attempt = 0u32;
         loop {
             // Pace: reserve the next request slot so starts stay at least
-            // `min_interval` apart. The lock is NEVER held across the sleep
-            // (a std Mutex guard across .await stalls worker threads and,
-            // with enough callers, the whole runtime).
+            // `min_interval` apart. Reservations STACK: each caller gets a
+            // slot strictly after all previously booked ones. (Comparing
+            // against `Instant::now()` instead would collapse concurrent
+            // callers into the same slot — Instant::elapsed() saturates at
+            // zero for future timestamps — producing burst 429s.)
+            // The lock is NEVER held across the sleep.
             let wait = {
                 let mut last = self.pace.lock().unwrap();
-                let since = last.elapsed();
-                let wait = self.min_interval.checked_sub(since).unwrap_or_default();
-                // Reserve this slot before releasing the lock.
-                *last = Instant::now() + wait;
-                wait
+                let now = Instant::now();
+                let base = if *last > now { *last } else { now };
+                *last = base + self.min_interval;
+                base - now
             };
             if !wait.is_zero() {
                 tokio::time::sleep(wait).await;
@@ -237,10 +242,8 @@ impl Llm {
 
             // Gemini authenticates via `?key=` query parameter, Zen via Bearer header.
             let auth_url = match self.provider {
-                Provider::Gemini => {
-                    reqwest::Url::parse_with_params(url, &[("key", &self.api_key)])
-                        .map_err(|err| format!("invalid LLM url {url}: {err}"))?
-                }
+                Provider::Gemini => reqwest::Url::parse_with_params(url, &[("key", &self.api_key)])
+                    .map_err(|err| format!("invalid LLM url {url}: {err}"))?,
                 Provider::Zen => reqwest::Url::parse(url)
                     .map_err(|err| format!("invalid LLM url {url}: {err}"))?,
             };
@@ -287,14 +290,17 @@ impl Llm {
                             header_delay.max(body_delay)
                         );
                     } else {
-                        return Err(format!(
-                            "LLM error {status}: {}",
-                            truncate(&text, 300)
-                        )
-                        .into());
+                        return Err(format!("LLM error {status}: {}", truncate(&text, 300)).into());
                     }
 
-                    Duration::from_secs(header_delay.max(body_delay).max(1))
+                    // Honor the server's delay when given, but never hammer:
+                    // a missing/zero Retry-After falls back to exponential
+                    // backoff instead of retrying every second.
+                    Duration::from_secs(
+                        header_delay
+                            .max(body_delay)
+                            .max(BACKOFF_SECS << attempt.min(5)),
+                    )
                 }
                 Err(err) if attempt + 1 < MAX_ATTEMPTS => {
                     warn!("[LLM-RETRY {attempt}] {err}");
@@ -366,7 +372,11 @@ fn sanitize_json(raw: &str) -> String {
     let mut out = raw.trim().to_string();
     // 1. Remove markdown code fences if present
     if out.starts_with("```json") {
-        out = out.strip_prefix("```json").unwrap_or(&out).trim().to_string();
+        out = out
+            .strip_prefix("```json")
+            .unwrap_or(&out)
+            .trim()
+            .to_string();
     } else if out.starts_with("```") {
         out = out.strip_prefix("```").unwrap_or(&out).trim().to_string();
     }
@@ -386,7 +396,7 @@ fn sanitize_json(raw: &str) -> String {
     while let Some(c) = chars.next() {
         if c == '\\' {
             match chars.peek() {
-                Some(&next) if next == '/' => {
+                Some(&'/') => {
                     // \/ -> just /
                     result.push('/');
                     chars.next();
@@ -398,12 +408,22 @@ fn sanitize_json(raw: &str) -> String {
                     result.push(next);
                     chars.next();
                 }
-                Some(&next) if next == 'x' => {
+                Some(&'x') => {
                     // \xHH hex escape — skip it entirely
                     chars.next(); // skip 'x'
-                    for _ in 0..2 { chars.next(); } // skip two hex digits
+                    for _ in 0..2 {
+                        chars.next();
+                    } // skip two hex digits
                 }
-                Some(&next) if next == 'n' || next == 't' || next == 'r' || next == '\\' || next == '"' || next == 'b' || next == 'f' => {
+                Some(&next)
+                    if next == 'n'
+                        || next == 't'
+                        || next == 'r'
+                        || next == '\\'
+                        || next == '"'
+                        || next == 'b'
+                        || next == 'f' =>
+                {
                     // Valid JSON escape — keep as-is
                     result.push(c);
                     result.push(next);
@@ -414,7 +434,9 @@ fn sanitize_json(raw: &str) -> String {
                     result.push(c);
                     result.push(next);
                     chars.next();
-                    for _ in 0..4 { result.push(chars.next().unwrap_or('0')); }
+                    for _ in 0..4 {
+                        result.push(chars.next().unwrap_or('0'));
+                    }
                 }
                 _ => {
                     // Unknown escape — escape the backslash
@@ -431,16 +453,26 @@ fn sanitize_json(raw: &str) -> String {
 
 fn truncate(text: &str, max: usize) -> String {
     if text.len() <= max {
-        text.to_string()
-    } else {
-        format!("{}…", &text[..max])
+        return text.to_string();
     }
+    // Byte-slicing panics when `max` lands inside a multi-byte UTF-8 char
+    // (error bodies routinely contain Bengali text) — back off to a boundary.
+    let mut end = max;
+    while end > 0 && !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    format!("{}…", &text[..end])
 }
 
 /// Resolve the Gemini API key: `GEMINI_API_KEY` (also `GEMINIAPIKEY` alias) env first, then the `google`
 /// service in the opencode auth store.
 fn gemini_api_key() -> Result<String> {
-    for env in ["GEMINI_API_KEY", "GEMINIAPIKEY", "GOOGLE_API_KEY", "GOOGLE_GENAI_API_KEY"] {
+    for env in [
+        "GEMINI_API_KEY",
+        "GEMINIAPIKEY",
+        "GOOGLE_API_KEY",
+        "GOOGLE_GENAI_API_KEY",
+    ] {
         if let Some(key) = env_key(env) {
             return Ok(key);
         }
@@ -465,8 +497,12 @@ fn env_key(env: &str) -> Option<String> {
 
 fn auth_service_key(service: &str) -> Result<String> {
     let auth = auth_json_path()?;
-    let text = std::fs::read_to_string(&auth)
-        .map_err(|err| format!("no API key env set and failed to read {}: {err}", auth.display()))?;
+    let text = std::fs::read_to_string(&auth).map_err(|err| {
+        format!(
+            "no API key env set and failed to read {}: {err}",
+            auth.display()
+        )
+    })?;
     let value: json::Value = json::from_str(&text)
         .map_err(|err| format!("failed to parse {}: {err}", auth.display()))?;
 

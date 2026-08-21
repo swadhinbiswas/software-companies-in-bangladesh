@@ -12,10 +12,12 @@
 //!
 //! Errors never abort the run; output is persisted incrementally and merged
 //! with previous runs, so a re-run only fills the gaps (24h disk cache).
-mod input_normalizer;
 pub mod ats;
+pub mod bdjobs;
 pub mod enhancer;
+mod input_normalizer;
 pub mod llm;
+pub mod refine;
 pub mod schema;
 
 use ats::Ats;
@@ -101,13 +103,27 @@ pub const DEFAULT_DEADLINE_SECS: u64 = 1500;
 
 /// Common career-page paths probed during discovery.
 const CAREER_PATHS: &[&str] = &[
-    "/career", "/careers", "/jobs", "/job-opening", "/job-openings",
-    "/join-us", "/work-with-us", "/hiring", "/open-positions",
-    "/recruit", "/recruitment", "/vacancy", "/vacancies",
-    "/about/careers", "/company/careers",
+    "/career",
+    "/careers",
+    "/jobs",
+    "/job-opening",
+    "/job-openings",
+    "/join-us",
+    "/work-with-us",
+    "/hiring",
+    "/open-positions",
+    "/recruit",
+    "/recruitment",
+    "/vacancy",
+    "/vacancies",
+    "/about/careers",
+    "/company/careers",
 ];
 
 #[tokio::main]
+// CLI entry point — each flag maps 1:1 to a crawl concern; a config struct
+// would just move the same count behind a constructor.
+#[allow(clippy::too_many_arguments)]
 pub async fn run(
     provider: llm::Provider,
     model: String,
@@ -116,6 +132,8 @@ pub async fn run(
     log_file: bool,
     concurrent: u8,
     deadline_secs: u64,
+    refine: bool,
+    board: bool,
 ) -> Result<Vec<(String, String)>> {
     http::init_global(concurrent as usize)?;
     let http = http::global().clone();
@@ -130,6 +148,15 @@ pub async fn run(
     let output_file = TextFile::read(dir.join("./data/job-posts.json"))?;
     // Merge with previous results: failed companies never lose data.
     let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
+    // Grandfather entries from before last_seen tracking existed: treat the
+    // previous file as "seen today" so staleness aging starts from now.
+    for entry in output.values_mut() {
+        for job in &mut entry.jobs {
+            if job.last_seen.is_none() {
+                job.mark_seen();
+            }
+        }
+    }
 
     let started = std::time::Instant::now();
     // AI career discovery is the most expensive per-company step; only run
@@ -137,7 +164,12 @@ pub async fn run(
     let ai_discovery_until = deadline_secs / 2;
     let explicit_count = companies.values().filter(|c| c.links.job.is_some()).count();
     let discover_count = companies.len() - explicit_count;
-    info!("Crawling {} companies ({} explicit, {} to discover)...", companies.len(), explicit_count, discover_count);
+    info!(
+        "Crawling {} companies ({} explicit, {} to discover)...",
+        companies.len(),
+        explicit_count,
+        discover_count
+    );
 
     // Track discovered career URLs for persistence back to companies.toml
     let discovered_urls: std::sync::Arc<std::sync::Mutex<Vec<(String, String)>>> =
@@ -199,6 +231,12 @@ pub async fn run(
                                 debug!("[DISCOVER] {} using {candidate}", base.host_str().unwrap_or("?"));
                                 return (name, Some((candidate, Ok(prepared), true)));
                             }
+                            // JS-rendered shell: every path on this host
+                            // renders the same — stop probing immediately.
+                            Ok(SitePrepare::Empty { spa: true }) => {
+                                debug!("[DISCOVER] {} candidate {candidate} is a SPA shell; giving up", base.host_str().unwrap_or("?"));
+                                break;
+                            }
                             Ok(_) => debug!("[DISCOVER] {} candidate {candidate} empty; trying next", base.host_str().unwrap_or("?")),
                             Err(err) => warn!("[PAGE-ERROR] {candidate}: {err}"),
                         }
@@ -249,7 +287,7 @@ pub async fn run(
                 }
                 pending.push((name, url, md));
             }
-            Some((_, Ok(SitePrepare::Empty), _)) => {}
+            Some((_, Ok(SitePrepare::Empty { .. }), _)) => {}
             Some((_, Err(err), _)) => error!("[ERROR] {name}: {err}"),
             None => {}
         }
@@ -261,7 +299,9 @@ pub async fn run(
     }
     drop(stream);
     if discovered_count > 0 {
-        info!("[DISCOVER] Found career pages for {discovered_count} companies without explicit job link");
+        info!(
+            "[DISCOVER] Found career pages for {discovered_count} companies without explicit job link"
+        );
     }
 
     // ── Phase 2: batched LLM extraction of pending sites. ────────────────
@@ -298,7 +338,13 @@ pub async fn run(
                                 entry.jobs.push(job);
                             } else {
                                 // Company not yet in output (first time) — create entry
-                                output.insert(name.clone(), Entry { source: url.clone(), jobs: vec![job] });
+                                output.insert(
+                                    name.clone(),
+                                    Entry {
+                                        source: url.clone(),
+                                        jobs: vec![job],
+                                    },
+                                );
                             }
                         }
                     }
@@ -346,7 +392,10 @@ pub async fn run(
             break;
         }
         info!("[LLM-SWEEP] retrying {} site(s)", sweep.len());
-        let chunk: Vec<(&str, &str)> = sweep.iter().map(|(n, md)| (n.as_str(), md.as_str())).collect();
+        let chunk: Vec<(&str, &str)> = sweep
+            .iter()
+            .map(|(n, md)| (n.as_str(), md.as_str()))
+            .collect();
         let budget = Duration::from_secs(
             deadline_secs
                 .saturating_sub(started.elapsed().as_secs())
@@ -363,7 +412,13 @@ pub async fn run(
                             } else if let Some(entry) = output.get_mut(&name) {
                                 entry.jobs.push(job);
                             } else {
-                                output.insert(name.clone(), Entry { source: url.clone(), jobs: vec![job] });
+                                output.insert(
+                                    name.clone(),
+                                    Entry {
+                                        source: url.clone(),
+                                        jobs: vec![job],
+                                    },
+                                );
                             }
                         }
                     }
@@ -405,7 +460,11 @@ pub async fn run(
             let chunk: Vec<_> = fetched[i..(i + BATCH_DETAILS).min(fetched.len())]
                 .iter()
                 .map(|(_, url, job, md)| {
-                    (url.as_str(), job.title.as_str(), md.as_ref().ok().map(|s| s.as_str()))
+                    (
+                        url.as_str(),
+                        job.title.as_str(),
+                        md.as_ref().ok().map(|s| s.as_str()),
+                    )
                 })
                 .collect();
 
@@ -423,7 +482,8 @@ pub async fn run(
                                 post.apply = vec![ApplicationMethod::Website(url.to_string())];
                             }
                             // Production AI hygiene for detail page extraction
-                            if let Some(e) = enhancer::enhance_job_deterministic(post, None) {
+                            if let Some(mut e) = enhancer::enhance_job_deterministic(post, None) {
+                                e.mark_seen();
                                 *job = e;
                             } else {
                                 job.title = String::new(); // mark for drop
@@ -432,22 +492,80 @@ pub async fn run(
                     }
                 }
                 Ok(Err(err)) => error!("[DETAIL-BATCH-ERROR] {err}"),
-                Err(_) => warn!("[DETAIL-BATCH-TIMEOUT] detail batch exceeded its budget; skipping"),
+                Err(_) => {
+                    warn!("[DETAIL-BATCH-TIMEOUT] detail batch exceeded its budget; skipping")
+                }
             }
             i += BATCH_DETAILS;
         }
 
         // Assign resolved posts back into the output (with final validation).
         for (name, _, job, _) in fetched {
-            if job.title.is_empty() || job.confidence < 0.5 { continue; }
+            if job.title.is_empty() || job.confidence < 0.5 {
+                continue;
+            }
             if let Some(entry) = output.get_mut(&name) {
                 if job.source.is_some() || !job.apply.is_empty() {
                     entry.jobs.push(job);
                 }
             } else if job.source.is_some() || !job.apply.is_empty() {
-                let src = job.source.clone().and_then(|s| Url::parse(&s).ok()).unwrap_or_else(|| Url::parse("https://example.com").unwrap());
-                output.insert(name.clone(), Entry { source: src, jobs: vec![job] });
+                let src = job
+                    .source
+                    .clone()
+                    .and_then(|s| Url::parse(&s).ok())
+                    .unwrap_or_else(|| Url::parse("https://example.com").unwrap());
+                output.insert(
+                    name.clone(),
+                    Entry {
+                        source: src,
+                        jobs: vec![job],
+                    },
+                );
             }
+        }
+    }
+
+    // ── Phase 3.5: BDJobs board ingestion (IT/software focus). ────────────
+    // Employers post here even when their own career site is unscrapable,
+    // so this fills the biggest coverage gap. Jobs merge into REGISTERED
+    // companies only: the board also returns garments factories, trading
+    // houses and anonymous posters ("A Group of Company") that must never
+    // enter a dataset of Bangladeshi software companies.
+    if board && started.elapsed().as_secs() < deadline_secs {
+        match bdjobs::fetch(&engine.http, concurrent as usize).await {
+            Ok(groups) => {
+                let lookup: std::collections::HashMap<String, String> = companies
+                    .keys()
+                    .map(|n| (normalize_company_name(n), n.clone()))
+                    .filter(|(k, _)| !k.is_empty())
+                    .collect();
+                let mut merged = 0usize;
+                let mut skipped_unknown = 0usize;
+                for (employer, jobs) in groups {
+                    // Normalized match collapses legal-suffix noise:
+                    // "Brain Station 23" ↔ "Brain Station 23 PLC".
+                    let Some(key) = lookup.get(&normalize_company_name(&employer)) else {
+                        skipped_unknown += 1;
+                        continue;
+                    };
+                    let jobs = enhancer::enhance_batch(jobs, None);
+                    if jobs.is_empty() {
+                        continue;
+                    }
+                    merged += jobs.len();
+                    match output.get_mut(key) {
+                        Some(entry) => entry.jobs.extend(jobs),
+                        None => {
+                            let source = Url::parse("https://jobs.bdjobs.com/").unwrap();
+                            output.insert(key.clone(), Entry { source, jobs });
+                        }
+                    }
+                }
+                info!(
+                    "[BDJOBS] merged {merged} job(s) into registered companies; skipped {skipped_unknown} unregistered employer(s)"
+                );
+            }
+            Err(err) => warn!("[BDJOBS] board ingestion failed: {err}"),
         }
     }
 
@@ -456,8 +574,53 @@ pub async fn run(
         let jobs = std::mem::take(&mut entry.jobs);
         entry.jobs = enhancer::dedup_jobs(jobs);
     }
+
+    // ── Phase 4: batched AI refinement (data cleaning) ────────────────────
+    if refine {
+        refine::run(&engine.llm, &mut output, started, deadline_secs).await?;
+        for entry in output.values_mut() {
+            let jobs = std::mem::take(&mut entry.jobs);
+            entry.jobs = enhancer::dedup_jobs(jobs)
+                .into_iter()
+                .filter(|j| j.confidence >= 0.5)
+                .collect();
+        }
+        output.retain(|_, e| !e.jobs.is_empty());
+    }
+
     // Final sanity: drop companies with zero open jobs after enhancer filtering
     output.retain(|_, e| !e.jobs.is_empty());
+
+    // ── Phase 5: prune dead postings before persisting. ───────────────────
+    // The merge-only design otherwise accumulates expired listings forever.
+    // Two exit criteria: deadline passed, or not observed on any source page
+    // for 21+ days (3 missed weekly runs — the listing is gone).
+    {
+        let cutoff = (chrono::Utc::now().date_naive() - chrono::Duration::days(21)).to_string();
+        let mut pruned_expired = 0usize;
+        let mut pruned_stale = 0usize;
+        for entry in output.values_mut() {
+            entry.jobs.retain(|j| {
+                if j.is_expired() {
+                    pruned_expired += 1;
+                    return false;
+                }
+                if let Some(seen) = &j.last_seen
+                    && seen.as_str() < cutoff.as_str()
+                {
+                    pruned_stale += 1;
+                    return false;
+                }
+                true
+            });
+        }
+        output.retain(|_, e| !e.jobs.is_empty());
+        if pruned_expired + pruned_stale > 0 {
+            info!(
+                "[PRUNE] removed {pruned_expired} expired + {pruned_stale} stale (>21d unseen) posting(s)"
+            );
+        }
+    }
 
     save(&output_file, &output)?;
 
@@ -482,15 +645,11 @@ fn save(output_file: &TextFile, output: &Jobs) -> Result {
 }
 
 /// Queue a discovered career URL for persistence by the caller.
-fn record_discovered(
-    discovered: &std::sync::Mutex<Vec<(String, String)>>,
-    name: &str,
-    url: &Url,
-) {
-    if let Ok(mut urls) = discovered.lock() {
-        if !urls.iter().any(|(n, _)| n == name) {
-            urls.push((name.to_owned(), url.to_string()));
-        }
+fn record_discovered(discovered: &std::sync::Mutex<Vec<(String, String)>>, name: &str, url: &Url) {
+    if let Ok(mut urls) = discovered.lock()
+        && !urls.iter().any(|(n, _)| n == name)
+    {
+        urls.push((name.to_owned(), url.to_string()));
     }
 }
 
@@ -499,6 +658,40 @@ fn record_discovered(
 fn is_dead_link(err: &crate::DynError) -> bool {
     let msg = err.to_string();
     msg.contains("404 Not Found") || msg.contains("410 Gone")
+}
+
+/// Normalize a company name for cross-source matching: lowercase, strip
+/// punctuation and legal suffixes so "Brain Station 23 PLC", "Brain Station
+/// 23 Ltd." and "Brain Station 23" collapse to one key.
+fn normalize_company_name(name: &str) -> String {
+    const NOISE: &[&str] = &[
+        "ltd",
+        "limited",
+        "plc",
+        "pvt",
+        "private",
+        "inc",
+        "llc",
+        "llp",
+        "co",
+        "company",
+        "corp",
+        "corporation",
+        "bd",
+        "bangladesh",
+    ];
+    let key: String = name
+        .to_ascii_lowercase()
+        .split(|c: char| !c.is_ascii_alphanumeric())
+        .filter(|t| !t.is_empty() && !NOISE.contains(t))
+        .collect::<Vec<_>>()
+        .join(" ");
+    // Degenerate input ("Co.", "(BD)") — fall back to raw lowercase.
+    if key.is_empty() {
+        name.trim().to_ascii_lowercase()
+    } else {
+        key
+    }
 }
 
 pub fn clear_cache() -> Result {
@@ -511,8 +704,9 @@ enum SitePrepare {
     Exact(Vec<JobPost>),
     /// Cleaned Markdown awaiting LLM extraction.
     Markdown(String),
-    /// Nothing scrapable (JS-rendered page, empty listing, ...).
-    Empty,
+    /// Nothing scrapable. `spa` marks a JS-rendered shell: every other path
+    /// on that host will render the same way, so probing more is pointless.
+    Empty { spa: bool },
 }
 
 impl SitePrepare {
@@ -520,7 +714,7 @@ impl SitePrepare {
         match self {
             Self::Exact(jobs) => !jobs.is_empty(),
             Self::Markdown(md) => !md.trim().is_empty(),
-            Self::Empty => false,
+            Self::Empty { .. } => false,
         }
     }
 }
@@ -537,7 +731,11 @@ impl Crawler {
             Some(path) => Some(Mutex::new(open_log_file(path)?)),
             None => None,
         };
-        Ok(Self { http, llm, log_file })
+        Ok(Self {
+            http,
+            llm,
+            log_file,
+        })
     }
 
     /// Phase 1: fastest path to structured or clean data for one site.
@@ -545,9 +743,10 @@ impl Crawler {
         // 1. Known ATS platform → public JSON API (exact, no LLM).
         if let Some(ats) = Ats::detect(url)
             && let Some(jobs) = ats.fetch_jobs(&self.http).await?
-                && !jobs.is_empty() {
-                return Ok(SitePrepare::Exact(jobs));
-            }
+            && !jobs.is_empty()
+        {
+            return Ok(SitePrepare::Exact(jobs));
+        }
 
         // 2. Schema.org JobPosting JSON-LD on the page (no LLM).
         let html = self.fetch_html(url).await?;
@@ -560,8 +759,16 @@ impl Crawler {
         let markdown = self.crawl_listing(url).await?;
 
         if markdown.trim().is_empty() {
-            warn!("[EMPTY] {url}");
-            return Ok(SitePrepare::Empty);
+            // Distinguish a JS-rendered shell (unfixable without a browser,
+            // and identical on every path of this host) from a genuinely
+            // empty listing page.
+            let spa = looks_like_spa(&html);
+            if spa {
+                debug!("[SPA] {url}: JS-rendered shell, no static content");
+            } else {
+                warn!("[EMPTY] {url}");
+            }
+            return Ok(SitePrepare::Empty { spa });
         }
 
         Ok(SitePrepare::Markdown(markdown))
@@ -580,7 +787,10 @@ impl Crawler {
         if let Ok(html) = self.fetch_html(base_url).await {
             for url in extract_career_links(&html, base_url) {
                 if seen_paths.insert(url.path().to_string()) {
-                    debug!("[DISCOVER] {}: found career link {url}", base_url.host_str().unwrap_or("?"));
+                    debug!(
+                        "[DISCOVER] {}: found career link {url}",
+                        base_url.host_str().unwrap_or("?")
+                    );
                     candidates.push(url);
                 }
             }
@@ -596,29 +806,21 @@ impl Crawler {
             if seen_paths.contains(*path) {
                 continue;
             }
-            let Ok(url) = base_url.join(path) else { continue };
+            let Ok(url) = base_url.join(path) else {
+                continue;
+            };
             probes += 1;
-            if self.http_head_ok(&url).await {
-                debug!("[DISCOVER] {}: found career page at {path}", base_url.host_str().unwrap_or("?"));
+            if self.http.head_ok(&url).await {
+                debug!(
+                    "[DISCOVER] {}: found career page at {path}",
+                    base_url.host_str().unwrap_or("?")
+                );
                 seen_paths.insert(path.to_string());
                 candidates.push(url);
             }
         }
 
         candidates
-    }
-
-    /// Quick HEAD check — is the URL reachable and not 404/500?
-    async fn http_head_ok(&self, url: &Url) -> bool {
-        use reqwest::Method;
-        match self.http.raw_client().request(Method::HEAD, url.clone())
-            .timeout(Duration::from_secs(5))
-            .send()
-            .await
-        {
-            Ok(r) => r.status().is_success(),
-            Err(_) => false,
-        }
     }
 
     /// AI-based career page discovery: send homepage markdown to LLM,
@@ -656,15 +858,29 @@ impl Crawler {
             "required": ["path"]
         });
 
-        match self.llm.extract_json(
-            "You are a web crawler that finds career page URLs.",
-            &prompt,
-            &schema,
-        ).await {
+        match self
+            .llm
+            .extract_json(
+                "You are a web crawler that finds career page URLs.",
+                &prompt,
+                &schema,
+            )
+            .await
+        {
             Ok(value) => {
                 let path = value.get("path")?.as_str()?.trim();
-                if path == "NONE" || path.is_empty() {
-                    debug!("[AI-DISCOVER] {host}: AI returned NONE");
+                // "/" or "" is the homepage — not a career page. Reject it
+                // (and anything without a career-ish hint) to avoid wasting
+                // a fetch + LLM extraction on the site root.
+                let valid = path.len() > 1
+                    && path != "NONE"
+                    && [
+                        "career", "job", "hiring", "join", "vacanc", "recruit", "position", "work",
+                    ]
+                    .iter()
+                    .any(|kw| path.to_ascii_lowercase().contains(kw));
+                if !valid {
+                    debug!("[AI-DISCOVER] {host}: AI returned unusable path {path:?}");
                     return None;
                 }
                 // Resolve relative path to full URL
@@ -673,12 +889,21 @@ impl Crawler {
                 } else {
                     base_url.join(path).ok()?
                 };
-                // Verify the URL is reachable
-                if self.http_head_ok(&url).await {
+                // Verify the URL is reachable AND still looks like a career
+                // page after redirects (some sites bounce /careers -> /).
+                let hint = |u: &Url| {
+                    let p = u.path().to_ascii_lowercase();
+                    [
+                        "career", "job", "hiring", "join", "vacanc", "recruit", "position", "work",
+                    ]
+                    .iter()
+                    .any(|kw| p.contains(kw))
+                };
+                if self.http.head_ok(&url).await && hint(&url) {
                     info!("[AI-DISCOVER] {host}: found career page at {}", url.path());
                     Some(url)
                 } else {
-                    debug!("[AI-DISCOVER] {host}: AI suggested {} but HEAD failed", url);
+                    debug!("[AI-DISCOVER] {host}: AI suggested {url} but it failed verification");
                     None
                 }
             }
@@ -704,7 +929,10 @@ impl Crawler {
 
         let mut markdown = String::new();
         for (name, md) in sites {
-            markdown.push_str(&format!("<!-- SITE: {name} -->\n\n{}\n\n<!-- END SITE -->\n\n", cap_input(md, MAX_LLM_CHARS)));
+            markdown.push_str(&format!(
+                "<!-- SITE: {name} -->\n\n{}\n\n<!-- END SITE -->\n\n",
+                cap_input(md, MAX_LLM_CHARS)
+            ));
         }
 
         self.log_page("batch", &markdown);
@@ -718,7 +946,13 @@ impl Crawler {
         let schema = batch_schema();
         let value = self
             .llm
-            .extract_json(LLM_INPUT, &format!("Extract from this markdown and return the job postings as json.\n\n{markdown}"), &schema)
+            .extract_json(
+                LLM_INPUT,
+                &format!(
+                    "Extract from this markdown and return the job postings as json.\n\n{markdown}"
+                ),
+                &schema,
+            )
             .await?;
 
         let assignments = parse_batch(&value);
@@ -728,7 +962,10 @@ impl Crawler {
 
     /// One LLM call for a batch of detail pages (in given order).
     /// Returns one `JobPost` per page (aligned by index), `None` for empty.
-    async fn extract_details(&self, pages: &[(&str, &str, Option<&str>)]) -> Result<Vec<Option<JobPost>>> {
+    async fn extract_details(
+        &self,
+        pages: &[(&str, &str, Option<&str>)],
+    ) -> Result<Vec<Option<JobPost>>> {
         let cache_key = {
             let mut urls: Vec<_> = pages.iter().map(|(url, _, _)| url.to_string()).collect();
             urls.sort();
@@ -743,7 +980,10 @@ impl Crawler {
         let mut markdown = String::new();
         for (index, (url, title, md)) in pages.iter().enumerate() {
             let md = md.unwrap_or_default();
-            markdown.push_str(&format!("<!-- JOB {index}: {url} (expected title: {title}) -->\n\n{}\n\n", cap_input(md, MAX_LLM_CHARS)));
+            markdown.push_str(&format!(
+                "<!-- JOB {index}: {url} (expected title: {title}) -->\n\n{}\n\n",
+                cap_input(md, MAX_LLM_CHARS)
+            ));
         }
 
         self.log_page("details", &markdown);
@@ -767,9 +1007,10 @@ impl Crawler {
 
     fn log_page(&self, url: &str, markdown: &str) {
         if let Some(file) = &self.log_file
-            && let Ok(file) = file.lock() {
-                let _ = writeln!(file.as_ref(), "---\n{url}\n{}", cap_input(markdown, 12_000));
-            }
+            && let Ok(file) = file.lock()
+        {
+            let _ = writeln!(file.as_ref(), "---\n{url}\n{}", cap_input(markdown, 12_000));
+        }
     }
 
     /// Instant HTML fetch with a 24h cache. No browser, no waits.
@@ -830,7 +1071,7 @@ impl Crawler {
                             }
                         }
                     }
-                    Ok(_) => warn!("[EMPTY-PAGE] {url}"),
+                    Ok(_) => debug!("[EMPTY-PAGE] {url}"),
                     Err(err) => warn!("[PAGE-ERROR] {url}: {err}"),
                 }
             }
@@ -852,7 +1093,10 @@ impl Crawler {
 
         let from_ld = ats::from_json_ld(&html);
         if !from_ld.is_empty() {
-            return Ok(format!("<!-- JSON-LD -->\n{}", serde_json::to_string(&from_ld)?));
+            return Ok(format!(
+                "<!-- JSON-LD -->\n{}",
+                serde_json::to_string(&from_ld)?
+            ));
         }
 
         normalize_markdown_from(&html)
@@ -909,7 +1153,11 @@ fn parse_batch(value: &json::Value) -> Vec<(String, Vec<JobPost>)> {
                     let jobs: Vec<JobPost> = site
                         .get("jobs")
                         .and_then(json::Value::as_array)
-                        .map(|jobs| jobs.iter().filter_map(|j| json::from_value(j.clone()).ok()).collect())
+                        .map(|jobs| {
+                            jobs.iter()
+                                .filter_map(|j| json::from_value(j.clone()).ok())
+                                .collect()
+                        })
                         .unwrap_or_default();
                     Some((name, jobs))
                 })
@@ -936,15 +1184,48 @@ fn parse_details(value: &json::Value) -> Vec<Option<JobPost>> {
         .unwrap_or_default()
 }
 
+/// Heuristic: does this HTML look like a client-side-rendered SPA shell?
+/// Such pages convert to empty markdown no matter which path is fetched,
+/// so the crawler should stop probing the host instead of hammering it.
+///
+/// Deliberately marker-only: a size-based guess ("small page, no <table>")
+/// misclassified small static career pages as SPA shells and silently
+/// dropped whole companies from coverage.
+fn looks_like_spa(html: &str) -> bool {
+    let lower = html.to_ascii_lowercase();
+    const MARKERS: &[&str] = &[
+        r#"id="root""#,
+        r#"id="app""#,
+        r#"id="__next""#,
+        r#"id="__nuxt""#,
+        r#"id="app-root""#,
+        "enable javascript",
+        "requires javascript",
+    ];
+    MARKERS.iter().any(|m| lower.contains(m))
+}
+
 /// Extract career/job-related links from HTML homepage.
 /// Returns same-origin URLs whose path or text contains career keywords.
 fn extract_career_links(html: &str, base: &Url) -> Vec<Url> {
     use scraper::{Html, Selector};
 
     let keywords = [
-        "career", "careers", "job", "jobs", "hiring", "join", "work-with",
-        "vacancy", "vacancies", "recruit", "open-position", "opening",
-        "employment", "opportunity", "we-are-hiring",
+        "career",
+        "careers",
+        "job",
+        "jobs",
+        "hiring",
+        "join",
+        "work-with",
+        "vacancy",
+        "vacancies",
+        "recruit",
+        "open-position",
+        "opening",
+        "employment",
+        "opportunity",
+        "we-are-hiring",
     ];
 
     let html = Html::parse_document(html);
@@ -971,11 +1252,15 @@ fn extract_career_links(html: &str, base: &Url) -> Vec<Url> {
 
             // Check path or link text for career keywords
             let path_lower = url.path().to_ascii_lowercase();
-            let text: String = element.text().collect::<String>().trim().to_ascii_lowercase();
+            let text: String = element
+                .text()
+                .collect::<String>()
+                .trim()
+                .to_ascii_lowercase();
 
-            let is_career = keywords.iter().any(|kw| {
-                path_lower.contains(kw) || text.contains(kw)
-            });
+            let is_career = keywords
+                .iter()
+                .any(|kw| path_lower.contains(kw) || text.contains(kw));
 
             if is_career {
                 let key = url.to_string();
@@ -1030,10 +1315,13 @@ fn next_page_links(html: &str, base: &Url) -> Vec<Url> {
         for element in html.select(&selector) {
             let text = element.text().collect::<String>();
             let text = text.trim();
-            if matches!(text, "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →")
-                && let Some(href) = element.value().attr("href") {
-                    candidates.push((href.to_string(), true));
-                }
+            if matches!(
+                text,
+                "next" | "next page" | "Next" | "Next Page" | "›" | "»" | "Next →"
+            ) && let Some(href) = element.value().attr("href")
+            {
+                candidates.push((href.to_string(), true));
+            }
         }
     }
 
@@ -1063,6 +1351,23 @@ use crate::utils::resolve_url;
 
 #[cfg(test)]
 mod tests {
+    use super::normalize_company_name;
+
+    #[test]
+    fn company_names_match_across_legal_suffixes() {
+        assert_eq!(
+            normalize_company_name("Brain Station 23"),
+            normalize_company_name("Brain Station 23 PLC")
+        );
+        assert_eq!(normalize_company_name("Therap (BD) Ltd."), "therap");
+        assert_eq!(
+            normalize_company_name("Vivasoft Ltd."),
+            normalize_company_name("Vivasoft")
+        );
+        // Degenerate names fall back to raw lowercase instead of empty keys.
+        assert!(!normalize_company_name("(BD)").is_empty());
+    }
+
     #[test]
     fn cache_filenames_are_short_and_stable() {
         let long = "https://example.com/careers?utm_source=x&utm_medium=y&utm_campaign=z&page=2&foo=bar&baz=qux&more=stuff&even=more&params=here".repeat(3);
