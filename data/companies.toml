@@ -1,22 +1,23 @@
 ["2A IT"]
 tech = ["Android", "Java", "Laravel", "MySQL", "jQuery"]
-type = []
+type = ["Software Firm", "IT Services"]
 website = "http://2aitbd.com/"
 
 [6amTech]
 tech = ["Flutter", "Laravel", "React", "WordPress"]
-type = []
+type = ["Software Firm", "SaaS"]
 website = "https://6amtech.com/"
+job = "https://6amtech.com/career/"
 
 ["6sense Technologies"]
 tech = ["AWS", "Docker", "Figma", "Java", "MongoDB", "NextJS", "NodeJS"]
-type = []
+type = ["IT Services", "Outsourcing"]
 website = "https://6sensehq.com/"
 job = "https://6sensehq.freshteam.com/jobs"
 
 ["ATI Ltd."]
 tech = ["AWS", "Android", "C#", "Docker", "Flutter", "JavaFX", "PHP", "React", "SpringBoot", "VueJS"]
-type = []
+type = ["Software Firm", "Fintech"]
 website = "https://atilimited.net/"
 linkedin = "https://www.linkedin.com/company/atilimited/"
 facebook = "https://www.facebook.com/ATI.LIMITED/"
@@ -24,144 +25,147 @@ job = "https://atilimited.net/career"
 
 ["Adplay Technologies (VU Mobile)"]
 tech = ["React", "WordPress"]
-type = []
+type = ["Digital Agency", "Telecom"]
 website = "http://vumobile.biz/"
 
 ["Adventure Dhaka Ltd."]
 tech = ["DevOps", "Flutter", "Go", "Java", "NextJS", "Swift"]
-type = []
+type = ["Software Firm"]
 website = "https://adventurekk.com/company/about/"
 
 ["Alchemy Software Ltd."]
 tech = [".NET", "Android", "Java", "Laravel", "WordPress"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://alchemy-bd.com/"
 job = "https://alchemy-bd.com/career/"
 
 ["AlgorixIT LTD."]
 tech = ["Android", "Flutter", "iOS"]
-type = []
+type = ["IT Services"]
 website = "https://algorixit.com/"
 
 ["All Generation tech"]
 tech = ["Azure", "C#", "Docker", "Go", "MongoDB", "Python"]
-type = []
+type = ["Software Firm"]
 website = "https://allgentech.bamboohr.com/careers"
+job = "https://allgentech.bamboohr.com/career"
 
 ["Anchorblock Technology"]
 tech = ["AWS", "Android", "Django", "Flutter", "ML", "NestJS", "Solidity"]
-type = []
+type = ["Blockchain", "AI"]
 website = "https://anchorblock.ai/"
 
 ["Apex DMIT"]
 tech = ["Flutter", "JavaScript", "PHP", "Python"]
-type = []
+type = ["EdTech"]
 website = "https://www.apexdmit.com/"
 job = "https://www.career.apexdmit.com/"
 
 [Appnap]
 tech = ["iOS"]
-type = []
+type = ["Mobile Apps"]
 website = "https://www.appnap.io/"
 job = "https://www.appnap.io/career"
 
 ["AppsCode Ltd."]
 tech = ["Docker", "Go", "Kubernetes", "VueJS"]
-type = []
+type = ["SaaS"]
 website = "https://www.appscode.com/"
 linkedin = "https://www.linkedin.com/company/appscode/"
 
 [Appstick]
 tech = ["Android", "Flutter", "ReactNative", "iOS"]
-type = []
+type = ["SaaS", "Mobile Apps"]
 website = "https://appstick.com.bd/"
 
 [Appyfilab]
 tech = ["Flutter", "Laravel", "NodeJS", "Nuxt"]
-type = []
+type = ["Mobile Apps"]
 website = "https://www.appifylab.com/"
 job = "https://www.appifylab.com/career#openings"
 
 ["Apurba Technologies Ltd."]
 tech = ["AWS", "Docker", "JavaScript", "Kubernetes", "ML", "PHP", "Python", "Spring"]
-type = []
+type = ["IT Services", "Software Firm"]
 website = "http://apurba.com.bd/"
 linkedin = "https://www.linkedin.com/company/apurba-technologies-ltd"
 
 ["Aqualink Bangladesh Ltd."]
 tech = ["Flutter", "Laravel", "ML", "Python"]
-type = []
+type = ["IoT", "Hardware"]
 website = "https://aqualinkbangladesh.com/"
+job = "https://aqualinkbangladesh.com/career"
 
 [Arraytics]
 tech = ["Docker", "GoogleNLP", "Ionic", "Laravel", "NodeJS", "WordPress"]
-type = []
+type = ["SaaS", "Digital Agency"]
 website = "https://arraytics.com/"
 linkedin = "https://www.linkedin.com/company/arraytics/"
 
 ["Astha IT"]
 tech = ["AWS", "Android", "Angular", "C#", "Docker", "Flutter", "Go", "Kubernetes", "React", "Selenium", "SpringBoot", "Testsigma", "VueJS"]
-type = []
+type = ["Outsourcing", "Software Firm"]
 website = "https://www.asthait.com/"
 twitter = "https://twitter.com/AsthaIT"
 linkedin = "https://www.linkedin.com/company/asthait/"
 facebook = "https://www.facebook.com/asthait"
+job = "https://www.asthait.com/career/"
 
 ["Audacity Ventures"]
 tech = ["Android", "ExpressJS", "Flutter", "Kotlin", "MongoDB", "Swift", "VueJS"]
-type = []
+type = ["SaaS"]
 website = "https://audacityventures.ca/"
-job = "https://career.audacityit.com"
+job = "https://career.audacityit.com/"
 
 ["Augmedix Inc."]
 tech = ["AWS", "Android", "AngularJS", "Go", "ML", "NodeJS", "Spring"]
-type = []
+type = ["HealthTech", "AI"]
 website = "https://www.augmedix.com/"
 job = "https://www.augmedix.com/careers"
 
 ["Avenir IP Ltd."]
 tech = ["Android", "NodeJS", "PHP", "Swift"]
-type = []
+type = ["Software Firm"]
 website = "https://aveniripltd.com/"
 
 ["BJIT Ltd."]
 tech = ["AI", "Android", "C#", "Java", "PHP", "iOS"]
-type = []
+type = ["Outsourcing", "IT Services"]
 website = "http://bjitgroup.com/"
 linkedin = "https://www.linkedin.com/company/bjit/"
 job = "https://bjitgroup.com/career"
 
 ["Bangladesh Software Solution"]
 tech = ["C#", "VueJS"]
-type = []
+type = ["Software Firm"]
 website = "https://bssoln.com/"
 job = "https://bssoln.com/careers/"
 
 [Bdtask]
 tech = ["Android", "WordPress"]
-type = []
+type = ["SaaS", "E-commerce"]
 website = "https://www.bdtask.com/"
 job = "https://www.bdtask.com/career.php"
 
 ["Binate Solutions"]
 tech = ["Java", "Magento", "Python", "Ruby", "WordPress"]
-type = []
+type = ["Software Firm"]
 website = "https://www.binate-solutions.com/"
 
 ["Bit Mascot Ltd."]
 tech = [".NET", "Python", "Spring", "TensorFlow", "WordPress", "jQuery"]
-type = []
+type = ["IT Services"]
 website = "https://www.bitmascot.com/"
 job = "https://www.bitmascot.com/careers/"
 
 ["BlueBees Ltd."]
 tech = [".NET", "AngularJS", "Flutter", "PHP", "VueJS"]
-type = []
+type = ["Fintech"]
 website = "https://bluebees.ventures/"
 
 ["Bondstein Technologies Ltd."]
 tech = ["Angular", "MySQL", "NodeJS", "PHP", "React"]
-type = []
+type = ["IoT"]
 website = "https://bondstein.com/"
 twitter = "https://x.com/bondsteinbd/"
 linkedin = "https://www.linkedin.com/company/bondstein/"
@@ -169,47 +173,49 @@ facebook = "https://www.facebook.com/bondsteinbd/"
 
 [Bongo]
 tech = ["AI", "Android", "NodeJS", "React", "SQL", "iOS"]
-type = []
+type = ["MediaTech"]
 website = "https://bongobd.com/"
 
 ["Brac IT Services (biTS)"]
 tech = ["Android", "Java", "PHP"]
-type = []
+type = ["IT Services"]
 website = "https://www.bracits.com/"
 linkedin = "https://www.linkedin.com/company/bracits/"
 job = "https://www.bracits.com/career/#open-rules"
 
 ["Brain Station 23 PLC"]
 tech = ["AEM", "Android", "Flutter", "Odoo", "PHP", "React", "Sitecore", "Xamarin", "iOS"]
-type = []
+type = ["Software Firm", "Outsourcing"]
 website = "http://www.brainstation-23.com/"
 linkedin = "https://www.linkedin.com/company/brain-station-23-plc/"
 job = "https://brainstation-23.easy.jobs/"
 
 ["Braincraft Ltd."]
 tech = ["Android", "AngularJS", "Go", "Java", "NodeJS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.braincraftapps.com/"
+job = "https://www.braincraftapps.com/work-with-us"
 
 ["Brotecs Technologies Ltd. (USA)"]
 tech = [".NET", "Android", "C", "PHP", "iOS"]
-type = []
+type = ["Telecom"]
 website = "http://www.brotecs.com/"
 
 [COdesign]
 tech = ["Nuxt"]
-type = []
+type = ["Digital Agency"]
 website = "https://co.design/"
 job = "https://co.design/careers"
 
 ["Cefalo Bangladesh"]
 tech = [".NET", "Android", "Python", "Rails", "React", "iOS"]
-type = []
+type = ["Outsourcing"]
 website = "https://cefalo.com/"
+job = "https://cefalo.com/career"
 
 ["Chumbok IT"]
 tech = ["AngularJS", "SpringBoot"]
-type = []
+type = ["IT Services"]
 website = "https://chumbok.com/"
 github = "https://github.com/ChumbokIT"
 linkedin = "https://www.linkedin.com/company/chumbok-it"
@@ -217,56 +223,58 @@ facebook = "https://www.facebook.com/ChumbokIT"
 
 ["Circle Fintech"]
 tech = ["Blockchain", "Django", "NodeJS", "React"]
-type = []
+type = ["Fintech"]
 website = "https://www.circlefintech.com/"
 
 ["Code Prophet"]
 tech = ["NodeJS", "PHP", "PostgreSQL", "Python", "React", "Redux", "SpringBoot"]
-type = []
+type = ["Software Firm"]
 website = "https://codeprophet.tech/"
 linkedin = "https://www.linkedin.com/company/code-prophet"
 
 ["Codemen Solutions"]
 tech = [".NET", "AWS", "MongoDB", "NodeJS", "React", "TypeScript"]
-type = []
+type = ["IT Services"]
 website = "http://www.codemen.com/"
 
 [CodersTrust]
 tech = ["JavaScript", "Kubernetes", "Lambda", "Python", "Scala", "WordPress"]
-type = []
+type = ["EdTech"]
 website = "https://coderstrust.global/"
 facebook = "https://www.facebook.com/Coderstrust"
+job = "https://coderstrust.global/digital-career-skills-courses/"
 
 [Codinism]
 tech = ["Android", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "http://www.codinism.com/"
 
 ["Commlink Info Tech Ltd."]
 tech = ["Spring"]
-type = []
+type = ["Telecom", "Fintech"]
 website = "https://www.commlinkinfotech.com/"
+job = "https://www.commlinkinfotech.com/career/"
 
 ["Computer Source InfoTech"]
 tech = ["Java", "PHP"]
-type = []
+type = ["Hardware"]
 website = "http://csinfotechbd.com/"
 
 ["Craftsmen (EU)"]
 tech = ["AI", "AWS", "Azure", "GCP", "NodeJS", "Python", "ReactNative", "Redux"]
-type = []
+type = ["Outsourcing"]
 website = "https://www.craftsmenltd.com/"
 linkedin = "https://www.linkedin.com/organization-guest/company/craftsmenltd"
 facebook = "https://www.facebook.com/craftsmenltd/"
 
 ["Daffodil Software Ltd. (DSL)"]
 tech = [".NET", "Android", "Java", "PHP", "iOS"]
-type = []
+type = ["Software Firm", "Outsourcing"]
 website = "http://daffodilsoft.com/"
 
 ["Danpite.Tech"]
 tech = ["Flutter", "Laravel", "React"]
-type = []
+type = ["Digital Agency"]
 website = "https://danpite.tech/"
 
 ["Daraz Bangladesh"]
@@ -276,418 +284,428 @@ website = "https://careers.daraz.com/"
 
 ["Data Grid Ltd."]
 tech = [".NET", "Angular", "C#"]
-type = []
+type = ["Data Analytics"]
 website = "https://datagridltd.com/"
 
 [DataSoft]
 tech = [".NET", "Angular", "C#", "SpringBoot"]
-type = []
+type = ["Software Firm", "IoT"]
 website = "http://datasoft-bd.com/"
 job = "https://datasoft-bd.com/career"
 
 ["Databiz Software Ltd."]
 tech = [".NET", "Android", "PHP", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "http://www.databizsoftware.com/"
 
 ["Dcastalia Ltd."]
-tech = []
-type = []
+tech = ["JavaScript", "MySQL", "PHP"]
+type = ["Digital Agency", "Software Firm"]
 website = "https://dcastalia.com/"
+job = "https://dcastalia.com/career"
 
 ["Dhrubok Infotech Services Ltd."]
 tech = ["Android", "Flutter", "NextJS", "SpringBoot", "iOS"]
-type = []
+type = ["IT Services"]
 website = "https://dhrubokinfotech.com/"
 linkedin = "https://www.linkedin.com/company/dhrubokinfotech/"
+job = "https://dhrubokinfotech.com/career"
 
 ["Dingi Technologies"]
 tech = ["Firebase", "Flutter", "GoogleMaps", "Java", "NodeJS", "React"]
-type = []
+type = ["Mobile Apps"]
 website = "https://www.dingi.tech/"
 
 ["Divine IT Ltd."]
 tech = ["Angular", "Django", "Flask", "NodeJS", "React", "SQLAlchemy", "VueJS"]
-type = []
+type = ["Software Firm", "SaaS"]
 website = "https://www.divineit.net/"
+job = "https://www.divineit.net/about/careers/"
 
 ["Dizi Nova Ltd."]
 tech = [".NET", "C#", "Flutter", "React"]
-type = []
+type = ["Digital Agency"]
 website = "http://www.dizinova.com/"
 
 ["Dohatec New Media"]
 tech = [".NET", "AngularJS", "Python", "Spring"]
-type = []
+type = ["Software Firm"]
 website = "http://www.dohatec.com/"
+job = "http://www.dohatec.com/careers"
 
 [Dream71]
 tech = ["Android", "Flutter", "JavaScript", "Laravel", "MySQL", "iOS"]
-type = []
+type = ["Game Studio"]
 website = "http://www.dream71.com/"
 
 ["Dynamic Solution Innovators Ltd. (DSi)"]
 tech = ["Android", "AngularJS", "Hibernate", "NextJS", "NodeJS", "SpringBoot", "iOS"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "http://www.dsinnovators.com/"
 linkedin = "https://www.linkedin.com/company/dsinnovators/"
 facebook = "https://www.facebook.com/DynamicSolutionInnovators/"
 
 ["ERA-InfoTech Ltd."]
 tech = [".NET", "AI", "Java", "Python", "SQL"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://www.erainfotechbd.com/"
 linkedin = "https://www.linkedin.com/company/era-infotech-ltd/posts/"
+job = "https://www.erainfotechbd.com/pages/e-recruitment?item=584"
 
 ["Embedded Logic Operations (ELO)"]
 tech = ["AWS", "Angular", "Cypress", "Docker", "Flutter", "Laravel", "MongoDB", "MySQL", "NestJS", "NextJS", "PostgreSQL", "WordPress"]
-type = []
+type = ["IoT"]
 website = "https://elobyte.com/"
 
 ["Enosis Solutions (USA)"]
 tech = ["C#", "Java", "PHP", "Python"]
-type = []
+type = ["Outsourcing"]
 website = "http://enosisbd.com/"
 job = "https://enosisbd.pinpointhq.com/"
 
 ["Escenic (Norway)"]
 tech = ["Java"]
-type = []
+type = ["SaaS", "MediaTech"]
 website = "http://www.escenic.com/"
+job = "http://www.escenic.com/careers"
 
 ["Evaly Ltd."]
 tech = ["Django", "ExpressJS", "Go", "MQTT", "NoSQL", "SNS", "SQL", "SQS"]
-type = []
+type = ["E-commerce"]
 website = "https://evaly.com.bd/career/"
 
 ["Exabyting Technologies"]
 tech = ["Django", "ExpressJS", "Laravel", "NoSQL", "SNS", "SQL", "SQS", "Spring"]
-type = []
+type = ["Software Firm"]
 website = "http://exabyting.com/"
 
 [FIGLAB]
 tech = ["PHP"]
-type = []
+type = ["Software Firm"]
 website = "https://figlab.io/"
 job = "https://figlab.io/career/"
 
 ["Fieldbuzz (Germany)"]
 tech = ["Android", "Django", "Java"]
-type = []
+type = ["SaaS"]
 website = "https://www.field.buzz/"
 
 ["Fieldnation (USA)"]
 tech = ["AWS", "Docker", "Kubernetes", "NodeJS", "PHP", "React", "TypeScript"]
-type = []
+type = ["SaaS"]
 website = "https://jobs.lever.co/fieldnation?location=Dhaka"
 
 [Fiftytwo]
 tech = ["Angular", "C++", "SQL"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://www.fiftytwo.com/"
+job = "https://www.fiftytwo.com/career"
 
 [Flinkeo]
 tech = ["NextJS", "Python"]
-type = []
+type = ["Telecom"]
 website = "https://flinkeo.online/"
 
 ["Flyte Solutions"]
 tech = ["Android", "NodeJS", "ReactNative", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://flytesolutions.com/"
 job = "https://flytesolutions.com/career/"
 
 [Fringecore]
 tech = ["Linux", "ML", "NodeJS", "ReactNative", "SQL"]
-type = []
+type = ["Software Firm"]
 website = "https://fringecore.sh/"
 
 ["Frontier Semiconductor (FSM) (USA)"]
 tech = ["MFC", "OpenCV"]
-type = []
+type = ["Hardware"]
 website = "http://www.frontiersemi.com/center/home.php"
 
 ["Furqan Software"]
 tech = ["Elasticsearch", "Firebase", "Go", "Laravel", "MongoDB", "RabbitMQ", "React", "Redis"]
-type = []
+type = ["Software Firm"]
 website = "https://furqansoftware.com/"
 job = "https://furqansoftware.com/careers/"
 
 [GeekSSort]
 tech = ["Flutter", "Laravel", "NextJS", "Shopify", "TestAutomation", "VueJS", "WordPress"]
-type = []
+type = ["IT Services"]
 website = "https://geekssort.com/"
 job = "https://geekssort.com/career-page/"
 
 ["Genex Infosys Ltd."]
-tech = []
-type = []
+tech = ["Java", "SQL"]
+type = ["IT Services"]
 website = "http://genexinfosys.com/"
+job = "https://genexinfosys.com/career"
 
 ["Genuity Systems Ltd."]
-tech = []
-type = []
+tech = ["GoogleMaps", "MySQL", "PHP"]
+type = ["Software Firm"]
 website = "https://genusys.us/"
 
 ["Giga Tech Ltd."]
 tech = [".NET", "Blockchain", "DeepLearning", "Django", "Java", "JavaScript"]
-type = []
+type = ["Software Firm"]
 website = "https://gigatechltd.com/"
+job = "https://gigatechltd.com/career/"
 
 [Gigalogy]
 tech = ["AI", "Django", "NodeJS"]
-type = []
+type = ["AI"]
 website = "https://gigalogy.com/"
 job = "https://gigalogy.com/en/company/career"
 
 ["Golden Harvest InfoTech Ltd. (GHIT)"]
 tech = ["AngularJS", "C#", "MySQL", "PHP", "Spring"]
-type = []
+type = ["AgriTech", "Software Firm"]
 website = "http://ghitbd.com/"
 
 ["Grameen Solutions Ltd."]
 tech = ["Java", "PHP"]
-type = []
+type = ["Software Firm"]
 website = "https://www.grameensolutions.com/"
 
 ["Grit Technologies Ltd."]
 tech = ["AWS", "Cypress", "Docker", "Figma", "Go", "LLM", "MongoDB", "PHP", "PostgreSQL", "Python", "ReactNative", "XR"]
-type = []
+type = ["Software Firm"]
 website = "https://www.grit0.com/"
 
 [HawarIT]
 tech = ["C#"]
-type = []
+type = ["Outsourcing"]
 website = "https://www.hawarit.com/career-at-hawarit/"
 job = "https://www.hawarit.com/career/"
 
 ["Hogarth Dhaka"]
 tech = ["AWS", "NodeJS", "React"]
-type = []
+type = ["Digital Agency"]
 website = "https://www.hogarth.com/careers"
 
 [HypeScout]
 tech = ["Flutter", "Mongoose", "React", "Swift"]
-type = []
+type = ["Digital Agency", "SaaS"]
 website = "https://www.hypescout.co/"
+job = "https://www.hypescout.co/career"
 
 [IBCS-Primax]
 tech = ["Spring"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "http://www.ibcs-primax.com/ibcsonweb/"
 
 ["IBOS Ltd."]
 tech = ["Java", "MySQL", "PHP", "React"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://www.ibos.io/"
 
 ["IMpulse (BD) Ltd."]
 tech = [".NET", "JavaScript", "PostgreSQL"]
-type = []
+type = ["Telecom"]
 website = "https://www.impulsebdltd.com/"
 
 [IPvision]
 tech = ["Java"]
-type = []
+type = ["Telecom"]
 website = "http://ipvision.ca/"
 
 ["IQVIA, Dhaka"]
 tech = [".NET", "Angular", "Python"]
-type = []
+type = ["HealthTech", "Data Analytics"]
 website = "https://www.iqvia.com/"
 
 [ITmedicus]
 tech = ["Dart", "Java", "Kotlin", "Laravel"]
-type = []
+type = ["HealthTech"]
 website = "http://itmedicus.com/"
 
 ["IXORA Solution"]
 tech = ["Django", "Flutter", "MongoDB", "NodeJS", "React", "SQL", "SpringBoot", "Swift", "TypeScript", "VueJS"]
-type = []
+type = ["Software Firm"]
 website = "https://ixorasolution.com/"
 job = "https://ixorasolution.com/career"
 
 ["IdeaScale Bangladesh"]
 tech = ["JMS", "JPA", "jQuery"]
-type = []
+type = ["SaaS"]
 website = "https://ideascale.com/"
 
 [InfancyIT]
 tech = ["Android", "Java", "Laravel", "NodeJS", "ReactNative", "VueJS", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "http://www.infancyit.com/"
 
 ["Inflack Ltd."]
 tech = ["Django", "JavaScript", "Laravel", "NoSQL", "SNS", "SQL", "SQS", "Spring"]
-type = []
+type = ["Software Firm"]
 website = "http://inflack.com/"
 
 ["Infocrat Solutions Ltd."]
 tech = [".NET", "C#"]
-type = []
+type = ["Software Firm"]
 website = "https://www.infocratsolutions.com/"
 
 [InnoSpace]
 tech = ["Flutter", "NodeJS"]
-type = []
+type = ["Software Firm"]
 website = "https://innospace.tech/"
 job = "https://innospace.tech/career/"
 
 ["Innovative Software"]
 tech = ["Android", "Java", "Python"]
-type = []
+type = ["Software Firm"]
 website = "http://innovativesoftware.eu/"
 
 ["Inovace Technologies"]
 tech = ["Angular", "Bootstrap", "Kafka", "Laravel", "MQTT", "MySQL", "PostgreSQL", "Python", "SpringBoot", "VueJS", "WordPress"]
-type = []
+type = ["IoT"]
 website = "https://inovacetech.com/"
 
 [Instalogic]
 tech = ["Bootstrap", "Java", "Laravel", "MySQL", "PostgreSQL", "VueJS", "WordPress"]
-type = []
+type = ["Digital Agency"]
 website = "https://preoit.com/"
 
 ["Integrated Software and Technologies Ltd."]
 tech = ["C", "Java", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "https://www.istlbd.com/"
 
 ["Intellier Ltd."]
 tech = ["Spring"]
-type = []
+type = ["Software Firm"]
 website = "https://intellier.com/"
 
 [Inument]
 tech = ["AI", "Flutter", "Java", "NodeJS", "PHP", "React", "nopCommerce"]
-type = []
+type = ["Game Studio"]
 website = "https://inument.com/careers/#available-jobs"
 job = "https://inument.com/careers/#available-jobs"
 
 ["Invento Software Ltd."]
 tech = ["Django", "JavaScript", "WordPress"]
-type = []
+type = ["Software Firm"]
 website = "http://invento.com.bd/"
 job = "https://invento.com.bd/career/"
 
 ["Inverse.AI"]
 tech = ["Android", "iOS"]
-type = []
+type = ["AI", "Mobile Apps"]
 website = "https://inverseai.com/"
 job = "https://inverseai.com/career"
 
 ["Isratts Technologies"]
-tech = []
-type = []
+tech = ["Laravel", "MySQL"]
+type = ["Software Firm"]
 website = "http://www.israttstech.com/"
 
 ["JB Connect Ltd."]
 tech = ["DevOps"]
-type = []
+type = ["Telecom"]
 website = "https://www.jbc-ltd.com/en"
 
 ["Jatri Services Ltd."]
-tech = []
+tech = ["Android", "Flutter", "NodeJS"]
 type = ["E-logistics"]
 website = "https://www.jatri.co/"
 job = "https://www.jatri.co/career#job-opening"
 
 [Joomshaper]
 tech = ["Joomla", "React", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://www.joomshaper.com/"
 
 [JoulesLabs]
 tech = ["React", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://jouleslabs.com/"
 
 ["Kaz Software"]
 tech = [".NET", "AngularJS", "Java", "PHP", "React"]
-type = []
+type = ["Software Firm", "Outsourcing"]
 website = "http://kaz.com.bd/"
 
 ["Kite Games Studio"]
 tech = ["PyTorch", "React", "Swift"]
-type = []
+type = ["Game Studio"]
 website = "https://www.kitegamesstudio.com/"
 linkedin = "https://www.linkedin.com/company/kite-games-studio/mycompany"
 
 ["Kompass Technologies Ltd."]
-tech = []
-type = []
+tech = ["NodeJS", "PostgreSQL", "React"]
+type = ["SaaS"]
 website = "https://hellokompass.com/"
 linkedin = "https://www.linkedin.com/company/kompass-technologies-limited/posts/?feedView=all"
 facebook = "https://www.facebook.com/hellokompass"
 
 ["Kona Software Lab"]
 tech = ["AI", "Android", "Blockchain", "C++", "JavaScript", "Kotlin", "Spring"]
-type = []
+type = ["Outsourcing"]
 website = "https://konasl.com/"
 job = "https://konasl.com/careers#openings"
 
 ["Kovair Software, Inc."]
 tech = ["AngularJS", "Spring"]
-type = []
+type = ["SaaS"]
 website = "https://www.kovair.com/"
 
 [LIILab]
 tech = ["Android", "Django", "Java", "Kotlin", "React", "WordPress"]
-type = []
+type = ["Software Firm"]
 website = "http://liilab.com/"
 job = "https://liilab.com/career"
 
 [LeadSoft]
-tech = []
-type = []
+tech = ["Java", "MySQL"]
+type = ["Software Firm", "Fintech"]
 website = "http://leads.com.bd/"
 job = "https://leads.com.bd/jobs/"
 
 ["LightCastle Partners"]
 tech = ["Laravel", "NodeJS", "React"]
-type = []
+type = ["Data Analytics"]
 website = "https://www.lightcastlebd.com/"
 
 ["ME SOLshare Ltd."]
 tech = ["Android", "Java", "JavaScript", "Python"]
-type = []
+type = ["IoT", "Fintech"]
 website = "https://me-solshare.com/"
 linkedin = "https://www.linkedin.com/company/me-solshare/"
 facebook = "https://www.facebook.com/mesolshare/"
 job = "https://solshare.com/career/"
 
 ["Magnito Digital"]
-tech = []
-type = []
+tech = ["JavaScript", "WordPress"]
+type = ["Digital Agency"]
 website = "http://magnitodigital.com/"
 linkedin = "https://www.linkedin.com/company/magnito-digital/"
 facebook = "https://www.facebook.com/magnitodigital"
 
 ["Mamurjor IT"]
 tech = ["C", "Java", "Linux", "MySQL", "NodeJS", "PHP"]
-type = []
+type = ["Software Firm"]
 website = "https://mamurjor.com/"
 
 ["Markopolo AI"]
 tech = ["DeepLearning"]
-type = []
+type = ["AI", "SaaS"]
 website = "https://www.markopolo.ai/"
 
 ["Mazegeek Technologies BD Ltd."]
 tech = [".NET", "AWS", "Android", "Angular", "Docker", "Firebase", "Laravel", "NodeJS", "Python", "React", "VueJS", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.mazegeek.com/"
 
 ["Medina Tech Ltd."]
 tech = ["AR", "AWS", "Android", "Django", "ML", "NextJS", "NodeJS", "PHP", "ReactNative", "Unity", "VueJS", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.medinatech.co//"
 linkedin = "https://www.linkedin.com/company/medina-tech/"
 facebook = "https://www.facebook.com/medinatech.co/"
 
 ["Mediusware Ltd."]
 tech = ["Angular", "NextJS", "VueJS"]
-type = []
+type = ["Software Firm", "IT Services"]
 website = "https://www.mediusware.com/"
 linkedin = "https://www.linkedin.com/company/mediusware/"
 facebook = "https://www.facebook.com/mediusware/"
@@ -700,18 +718,18 @@ website = "https://www.mgi.org/"
 
 ["Metafour Asia"]
 tech = ["Spring"]
-type = []
+type = ["Software Firm"]
 website = "http://www.metafour.com/"
 
 ["Metatude Asia Ltd."]
 tech = [".NET", "AWS", "Angular", "Java"]
-type = []
+type = ["Software Firm"]
 website = "https://www.fellowdigitals.com/metatude"
 linkedin = "https://www.linkedin.com/company/metatude-asia-ltd/"
 
 ["Mevrik Ltd."]
 tech = ["AWS", "Celery", "ClickHouse", "Django", "Docker", "Elasticsearch", "FastAPI", "GitHub", "Gunicorn", "Kafka", "Kubernetes", "LLM", "Laravel", "MongoDB", "MySQL", "Nginx", "PostgreSQL", "React", "Redis", "TailwindCSS"]
-type = []
+type = ["SaaS"]
 website = "https://www.mevrik.com/"
 twitter = "https://twitter.com/mevrikdcx"
 linkedin = "https://www.linkedin.com/company/mevrik/"
@@ -720,149 +738,149 @@ youtube = "https://www.youtube.com/@mevrikdcx"
 
 ["Millennium Information Solution Ltd."]
 tech = ["Spring"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://www.mislbd.com/"
 
 ["Misfit Technologies"]
 tech = ["Android", "Django", "ML", "Magento", "React", "Ruby", "WordPress"]
-type = []
+type = ["Outsourcing"]
 website = "https://misfit.tech/"
 
 ["MononSoft Ltd."]
 tech = ["Laravel", "VueJS"]
-type = []
+type = ["Software Firm"]
 website = "https://mononsoft.org/"
 
 ["MonstarLab Bangladesh"]
 tech = ["Flutter", "Laravel", "NestJS", "NextJS", "Symfony"]
-type = []
+type = ["Outsourcing"]
 website = "https://monstar-lab.com/bd/"
 
 ["Namespace IT"]
 tech = ["Django", "Laravel", "ML", "NextJS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.namespaceit.com/"
 
 [Nascenia]
 tech = [".NET", "Android", "PHP", "iOS"]
-type = []
+type = ["Outsourcing"]
 website = "https://www.nascenia.com/"
 
 [NeerLab]
-tech = []
-type = []
+tech = ["Flutter", "NodeJS"]
+type = ["Software Firm"]
 website = "https://neerlab.com/"
 
 [NeosCoder]
 tech = ["NodeJS", "PostgreSQL", "Python", "React", "TypeScript"]
-type = []
+type = ["Software Firm"]
 website = "https://www.neoscoder.com/"
 job = "https://www.neoscoder.com/career"
 
 ["NetCoden Inc"]
 tech = ["Android", "C++", "Laravel", "NodeJS", "React", "SQL", "VueJS"]
-type = []
+type = ["Software Firm"]
 website = "https://netcoden.com/"
 
 ["Netizen IT Ltd."]
 tech = ["AWS", "Android", "Angular", "Kotlin", "MySQL", "PHP", "Python", "Ruby", "Spring"]
-type = []
+type = ["Software Firm"]
 website = "https://www.netizenbd.com/"
 
 ["New Technology Systems Ltd."]
 tech = ["JavaScript", "MongoDB", "MySQL", "PHP"]
-type = []
+type = ["Software Firm"]
 website = "https://ntsctgbd.com/"
 
 ["Newgen Technology Ltd."]
 tech = ["Hibernate", "JSTL", "MySQL", "Spring", "Tomcat"]
-type = []
+type = ["Software Firm"]
 website = "https://newgen-bd.com/"
 
 ["Newroz Technologies Ltd."]
 tech = ["Flutter", "Kotlin", "React", "SpringBoot"]
-type = []
+type = ["Telecom", "Software Firm"]
 website = "https://www.newroztech.com/"
 
 ["Next Ventures"]
 tech = ["AWS", "Linux", "PostgreSQL", "Python", "TypeScript"]
-type = []
+type = ["IT Services"]
 website = "https://nextventures.io/"
 linkedin = "https://www.linkedin.com/company/nextventuresofficial"
 job = "https://career.nextventures.io/"
 
 ["Nextech Ltd."]
 tech = ["Laravel", "SQL", "VueJS"]
-type = []
+type = ["Software Firm"]
 website = "https://nextech.com.bd/"
 
 ["Nice Power & IT Solution Ltd."]
 tech = ["MySQL", "PHP", "Spring", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "https://www.nicegroupbd.com/"
 
 ["Nogor Solutions Ltd."]
 tech = ["CakePHP", "Docker", "MongoDB", "MySQL", "Vuex"]
-type = []
+type = ["Software Firm"]
 website = "https://www.nogorsolutions.com/"
 job = "https://nogorsolutions.com/career"
 
 ["Nova Labs Ltd."]
 tech = ["AR", "Android", "Unity", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://novalabs.gg/"
 linkedin = "https://www.linkedin.com/company/novalabsgg"
 
 ["Nybbles System Ltd."]
 tech = ["AngularJS", "C#", "Dart", "Java", "Kotlin", "Swift"]
-type = []
+type = ["Software Firm"]
 website = "https://www.nybsys.com/"
 
 [Ollyo]
 tech = ["JoomShaper", "Themeum"]
-type = []
+type = ["SaaS", "Digital Agency"]
 website = "https://www.ollyo.com/"
 linkedin = "https://www.linkedin.com/company/ollyo/"
 job = "https://ollyo.com/careers/roles/"
 
 [Onecodesoft]
 tech = ["Flutter", "Laravel", "NodeJS", "Python"]
-type = []
+type = ["Software Firm"]
 website = "https://onecodesoft.com/"
 linkedin = "https://www.linkedin.com/company/onecodesoft"
 job = "https://onecodesoft.com/career"
 
 ["Optimizely (Newscred) (USA)"]
 tech = ["MongoDB", "NodeJS", "Python", "Scala"]
-type = []
+type = ["SaaS"]
 website = "https://www.optimizely.com/"
 linkedin = "https://www.linkedin.com/company/optimizely/"
 job = "https://careers.optimizely.com/search/?locationsearch=bangladesh"
 
 ["Orange Toolz"]
 tech = ["AWS", "Android", "AngularJS", "Azure", "CakePHP", "Laravel", "NodeJS", "ReactNative", "Xamarin", "Zend", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://orangetoolz.com/"
 
 ["Orbitax Bangladesh"]
 tech = ["Android", "Java", "JavaScript", "PHP"]
-type = []
+type = ["SaaS", "Fintech"]
 website = "http://www.orbitax.com/"
 linkedin = "https://www.linkedin.com/company/orbitaxbd/"
 
 ["Orbund LLC"]
 tech = ["Android", "Java", "iOS"]
-type = []
+type = ["EdTech", "SaaS"]
 website = "https://www.orbund.com/"
 
 [OrvionSoft]
 tech = ["Angular", "C#", "Laravel", "NextJS", "NodeJS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.orvionsoft.com/"
 
 ["Otto International Ltd."]
 tech = ["AWS", "Android", "ExpressJS", "Flutter", "Gatsby", "MongoDB", "MySQL", "WordPress", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.ottoint.com/"
 
 ["Paperfly Ltd."]
@@ -877,68 +895,68 @@ website = "https://pathao.com/"
 
 ["Penta Global Ltd."]
 tech = ["Java", "Kubernetes", "NodeJS", "PostgreSQL", "Python", "React"]
-type = []
+type = ["Software Firm"]
 website = "https://www.pentabd.com/"
 
 ["PixelNet Technologies Ltd."]
 tech = ["Ionic", "Magento", "MongoDB", "MySQL", "NodeJS", "Rails"]
-type = []
+type = ["Software Firm"]
 website = "http://www.pixelnettech.com/"
 
 ["Portonics Ltd."]
 tech = ["AWS", "Android", "Docker", "MySQL", "NodeJS", "PHP", "PostgreSQL", "Python", "React", "iOS"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "http://portonics.com/"
 job = "https://www.portonics.com/career"
 
 ["Pridesys IT Ltd."]
 tech = ["MySQL", "WordPress", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "https://pridesys.com/"
 job = "https://pridesys.com/careers"
 
 ["Progoti Systems Ltd."]
 tech = ["Android", "Django", "Docker", "MySQL", "PostgreSQL", "Spring"]
-type = []
+type = ["Fintech"]
 website = "https://www.progoti.com/"
 
 ["REVE Systems (Singapore)"]
 tech = ["CloudComputing", "Java"]
-type = []
+type = ["Telecom"]
 website = "https://www.revesoft.com/"
 job = "https://www.revesoft.com/career"
 
 ["ReliSource (USA)"]
 tech = ["AWS"]
-type = []
+type = ["Outsourcing"]
 website = "http://www.relisource.com/"
 job = "https://www.relisource.com/careers/"
 
 ["Remotion IT"]
-tech = []
-type = []
+tech = ["Laravel", "VueJS"]
+type = ["Software Firm"]
 website = "https://www.remotionit.com/"
 
 ["Renessa Info Systems Ltd."]
 tech = ["CakePHP", "CodeIgniter", "Laravel", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "http://www.renessainfosystems.com/"
 job = "https://www.renessainfosystems.com/career"
 
 ["Retina Soft"]
 tech = ["Android", "Laravel", "React", "VueJS", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://retinasoft.com.bd/"
 
 ["RiseUp Labs"]
 tech = ["Django", "Flutter", "Java", "Kotlin", "NodeJS", "React", "SQL", "Swift", "TypeScript"]
-type = []
+type = ["Game Studio", "Software Firm"]
 website = "https://riseuplabs.com/"
 job = "https://riseuplabs.com/jobs/"
 
 ["Robust Research And Development Ltd."]
 tech = ["C#", "Flutter", "Kotlin", "NextJS", "Python", "Swift", "TypeScript"]
-type = []
+type = ["Software Firm"]
 website = "https://rrad.ltd/"
 linkedin = "https://www.linkedin.com/company/rrad-bd/"
 
@@ -949,57 +967,57 @@ website = "https://www.rokomari.com/"
 
 ["SCT Bangla Ltd."]
 tech = ["Angular", "Flutter", "Laravel", "React", "SQL"]
-type = []
+type = ["Software Firm"]
 website = "https://www.sct-bangla.com/"
 job = "https://www.sct-bangla.com/careers"
 
 ["SELISE Digital Platforms (Switzerland)"]
 tech = [".NET", "Android", "AngularJS", "NodeJS", "Python", "iOS"]
-type = []
+type = ["SaaS", "Software Firm"]
 website = "https://selisegroup.com/"
 linkedin = "https://www.linkedin.com/company/selise/"
 
 ["SJ Innovation"]
 tech = ["Blockchain", "Flutter", "Java", "Kotlin", "React", "Swift"]
-type = []
+type = ["Outsourcing"]
 website = "https://sjinnovation.com/"
 job = "https://career.sjinnovation.com/#jobs"
 
 [SSD-TECH]
 tech = ["C", "Java", "Linux", "MySQL", "NodeJS", "PHP"]
-type = []
+type = ["Telecom"]
 website = "https://ssd-tech.io/"
 
 ["SSL Wireless"]
 tech = ["Java", "JavaScript", "Laravel", "MySQL"]
-type = []
+type = ["Fintech"]
 website = "https://www.sslwireless.com/"
 job = "https://www.sslwireless.com/all-jobs"
 
 ["Samsung R&D Institute Bangladesh, Ltd."]
 tech = ["Android", "C#", "Kotlin", "MFC", "ML", "Spring", "Swift", "Tizen", "UWP", "WPF", "Windows", "iOS"]
-type = []
+type = ["Hardware", "Software Firm"]
 website = "https://research.samsung.com/srbd"
 
 ["ServicEngine Ltd."]
 tech = ["SQL", "Spring"]
-type = []
+type = ["IT Services"]
 website = "https://sebpo.com/"
 
 [ShareTrip]
 tech = ["AWS", "Android", "DevOps", "Docker", "NodeJS", "PHP", "iOS"]
-type = []
+type = ["E-commerce"]
 website = "https://sharetrip.net/"
 
 ["Sheba Technologies Ltd."]
 tech = ["Android", "C++", "Java"]
-type = []
+type = ["Software Firm"]
 website = "https://www.shebatech.com.bd/"
 job = "https://www.shebatech.com.bd/career"
 
 [ShellBeeHaken]
 tech = ["Elasticsearch", "Electron", "Lambda", "MongoDB", "MySQL", "NextJS", "ReactNative", "Redis", "SQS", "SpringBoot"]
-type = []
+type = ["Software Firm", "SaaS"]
 website = "https://shellbeehaken.com/"
 
 [Shopup]
@@ -1010,155 +1028,155 @@ job = "https://shopup.org/career"
 
 ["Silicon Orchard Ltd."]
 tech = ["Android", "Blockchain", "NodeJS", "PHP", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.siliconorchard.com/"
 job = "https://www.siliconorchard.com/career"
 
 ["Singularity Ltd."]
-tech = []
-type = []
+tech = ["Spring"]
+type = ["Software Firm"]
 website = "https://singularitybd.com/"
 linkedin = "https://www.linkedin.com/company/singularity-limited/"
 facebook = "https://www.facebook.com/singularity.ltd/"
 job = "https://singularitybd.com/career"
 
 ["SoftBD Ltd."]
-tech = []
-type = []
+tech = ["Laravel", "MySQL"]
+type = ["Software Firm"]
 website = "https://softbdltd.com/"
 
 ["Software Lighthouse"]
 tech = ["Android", "Firebase", "Flutter", "Go", "MySQL", "NodeJS", "Unity", "WordPress", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://softlh.com/"
 linkedin = "https://www.linkedin.com/company/91137876/"
 facebook = "https://www.facebook.com/softlh2020"
 
 ["Softzino Technologies"]
 tech = ["Android", "Flutter", "ReactNative", "VueJS", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://softzino.com/"
 
 ["Sonali Polaris FT Ltd."]
 tech = ["Java"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "http://www.spftl.com/"
 
 [SouthTech]
 tech = [".NET", "Android", "AngularJS"]
-type = []
+type = ["Fintech", "Software Firm"]
 website = "https://www.southtechgroup.com/"
 linkedin = "https://www.linkedin.com/company/southtechgroup/"
 job = "https://career.southtechgroup.com/"
 
 [SovWare]
 tech = ["Flutter", "JavaScript", "Laravel", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://www.sovware.com/"
 linkedin = "https://www.linkedin.com/company/sovware/"
 job = "https://www.sovware.com/career"
 
 ["Spring Rain IT"]
 tech = ["Android", "NodeJS", "ReactNative"]
-type = []
+type = ["Software Firm"]
 website = "https://springrainit.com/"
 job = "https://springrain.io/careers/#jobs"
 
 ["Square Health Ltd."]
 tech = ["Android", "Angular", "Java", "React"]
-type = []
+type = ["HealthTech"]
 website = "https://career.squarehealth.com.bd/"
 
 ["Strativ BD Ltd."]
 tech = ["Android", "Django", "Magento", "NodeJS", "ReactNative", "VueJS", "WordPress"]
-type = []
+type = ["Outsourcing"]
 website = "https://strativ.se/en/"
 
 ["Streams Tech Inc."]
 tech = [".NET", "AngularJS", "ArcGIS", "MongoDB", "SQL"]
-type = []
+type = ["Software Firm"]
 website = "https://streamstech.com.bd/"
 
 ["TAPPWARE Solutions Ltd."]
 tech = [".NET", "Android", "C#", "CakePHP", "Django", "Flutter", "Ionic", "Laravel", "Less", "MongoDB", "MySQL", "PostgreSQL", "RabbitMQ", "SCSS", "Spring", "VueJS", "WordPress", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "https://tappware.com/"
 
 [TechCare]
 tech = ["Android", "Java", "NodeJS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.techcarebd.com/"
 facebook = "https://www.facebook.com/techcarebd/"
 
 [TechFlix]
-tech = []
-type = []
+tech = ["NodeJS", "React"]
+type = ["Software Firm"]
 website = "https://www.techflixbd.com/"
 
 ["Technext Ltd."]
 tech = ["Bootstrap", "NextJS"]
-type = []
+type = ["Software Firm", "SaaS"]
 website = "https://technext.it/"
 job = "https://technext.it/careers"
 
 [TechnoNext]
 tech = ["DevOps", "Flutter", "Go", "React"]
-type = []
+type = ["Software Firm"]
 website = "https://www.digigate360.com/"
 
 ["TechnoVista Ltd."]
 tech = [".NET", "Android", "C#", "CodeIgniter", "Ionic", "Laravel", "Less", "MySQL", "PostgreSQL", "SCSS", "Spring", "VueJS", "WordPress", "jQuery"]
-type = []
+type = ["Software Firm"]
 website = "https://technovista.com.bd/"
 
 ["Technohaven Company Ltd."]
 tech = ["Android", "Angular", "Blockchain", "ML", "NodeJS", "React", "Rust", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://technohaven.com/"
 job = "https://technohaven.com/career"
 
 [Tekarsh]
 tech = ["JavaScript", "Spring"]
-type = []
+type = ["AI"]
 website = "https://tekarsh.com/"
 job = "https://tekarsh.com/career"
 
 ['Telenor Health A\S']
 tech = ["Android", "Drupal", "NodeJS", "Python", "iOS"]
-type = []
+type = ["HealthTech", "Telecom"]
 website = "https://telenorhealth.com/"
 
 [ThemeXpert]
 tech = ["Joomla", "Laravel", "React"]
-type = []
+type = ["SaaS", "Digital Agency"]
 website = "https://www.themexpert.com/"
 
 ["Themeperch Ltd."]
 tech = ["Bootstrap", "NextJS", "TailwindCSS", "WordPress"]
-type = []
+type = ["Digital Agency"]
 website = "https://themeperch.net/"
 
 ["Therap (BD) Ltd."]
 tech = ["Java"]
-type = []
+type = ["HealthTech", "SaaS"]
 website = "https://therap.recruiterbox.com/"
 linkedin = "https://www.linkedin.com/company/therapbd/"
 job = "https://therap.hire.trakstar.com/"
 
 ["TigerIT Bangladesh Ltd."]
 tech = ["Java"]
-type = []
+type = ["Software Firm", "AI"]
 website = "http://www.tigerit.com/"
 linkedin = "https://www.linkedin.com/company/tigerit-bangladesh-limited/"
 
 ["TimeTackle (US)"]
 tech = ["React", "SpringBoot"]
-type = []
+type = ["SaaS"]
 website = "https://www.timetackle.com/"
 
 ["Triva It Ltd."]
-tech = []
-type = []
+tech = ["WordPress"]
+type = ["Software Firm"]
 website = "https://www.trivaitltd.com/"
 
 [TruckLagbe]
@@ -1168,18 +1186,18 @@ website = "https://trucklagbe.com/"
 
 ["UPAY (UCB Fintech)"]
 tech = ["Android", "Blockchain", "Django", "Flask", "NodeJS", "React", "iOS"]
-type = []
+type = ["Fintech"]
 website = "https://www.upaybd.com/"
 
 ["Vantage Labs (USA)"]
 tech = ["AngularJS", "Java", "PHP"]
-type = []
+type = ["AI", "Software Firm"]
 website = "https://www.vantage.com/"
 facebook = "https://www.facebook.com/VantageLabsDhaka/"
 
 ["Vivasoft Ltd."]
 tech = ["C#", "Flutter", "Go", "Java", "Python"]
-type = []
+type = ["Software Firm", "Outsourcing"]
 website = "https://www.vivasoftltd.com/"
 linkedin = "https://www.linkedin.com/company/vivasoftltd/"
 facebook = "https://www.facebook.com/VivasoftLtd"
@@ -1187,35 +1205,35 @@ job = "https://www.vivasoftltd.com/career"
 
 [WPCommerz]
 tech = ["Laravel", "VueJS", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://wpcommerz.com/"
 
 [WPDeveloper]
 tech = ["Laravel", "VueJS", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://wpdeveloper.com/"
-job = "https://wpcommerz.com/career"
+job = "https://wpdeveloper.com/jobs"
 
 ["Wafi Solutions."]
 tech = ["Django"]
-type = []
+type = ["Software Firm"]
 website = "https://www.wafisolutions.com/"
 job = "https://www.wafisolutions.com/career"
 
 ["Walton Hi-Tech Industries Ltd."]
 tech = ["PHP", "Spring", "VueJS"]
-type = []
+type = ["Hardware"]
 website = "https://waltonbd.com/"
 
 ["Welldev (Switzerland)"]
 tech = ["Android", "iOS"]
-type = []
+type = ["Outsourcing"]
 website = "https://www.welldev.io/"
 linkedin = "https://www.linkedin.com/company/welldevintl/"
 
 ["Widespace (Sweden)"]
 tech = ["Java"]
-type = []
+type = ["Digital Agency", "SaaS"]
 website = "https://www.widespace.com/"
 twitter = "https://twitter.com/WidespaceMobile"
 linkedin = "https://www.linkedin.com/company/widespace-ab"
@@ -1223,34 +1241,34 @@ facebook = "https://www.facebook.com/WidespaceMobile"
 
 ["Workspace InfoTech Ltd."]
 tech = ["Angular", "Django", "Spring"]
-type = []
+type = ["Software Firm"]
 website = "https://www.workspaceit.com/"
 job = "https://www.workspaceit.com/career/"
 
 ["Xpeed Studio"]
 tech = ["Drupal", "JavaScript", "Joomla", "WordPress"]
-type = []
+type = ["SaaS", "Digital Agency"]
 website = "https://xpeedstudio.com/"
 
 [XpeedLab]
 tech = ["Angular", "Flutter", "Java", "MongoDB", "NodeJS"]
-type = []
+type = ["Software Firm"]
 website = "https://xpeedlab.tech/"
 
 ["YOTECH Ltd."]
 tech = ["Android", "Angular", "Flutter", "MongoDB", "NodeJS", "React", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.yotech.ltd/"
 job = "https://www.yotech.ltd/careers"
 
 ["Zaynax Ltd."]
 tech = ["Android", "MongoDB", "NodeJS", "React", "iOS"]
-type = []
+type = ["Fintech", "E-commerce"]
 website = "http://www.zaynax.com/"
 
 [authLab]
 tech = ["AWS", "Laravel", "React", "VueJS", "WordPress", "jQuery"]
-type = []
+type = ["Software Firm", "SaaS"]
 website = "https://authlab.io/"
 linkedin = "https://www.linkedin.com/company/authlab-io/"
 facebook = "https://www.facebook.com/authLab/"
@@ -1258,23 +1276,23 @@ job = "https://authlab.io/jobs/"
 
 [belivIT]
 tech = ["Android", "PHP", "iOS"]
-type = []
+type = ["Software Firm"]
 website = "https://www.belivit.com/"
 job = "https://www.belivit.com/vacancies"
 
 [bkash]
 tech = ["AWS", "Android", "JSP", "JavaScript", "Servlet", "Spring"]
-type = []
+type = ["Fintech"]
 website = "https://www.bkash.com/"
 
 ["hSenid Mobile Solutions Ltd."]
 tech = ["AWS", "JUnit", "Jenkins", "Kotlin", "MySQL", "NodeJS"]
-type = []
+type = ["Telecom", "SaaS"]
 website = "https://www.hsenidmobile.com/"
 
 [iPay]
 tech = ["Android", "Java", "MongoDB", "PostgreSQL", "Python"]
-type = []
+type = ["Fintech"]
 website = "https://www.ipay.com.bd/"
 linkedin = "https://www.linkedin.com/company/ipay-systems-ltd./"
 facebook = "https://www.facebook.com/iPayBangladesh/"
@@ -1282,12 +1300,12 @@ job = "https://www.ipay.com.bd/career"
 
 ["mPower Social Enterprises Ltd."]
 tech = ["Android", "Java", "Python"]
-type = []
+type = ["Software Firm"]
 website = "https://www.mpower-social.com/"
 job = "https://www.mpower-social.com/career"
 
 ["weDevs Ltd."]
 tech = ["Flutter", "VueJS", "WordPress"]
-type = []
+type = ["SaaS"]
 website = "https://wedevs.com/"
 job = "https://wedevs.com/career/"

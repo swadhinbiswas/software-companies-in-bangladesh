@@ -100,8 +100,12 @@ enum Command {
         #[arg(long, short, default_value_t = 8, value_name = "N")]
         concurrent: u8,
 
+        /// Soft deadline for the whole crawl in seconds.
+        #[arg(long, default_value_t = jobs::DEFAULT_DEADLINE_SECS, value_name = "SECS")]
+        deadline_secs: u64,
+
         /// Also build warehouse after crawl
-        #[arg(long, default_value_t = true)]
+        #[arg(long, default_value_t = true, action = clap::ArgAction::Set, value_name = "BOOL")]
         warehouse: bool,
     },
     /// Build DuckDB warehouse locally (no crawl)
@@ -189,6 +193,7 @@ fn cli() -> Result {
             force,
             concurrent,
             provider,
+            deadline_secs,
             warehouse: wh,
         }) => {
             if force {
@@ -196,8 +201,30 @@ fn cli() -> Result {
                 jobs::clear_cache()?;
             }
             let provider = jobs::llm::Provider::parse(&provider)?;
-            log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}");
-            jobs::run(provider, model, &dir, &companies, log_file, concurrent)?;
+            log::info!("Concurrent: {concurrent}; LLM: {model}; Provider: {provider:?}; Deadline: {deadline_secs}s");
+            let discovered = jobs::run(
+                provider, model, &dir, &companies, log_file, concurrent, deadline_secs,
+            )?;
+
+            // Persist discovered career URLs through the parsed struct (not
+            // line surgery), so quoting/escaping stays correct and the write
+            // can't be clobbered by a later `--fmt` of stale in-memory data.
+            let mut updated = 0usize;
+            for (name, url) in &discovered {
+                if let Some(company) = companies.get_mut(name)
+                    && company.links.job.is_none()
+                    && let Ok(parsed) = url.parse()
+                {
+                    company.links.job = Some(parsed);
+                    updated += 1;
+                    log::info!("[PERSIST] job = \"{url}\" for \"{name}\"");
+                }
+            }
+            if updated > 0 {
+                log::info!("Persisted {updated} discovered career URL(s) to data/companies.toml");
+                companies_file.write(companies.to_toml()?)?;
+            }
+
             if wh {
                 warehouse::build_warehouse(&dir)?;
             }

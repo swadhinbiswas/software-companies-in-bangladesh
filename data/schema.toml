@@ -1,11 +1,27 @@
 # this list are not exhaustive. Please open a pull request to add missing type, language, technology.
 
 Company-Type = [
+  "Software Firm",
+  "IT Services",
+  "Outsourcing",
+  "SaaS",
+  "Fintech",
   "E-commerce",
   "E-logistics",
-  # "SaaS",
-  # "Crypto",
-  # "AI",
+  "Digital Agency",
+  "Mobile Apps",
+  "Game Studio",
+  "AI",
+  "Blockchain",
+  "HealthTech",
+  "EdTech",
+  "AgriTech",
+  "IoT",
+  "Telecom",
+  "MediaTech",
+  "Data Analytics",
+  "Cybersecurity",
+  "Hardware",
 ]
 
 [Technology]

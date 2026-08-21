@@ -219,15 +219,20 @@ impl Llm {
 
         let mut attempt = 0u32;
         loop {
-            // Pace: no request starts sooner than `min_interval` after the
-            // previous one, so bursts never trip the per-minute rate limit.
-            {
+            // Pace: reserve the next request slot so starts stay at least
+            // `min_interval` apart. The lock is NEVER held across the sleep
+            // (a std Mutex guard across .await stalls worker threads and,
+            // with enough callers, the whole runtime).
+            let wait = {
                 let mut last = self.pace.lock().unwrap();
                 let since = last.elapsed();
-                if since < self.min_interval {
-                    tokio::time::sleep(self.min_interval - since).await;
-                }
-                *last = Instant::now();
+                let wait = self.min_interval.checked_sub(since).unwrap_or_default();
+                // Reserve this slot before releasing the lock.
+                *last = Instant::now() + wait;
+                wait
+            };
+            if !wait.is_zero() {
+                tokio::time::sleep(wait).await;
             }
 
             // Gemini authenticates via `?key=` query parameter, Zen via Bearer header.

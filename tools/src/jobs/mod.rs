@@ -83,9 +83,29 @@ const MAX_LLM_CHARS: usize = 12_000;
 const BATCH_SITES: usize = 12;
 /// Detail pages per LLM call in the detail phase.
 const BATCH_DETAILS: usize = 8;
-/// Soft deadline: stop starting new work at this point; persisted results
-/// plus the 24h cache let a re-run finish in seconds.
-const SOFT_DEADLINE_SECS: u64 = 270;
+/// Career-page candidates tried per company before giving up (link-scan
+/// hits first, then common-path probes). Bounds worst-case time per site.
+const MAX_CAREER_CANDIDATES: usize = 3;
+/// Maximum HEAD probes per discovery (each can cost a full connect timeout
+/// on unresponsive sites).
+const MAX_HEAD_PROBES: usize = 6;
+/// Hard cap on one company's whole crawl chain. The global deadline is only
+/// enforced between completions; this guarantees completions keep flowing.
+const PER_COMPANY_CAP_SECS: u64 = 90;
+/// Hard cap on a single LLM batch call (retries included).
+const LLM_CALL_CAP_SECS: u64 = 180;
+/// Default soft deadline for the whole crawl. A re-run finishes the gaps
+/// in seconds thanks to the 24h cache, so staying well under CI timeouts
+/// matters more than one-shot completeness.
+pub const DEFAULT_DEADLINE_SECS: u64 = 1500;
+
+/// Common career-page paths probed during discovery.
+const CAREER_PATHS: &[&str] = &[
+    "/career", "/careers", "/jobs", "/job-opening", "/job-openings",
+    "/join-us", "/work-with-us", "/hiring", "/open-positions",
+    "/recruit", "/recruitment", "/vacancy", "/vacancies",
+    "/about/careers", "/company/careers",
+];
 
 #[tokio::main]
 pub async fn run(
@@ -95,7 +115,8 @@ pub async fn run(
     companies: &Companies<'_>,
     log_file: bool,
     concurrent: u8,
-) -> Result {
+    deadline_secs: u64,
+) -> Result<Vec<(String, String)>> {
     http::init_global(concurrent as usize)?;
     let http = http::global().clone();
     let llm = Llm::new(provider, &model, http.clone())?;
@@ -111,6 +132,9 @@ pub async fn run(
     let mut output: Jobs = json::from_str(&output_file.text).unwrap_or_default();
 
     let started = std::time::Instant::now();
+    // AI career discovery is the most expensive per-company step; only run
+    // it in the first half of the budget so late companies still get crawled.
+    let ai_discovery_until = deadline_secs / 2;
     let explicit_count = companies.values().filter(|c| c.links.job.is_some()).count();
     let discover_count = companies.len() - explicit_count;
     info!("Crawling {} companies ({} explicit, {} to discover)...", companies.len(), explicit_count, discover_count);
@@ -126,38 +150,81 @@ pub async fn run(
         .map(|(name, company)| {
             let me = engine.clone();
             let name = name.clone();
-            let disc = discovered_urls.clone();
             async move {
-                // If job URL is explicitly set, use it directly
-                if let Some(url) = company.links.job.as_ref() {
-                    if let Ok(url) = normalize_url(url) {
-                        let prepared = me.prepare_site(&url).await;
-                        return (name, Some((url, prepared, false)));
-                    }
-                }
-                // Auto-discover career page from website
-                let website = &company.links.website;
-                let Ok(base) = normalize_url(website) else {
+                // Skip work that would start past the deadline.
+                let elapsed = started.elapsed().as_secs();
+                if elapsed >= deadline_secs {
                     return (name, None);
+                }
+
+                // Hard per-company cap. The global deadline is only checked
+                // between completions, so without this a single slow site
+                // (hanging fetches, endless probes) stalls the whole run —
+                // the exact failure that got CI's job canceled.
+                let budget = Duration::from_secs(
+                    (deadline_secs - elapsed).min(PER_COMPANY_CAP_SECS),
+                );
+                let work_name = name.clone();
+
+                let work = {
+                    let name = name.clone();
+                    async move {
+                    // 1. Explicit job URL first. Dead links (404/410) and
+                    //    empty pages fall through to discovery instead of
+                    //    failing hard.
+                    if let Some(url) = company.links.job.as_ref()
+                        && let Ok(url) = normalize_url(url)
+                    {
+                        match me.prepare_site(&url).await {
+                            Ok(prepared) if prepared.has_content() => {
+                                return (name, Some((url, Ok(prepared), false)));
+                            }
+                            Ok(_) => warn!("[EMPTY] {name}: {url}; trying discovery fallback"),
+                            Err(err) if is_dead_link(&err) => {
+                                warn!("[DEAD] {name}: {url} ({err}); trying discovery fallback")
+                            }
+                            Err(err) => return (name, Some((url, Err(err), false))),
+                        }
+                    }
+
+                    // 2. Auto-discover the career page from the website.
+                    let website = &company.links.website;
+                    let Ok(base) = normalize_url(website) else {
+                        return (name, None);
+                    };
+
+                    for candidate in me.discover_career_urls(&base).await {
+                        match me.prepare_site(&candidate).await {
+                            Ok(prepared) if prepared.has_content() => {
+                                debug!("[DISCOVER] {} using {candidate}", base.host_str().unwrap_or("?"));
+                                return (name, Some((candidate, Ok(prepared), true)));
+                            }
+                            Ok(_) => debug!("[DISCOVER] {} candidate {candidate} empty; trying next", base.host_str().unwrap_or("?")),
+                            Err(err) => warn!("[PAGE-ERROR] {candidate}: {err}"),
+                        }
+                    }
+
+                    // 3. AI discovery as a last resort — skipped once past
+                    //    half of the time budget (an LLM call per company).
+                    if started.elapsed().as_secs() < ai_discovery_until
+                        && let Some(career_url) = me.ai_discover_career_url(&base).await
+                        && let Ok(prepared) = me.prepare_site(&career_url).await
+                        && prepared.has_content()
+                    {
+                        return (name, Some((career_url, Ok(prepared), true)));
+                    }
+
+                    (name, None)
+                    }
                 };
-                // Try heuristic discovery first (link scan + path probe)
-                if let Some(career_url) = me.discover_career_url(&base).await {
-                    let prepared = me.prepare_site(&career_url).await;
-                    // Persist for next run
-                    if let Ok(mut urls) = disc.lock() {
-                        urls.push((name.clone(), career_url.to_string()));
+
+                match tokio::time::timeout(budget, work).await {
+                    Ok(result) => result,
+                    Err(_) => {
+                        warn!("[TIMEOUT] {work_name}: per-company budget exhausted");
+                        (name, None)
                     }
-                    return (name, Some((career_url, prepared, true)));
                 }
-                // Fallback: ask AI to find career page from homepage
-                if let Some(career_url) = me.ai_discover_career_url(&base).await {
-                    let prepared = me.prepare_site(&career_url).await;
-                    if let Ok(mut urls) = disc.lock() {
-                        urls.push((name.clone(), career_url.to_string()));
-                    }
-                    return (name, Some((career_url, prepared, true)));
-                }
-                (name, None)
             }
         })
         .buffer_unordered(concurrent.into());
@@ -167,13 +234,19 @@ pub async fn run(
             Some((url, Ok(SitePrepare::Exact(jobs)), discovered)) if !jobs.is_empty() => {
                 let jobs = enhancer::enhance_batch(jobs, None);
                 if !jobs.is_empty() {
-                    if discovered { discovered_count += 1; }
+                    if discovered {
+                        discovered_count += 1;
+                        record_discovered(&discovered_urls, &name, &url);
+                    }
                     output.insert(name, Entry { source: url, jobs });
                 }
             }
             Some((_, Ok(SitePrepare::Exact(_)), _)) => {}
             Some((url, Ok(SitePrepare::Markdown(md)), discovered)) => {
-                if discovered { discovered_count += 1; }
+                if discovered {
+                    discovered_count += 1;
+                    record_discovered(&discovered_urls, &name, &url);
+                }
                 pending.push((name, url, md));
             }
             Some((_, Ok(SitePrepare::Empty), _)) => {}
@@ -181,14 +254,14 @@ pub async fn run(
             None => {}
         }
 
-        if started.elapsed().as_secs() >= SOFT_DEADLINE_SECS {
-            warn!("Soft deadline in crawl phase; saving partial results");
+        if started.elapsed().as_secs() >= deadline_secs {
+            warn!("Soft deadline reached in crawl phase; saving partial results");
             break;
         }
     }
     drop(stream);
     if discovered_count > 0 {
-        info!("[DISCOVER] Found career pages for {} companies without explicit job link", discovered_count);
+        info!("[DISCOVER] Found career pages for {discovered_count} companies without explicit job link");
     }
 
     // ── Phase 2: batched LLM extraction of pending sites. ────────────────
@@ -197,14 +270,21 @@ pub async fn run(
 
     let mut retry_batches: Vec<Vec<(String, String)>> = Vec::new();
     let mut batch = 0usize;
-    while batch < pending.len() && started.elapsed().as_secs() < SOFT_DEADLINE_SECS {
+    while batch < pending.len() && started.elapsed().as_secs() < deadline_secs {
         let chunk: Vec<_> = pending[batch..(batch + BATCH_SITES).min(pending.len())]
             .iter()
             .map(|(name, _, md)| (name.as_str(), md.as_str()))
             .collect();
 
-        match engine.extract_batch(&chunk).await {
-            Ok(assignments) => {
+        // Bound each LLM call by both its own cap and the remaining budget.
+        let budget = Duration::from_secs(
+            deadline_secs
+                .saturating_sub(started.elapsed().as_secs())
+                .min(LLM_CALL_CAP_SECS),
+        );
+        let call = tokio::time::timeout(budget, engine.extract_batch(&chunk)).await;
+        match call {
+            Ok(Ok(assignments)) => {
                 let mut matched = std::collections::HashSet::new();
                 for (name, jobs) in assignments {
                     matched.insert(name.clone());
@@ -233,12 +313,21 @@ pub async fn run(
                     retry_batches.push(missed);
                 }
             }
-            Err(err) => {
+            Ok(Err(err)) => {
                 error!("[BATCH-ERROR] {err}");
                 if err.to_string().contains("quota exhausted") {
                     error!("LLM daily quota exhausted; skipping remaining LLM extraction");
                     break;
                 }
+                retry_batches.push(
+                    chunk
+                        .iter()
+                        .map(|(n, md)| (n.to_string(), md.to_string()))
+                        .collect(),
+                );
+            }
+            Err(_) => {
+                warn!("[BATCH-TIMEOUT] LLM batch exceeded its budget; deferring sites to sweep");
                 retry_batches.push(
                     chunk
                         .iter()
@@ -253,13 +342,18 @@ pub async fn run(
 
     // Retry sweep for rate-limited / LLM-skipped sites.
     for sweep in retry_batches {
-        if started.elapsed().as_secs() >= SOFT_DEADLINE_SECS {
+        if started.elapsed().as_secs() >= deadline_secs {
             break;
         }
         info!("[LLM-SWEEP] retrying {} site(s)", sweep.len());
         let chunk: Vec<(&str, &str)> = sweep.iter().map(|(n, md)| (n.as_str(), md.as_str())).collect();
-        match engine.extract_batch(&chunk).await {
-            Ok(assignments) => {
+        let budget = Duration::from_secs(
+            deadline_secs
+                .saturating_sub(started.elapsed().as_secs())
+                .min(LLM_CALL_CAP_SECS),
+        );
+        match tokio::time::timeout(budget, engine.extract_batch(&chunk)).await {
+            Ok(Ok(assignments)) => {
                 for (name, jobs) in assignments {
                     if let Some((_, url, _)) = pending.iter().find(|(n, _, _)| *n == name) {
                         let jobs = enhancer::enhance_batch(jobs, None);
@@ -275,7 +369,7 @@ pub async fn run(
                     }
                 }
             }
-            Err(err) => {
+            Ok(Err(err)) => {
                 error!("[SWEEP-ERROR] {err}");
                 if err.to_string().contains("quota exhausted") {
                     error!("LLM daily quota exhausted; skipping detail extraction");
@@ -283,6 +377,7 @@ pub async fn run(
                     break;
                 }
             }
+            Err(_) => warn!("[SWEEP-TIMEOUT] sweep batch exceeded its budget; skipping"),
         }
     }
 
@@ -314,8 +409,13 @@ pub async fn run(
                 })
                 .collect();
 
-            match engine.extract_details(&chunk).await {
-                Ok(posts) => {
+            let budget = Duration::from_secs(
+                deadline_secs
+                    .saturating_sub(started.elapsed().as_secs())
+                    .min(LLM_CALL_CAP_SECS),
+            );
+            match tokio::time::timeout(budget, engine.extract_details(&chunk)).await {
+                Ok(Ok(posts)) => {
                     for ((_, url, job, _), post) in fetched[i..].iter_mut().zip(posts) {
                         if let Some(mut post) = post {
                             if post.source.is_none() && post.apply.is_empty() {
@@ -331,7 +431,8 @@ pub async fn run(
                         }
                     }
                 }
-                Err(err) => error!("[DETAIL-BATCH-ERROR] {err}"),
+                Ok(Err(err)) => error!("[DETAIL-BATCH-ERROR] {err}"),
+                Err(_) => warn!("[DETAIL-BATCH-TIMEOUT] detail batch exceeded its budget; skipping"),
             }
             i += BATCH_DETAILS;
         }
@@ -360,13 +461,10 @@ pub async fn run(
 
     save(&output_file, &output)?;
 
-    // Persist discovered career URLs back to companies.toml so next run
-    // doesn't need to rediscover them (link scan + path probe + AI).
-    if let Ok(urls) = discovered_urls.lock() {
-        if !urls.is_empty() {
-            persist_discovered_urls(dir, &urls);
-        }
-    }
+    let discovered = discovered_urls
+        .lock()
+        .map(|urls| urls.clone())
+        .unwrap_or_default();
 
     info!(
         "From {} companies; Found {} Jobs in {:.1}s (production AI-enhanced)",
@@ -375,7 +473,7 @@ pub async fn run(
         started.elapsed().as_secs_f64()
     );
 
-    Ok(())
+    Ok(discovered)
 }
 
 fn save(output_file: &TextFile, output: &Jobs) -> Result {
@@ -383,64 +481,24 @@ fn save(output_file: &TextFile, output: &Jobs) -> Result {
     Ok(())
 }
 
-/// Persist discovered career URLs back to companies.toml.
-/// Adds `job = "..."` to companies that didn't have one, so next run
-/// skips discovery and goes straight to crawling.
-fn persist_discovered_urls(dir: &Path, discovered: &[(String, String)]) {
-    let companies_path = dir.join("data/companies.toml");
-    let Ok(content) = std::fs::read_to_string(&companies_path) else {
-        warn!("[PERSIST] Could not read companies.toml");
-        return;
-    };
-
-    let mut lines: Vec<String> = content.lines().map(String::from).collect();
-    let mut updated = 0;
-
-    for (name, url) in discovered {
-        // Find the company section header: ["Company Name"]
-        let header = format!("[\"{}\"]", name);
-        let header_alt = format!("[{}]", name);
-
-        // Find the line index of the header
-        let header_idx = lines.iter().position(|l| {
-            l.trim() == header || l.trim() == header_alt
-        });
-
-        let Some(idx) = header_idx else {
-            continue;
-        };
-
-        // Check if job = already exists in this company's block
-        let block_end = lines[idx+1..].iter()
-            .position(|l| l.trim().starts_with('[') && !l.trim().starts_with("[["))
-            .unwrap_or(lines.len() - idx - 1);
-        let block = &lines[idx..=idx+block_end];
-        let has_job = block.iter().any(|l| l.trim().starts_with("job"));
-
-        if has_job {
-            continue; // Already has job link, skip
-        }
-
-        // Insert job = "..." after the website = line (or after type = line)
-        let insert_after = block.iter().position(|l| {
-            let t = l.trim();
-            t.starts_with("website") || t.starts_with("type")
-        }).unwrap_or(0);
-
-        let job_line = format!("job = \"{}\"", url);
-        lines.insert(idx + 1 + insert_after, job_line);
-        updated += 1;
-        info!("[PERSIST] Added job = \"{}\" for \"{}\"", url, name);
-    }
-
-    if updated > 0 {
-        let new_content = lines.join("\n");
-        if let Err(e) = std::fs::write(&companies_path, new_content) {
-            warn!("[PERSIST] Failed to write companies.toml: {e}");
-        } else {
-            info!("[PERSIST] Updated {} companies in data/companies.toml", updated);
+/// Queue a discovered career URL for persistence by the caller.
+fn record_discovered(
+    discovered: &std::sync::Mutex<Vec<(String, String)>>,
+    name: &str,
+    url: &Url,
+) {
+    if let Ok(mut urls) = discovered.lock() {
+        if !urls.iter().any(|(n, _)| n == name) {
+            urls.push((name.to_owned(), url.to_string()));
         }
     }
+}
+
+/// True when the career URL itself is gone (404/410). Such links are worth
+/// re-discovering from the company website instead of failing the company.
+fn is_dead_link(err: &crate::DynError) -> bool {
+    let msg = err.to_string();
+    msg.contains("404 Not Found") || msg.contains("410 Gone")
 }
 
 pub fn clear_cache() -> Result {
@@ -455,6 +513,16 @@ enum SitePrepare {
     Markdown(String),
     /// Nothing scrapable (JS-rendered page, empty listing, ...).
     Empty,
+}
+
+impl SitePrepare {
+    fn has_content(&self) -> bool {
+        match self {
+            Self::Exact(jobs) => !jobs.is_empty(),
+            Self::Markdown(md) => !md.trim().is_empty(),
+            Self::Empty => false,
+        }
+    }
 }
 
 struct Crawler {
@@ -499,35 +567,45 @@ impl Crawler {
         Ok(SitePrepare::Markdown(markdown))
     }
 
-    /// Auto-discover career/jobs page from a company website.
-    /// Probes common paths + scans homepage links for career-related keywords.
-    async fn discover_career_url(&self, base_url: &Url) -> Option<Url> {
-        let host = base_url.host_str()?.to_ascii_lowercase();
+    /// Auto-discover candidate career/jobs pages from a company website,
+    /// best signals first: homepage link scan (sorted by path depth), then
+    /// common career paths that answer HEAD. The caller tries candidates in
+    /// order until one yields real content, so JS-rendered or empty pages
+    /// no longer dead-end a company.
+    async fn discover_career_urls(&self, base_url: &Url) -> Vec<Url> {
+        let mut candidates: Vec<Url> = Vec::new();
+        let mut seen_paths: HashSet<String> = HashSet::new();
 
-        // 1. Scan homepage for career-related links
+        // 1. Scan homepage for career-related links.
         if let Ok(html) = self.fetch_html(base_url).await {
-            let links = extract_career_links(&html, base_url);
-            if let Some(url) = links.into_iter().next() {
-                debug!("[DISCOVER] {host}: found career link {url}");
-                return Some(url);
+            for url in extract_career_links(&html, base_url) {
+                if seen_paths.insert(url.path().to_string()) {
+                    debug!("[DISCOVER] {}: found career link {url}", base_url.host_str().unwrap_or("?"));
+                    candidates.push(url);
+                }
             }
         }
 
-        // 2. Probe common career page paths (HEAD only, fast)
-        let career_paths = [
-            "/career", "/careers", "/jobs", "/job-opening", "/job-openings",
-            "/join-us", "/work-with-us", "/hiring", "/open-positions",
-            "/recruit", "/recruitment", "/vacancy", "/vacancies",
-            "/about/careers", "/company/careers",
-        ];
-        for path in &career_paths {
+        // 2. Probe common career page paths (HEAD only, fast). Bounded: an
+        //    unresponsive host must not eat the per-company budget here.
+        let mut probes = 0usize;
+        for path in CAREER_PATHS {
+            if probes >= MAX_HEAD_PROBES || candidates.len() >= MAX_CAREER_CANDIDATES * 2 {
+                break;
+            }
+            if seen_paths.contains(*path) {
+                continue;
+            }
             let Ok(url) = base_url.join(path) else { continue };
+            probes += 1;
             if self.http_head_ok(&url).await {
-                debug!("[DISCOVER] {host}: found career page at {path}");
-                return Some(url);
+                debug!("[DISCOVER] {}: found career page at {path}", base_url.host_str().unwrap_or("?"));
+                seen_paths.insert(path.to_string());
+                candidates.push(url);
             }
         }
-        None
+
+        candidates
     }
 
     /// Quick HEAD check — is the URL reachable and not 404/500?
@@ -985,8 +1063,6 @@ use crate::utils::resolve_url;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn cache_filenames_are_short_and_stable() {
         let long = "https://example.com/careers?utm_source=x&utm_medium=y&utm_campaign=z&page=2&foo=bar&baz=qux&more=stuff&even=more&params=here".repeat(3);

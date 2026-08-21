@@ -310,6 +310,7 @@ pub fn gen_readme(dir: PathBuf) -> Result {
         }
 
         writeln!(o, "## 🏢 {name}\n")?;
+        writeln!(o, "> Career Page: <{source}>\n")?;
 
         for mut job in jobs {
             let src = match &job.source {
