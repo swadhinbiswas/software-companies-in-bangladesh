@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "remote jobs Bangladesh",
     "tech job dashboard",
   ],
-  authors: [{ name: "swadhinbiswas", url: "https://github.com/nurmohammed840" }],
+  authors: [{ name: "swadhinbiswas", url: "https://github.com/swadhinbiswas" }],
   creator: "swadhinbiswas",
   alternates: { canonical: "/" },
   openGraph: {
@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <nav className="hidden sm:flex items-center gap-1 text-sm">
                 <a href="/" className="px-3 py-1.5 rounded-md hover:bg-accent transition-colors font-medium">Dashboard</a>
                 <a href="https://huggingface.co/datasets/swadhinbiswas/bangladeshi-jobs" target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-md hover:bg-accent transition-colors">Dataset</a>
-                <a href="https://github.com/nurmohammed840/software-companies-in-bangladesh" target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">GitHub</a>
+                <a href="https://github.com/swadhinbiswas/software-companies-in-bangladesh" target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">GitHub</a>
               </nav>
               <div className="flex items-center gap-2">
                 <ModeToggle />

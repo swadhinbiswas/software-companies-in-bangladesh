@@ -3,7 +3,7 @@
 
 ## 💼 Jobs
 
-Visit [Jobs](https://github.com/nurmohammed840/software-companies-in-bangladesh/blob/main/jobs.md) to see currently open positions, From `140` companies.
+Visit [Jobs](https://github.com/swadhinbiswas/software-companies-in-bangladesh/blob/main/jobs.md) to see currently open positions, From `140` companies.
 
 | # | Company | Type | Technologies | Link |
 |:-:| ------- | ---- | ------------ | ---- |

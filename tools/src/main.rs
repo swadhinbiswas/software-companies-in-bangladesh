@@ -308,4 +308,4 @@ static README_HEADER: &str = "<!-- AUTO-GENERATED FILE — DO NOT EDIT. -->
 
 ## 💼 Jobs
 
-Visit [Jobs](https://github.com/nurmohammed840/software-companies-in-bangladesh/blob/main/jobs.md) to see currently open positions";
+Visit [Jobs](https://github.com/swadhinbiswas/software-companies-in-bangladesh/blob/main/jobs.md) to see currently open positions";

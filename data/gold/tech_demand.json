@@ -15,11 +15,6 @@
     "companies":18
   },
   {
-    "tag":"Node.js",
-    "jobs":25,
-    "companies":14
-  },
-  {
     "tag":"Git",
     "jobs":25,
     "companies":13
@@ -28,6 +23,11 @@
     "tag":"React",
     "jobs":25,
     "companies":16
+  },
+  {
+    "tag":"Node.js",
+    "jobs":25,
+    "companies":14
   },
   {
     "tag":"Laravel",
@@ -65,19 +65,19 @@
     "companies":12
   },
   {
-    "tag":"MongoDB",
-    "jobs":18,
-    "companies":9
-  },
-  {
     "tag":"SEO",
     "jobs":18,
     "companies":9
   },
   {
-    "tag":"CRM",
-    "jobs":17,
+    "tag":"MongoDB",
+    "jobs":18,
     "companies":9
+  },
+  {
+    "tag":"UI\/UX",
+    "jobs":17,
+    "companies":12
   },
   {
     "tag":"Docker",
@@ -95,12 +95,12 @@
     "companies":9
   },
   {
-    "tag":"UI\/UX",
+    "tag":"CRM",
     "jobs":17,
-    "companies":12
+    "companies":9
   },
   {
-    "tag":"Business Development",
+    "tag":"AI",
     "jobs":15,
     "companies":8
   },
@@ -110,14 +110,9 @@
     "companies":9
   },
   {
-    "tag":"AI",
+    "tag":"Business Development",
     "jobs":15,
     "companies":8
-  },
-  {
-    "tag":"Digital Marketing",
-    "jobs":12,
-    "companies":9
   },
   {
     "tag":"Marketing",
@@ -135,9 +130,19 @@
     "companies":7
   },
   {
+    "tag":"Digital Marketing",
+    "jobs":12,
+    "companies":9
+  },
+  {
     "tag":"CI\/CD",
     "jobs":12,
     "companies":8
+  },
+  {
+    "tag":"Angular",
+    "jobs":11,
+    "companies":9
   },
   {
     "tag":"Azure",
@@ -150,19 +155,14 @@
     "companies":6
   },
   {
-    "tag":"Flutter",
-    "jobs":11,
-    "companies":8
-  },
-  {
     "tag":"Figma",
     "jobs":11,
     "companies":8
   },
   {
-    "tag":"Angular",
+    "tag":"Flutter",
     "jobs":11,
-    "companies":9
+    "companies":8
   },
   {
     "tag":"Agile",
@@ -170,14 +170,14 @@
     "companies":7
   },
   {
-    "tag":"Android",
+    "tag":"Redis",
     "jobs":10,
     "companies":6
   },
   {
-    "tag":"Redis",
+    "tag":"ERP",
     "jobs":10,
-    "companies":6
+    "companies":5
   },
   {
     "tag":"Machine Learning",
@@ -185,9 +185,14 @@
     "companies":4
   },
   {
-    "tag":"ERP",
+    "tag":"Android",
     "jobs":10,
-    "companies":5
+    "companies":6
+  },
+  {
+    "tag":"DevOps",
+    "jobs":9,
+    "companies":8
   },
   {
     "tag":"QA",
@@ -200,32 +205,12 @@
     "companies":5
   },
   {
-    "tag":"DevOps",
-    "jobs":9,
+    "tag":"TypeScript",
+    "jobs":8,
     "companies":8
   },
   {
-    "tag":"Fintech",
-    "jobs":8,
-    "companies":1
-  },
-  {
-    "tag":"Next.js",
-    "jobs":8,
-    "companies":4
-  },
-  {
-    "tag":"RESTful APIs",
-    "jobs":8,
-    "companies":5
-  },
-  {
     "tag":"Business Analysis",
-    "jobs":8,
-    "companies":5
-  },
-  {
-    "tag":"Salesforce",
     "jobs":8,
     "companies":5
   },
@@ -235,14 +220,14 @@
     "companies":5
   },
   {
-    "tag":"TypeScript",
+    "tag":"RESTful APIs",
     "jobs":8,
-    "companies":8
+    "companies":5
   },
   {
-    "tag":"Linux",
+    "tag":"Fintech",
     "jobs":8,
-    "companies":6
+    "companies":1
   },
   {
     "tag":"React.js",
@@ -250,22 +235,37 @@
     "companies":4
   },
   {
+    "tag":"Linux",
+    "jobs":8,
+    "companies":6
+  },
+  {
+    "tag":"Next.js",
+    "jobs":8,
+    "companies":4
+  },
+  {
+    "tag":"Salesforce",
+    "jobs":8,
+    "companies":5
+  },
+  {
     "tag":"HTML5",
     "jobs":8,
     "companies":8
   },
   {
-    "tag":"C#",
+    "tag":"Compliance",
+    "jobs":7,
+    "companies":4
+  },
+  {
+    "tag":"Google Analytics",
     "jobs":7,
     "companies":5
   },
   {
-    "tag":"React Native",
-    "jobs":7,
-    "companies":6
-  },
-  {
-    "tag":"Google Analytics",
+    "tag":"C#",
     "jobs":7,
     "companies":5
   },
@@ -275,9 +275,9 @@
     "companies":5
   },
   {
-    "tag":"Compliance",
+    "tag":"React Native",
     "jobs":7,
-    "companies":4
+    "companies":6
   },
   {
     "tag":"LangChain",
@@ -290,32 +290,12 @@
     "companies":7
   },
   {
-    "tag":"GCP",
+    "tag":"Lead Generation",
     "jobs":6,
-    "companies":5
-  },
-  {
-    "tag":"Data Analysis",
-    "jobs":6,
-    "companies":5
-  },
-  {
-    "tag":"Terraform",
-    "jobs":6,
-    "companies":3
+    "companies":4
   },
   {
     "tag":"Social Media",
-    "jobs":6,
-    "companies":6
-  },
-  {
-    "tag":"Django",
-    "jobs":6,
-    "companies":3
-  },
-  {
-    "tag":"Vue.js",
     "jobs":6,
     "companies":6
   },
@@ -325,9 +305,9 @@
     "companies":4
   },
   {
-    "tag":"Swift",
+    "tag":"GCP",
     "jobs":6,
-    "companies":4
+    "companies":5
   },
   {
     "tag":"HubSpot",
@@ -335,28 +315,33 @@
     "companies":4
   },
   {
+    "tag":"Data Analysis",
+    "jobs":6,
+    "companies":5
+  },
+  {
     "tag":"Google Ads",
     "jobs":6,
     "companies":5
   },
   {
-    "tag":"Lead Generation",
+    "tag":"Vue.js",
+    "jobs":6,
+    "companies":6
+  },
+  {
+    "tag":"Swift",
     "jobs":6,
     "companies":4
   },
   {
-    "tag":"Quality Assurance",
-    "jobs":5,
-    "companies":4
+    "tag":"Django",
+    "jobs":6,
+    "companies":3
   },
   {
-    "tag":"Microservices",
-    "jobs":5,
-    "companies":4
-  },
-  {
-    "tag":"Hugging Face",
-    "jobs":5,
+    "tag":"Terraform",
+    "jobs":6,
     "companies":3
   },
   {
@@ -365,22 +350,27 @@
     "companies":1
   },
   {
-    "tag":"NestJS",
+    "tag":"Hugging Face",
     "jobs":5,
     "companies":3
   },
   {
-    "tag":"Google Sheets",
+    "tag":"Quality Assurance",
     "jobs":5,
-    "companies":2
+    "companies":4
   },
   {
-    "tag":"Recruitment",
+    "tag":"ReactJS",
     "jobs":5,
     "companies":5
   },
   {
-    "tag":"SASS",
+    "tag":"Microservices",
+    "jobs":5,
+    "companies":4
+  },
+  {
+    "tag":"B2B Sales",
     "jobs":5,
     "companies":3
   },
@@ -390,7 +380,32 @@
     "companies":4
   },
   {
-    "tag":"Automation",
+    "tag":"SQA",
+    "jobs":5,
+    "companies":3
+  },
+  {
+    "tag":"Recruitment",
+    "jobs":5,
+    "companies":5
+  },
+  {
+    "tag":"Scrum",
+    "jobs":5,
+    "companies":4
+  },
+  {
+    "tag":"Power BI",
+    "jobs":5,
+    "companies":4
+  },
+  {
+    "tag":"Kotlin",
+    "jobs":5,
+    "companies":4
+  },
+  {
+    "tag":"SASS",
     "jobs":5,
     "companies":3
   },
@@ -405,34 +420,19 @@
     "companies":4
   },
   {
-    "tag":"Scrum",
-    "jobs":5,
-    "companies":4
-  },
-  {
-    "tag":"SQA",
+    "tag":"NestJS",
     "jobs":5,
     "companies":3
   },
   {
-    "tag":"B2B Sales",
+    "tag":"Automation",
     "jobs":5,
     "companies":3
   },
   {
-    "tag":"Kotlin",
+    "tag":"Google Sheets",
     "jobs":5,
-    "companies":4
-  },
-  {
-    "tag":"ReactJS",
-    "jobs":5,
-    "companies":5
-  },
-  {
-    "tag":"Power BI",
-    "jobs":5,
-    "companies":4
+    "companies":2
   },
   {
     "tag":"Go",
@@ -440,7 +440,17 @@
     "companies":4
   },
   {
-    "tag":"SQL Server",
+    "tag":"AI Tools",
+    "jobs":4,
+    "companies":4
+  },
+  {
+    "tag":"Product Management",
+    "jobs":4,
+    "companies":4
+  },
+  {
+    "tag":"Full Stack",
     "jobs":4,
     "companies":3
   },
@@ -450,29 +460,14 @@
     "companies":2
   },
   {
-    "tag":"Office Management",
-    "jobs":4,
-    "companies":3
-  },
-  {
-    "tag":"C++",
-    "jobs":4,
-    "companies":3
-  },
-  {
-    "tag":"Product Management",
-    "jobs":4,
-    "companies":4
-  },
-  {
-    "tag":"Jira",
-    "jobs":4,
-    "companies":4
-  },
-  {
-    "tag":"Generative AI",
+    "tag":"Email Marketing",
     "jobs":4,
     "companies":2
+  },
+  {
+    "tag":"Risk Management",
+    "jobs":4,
+    "companies":1
   },
   {
     "tag":"Kafka",
@@ -480,23 +475,28 @@
     "companies":4
   },
   {
-    "tag":"AI Tools",
-    "jobs":4,
-    "companies":4
-  },
-  {
-    "tag":"FastAPI",
+    "tag":"Communication",
     "jobs":4,
     "companies":3
   },
   {
-    "tag":"Performance Marketing",
+    "tag":"Jira",
     "jobs":4,
-    "companies":2
+    "companies":4
+  },
+  {
+    "tag":"Redux",
+    "jobs":4,
+    "companies":4
   },
   {
     "tag":"Manual Testing",
     "jobs":4,
     "companies":4
+  },
+  {
+    "tag":"Generative AI",
+    "jobs":4,
+    "companies":2
   }
 ]

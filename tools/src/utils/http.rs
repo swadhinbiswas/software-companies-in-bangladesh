@@ -11,7 +11,7 @@ use log::{debug, warn};
 use reqwest::Client;
 use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
 use serde::de::DeserializeOwned;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{Duration, Instant};
 use tokio::sync::Semaphore;
@@ -25,6 +25,7 @@ pub struct Http {
     client: Client,
     semaphore: Arc<Semaphore>,
     last_request: Mutex<HashMap<String, Instant>>,
+    tls_failed: Mutex<HashSet<String>>,
 }
 
 impl Http {
@@ -51,6 +52,7 @@ impl Http {
             client,
             semaphore: Arc::new(Semaphore::new(max_concurrent.max(1))),
             last_request: Mutex::new(HashMap::new()),
+            tls_failed: Mutex::new(HashSet::new()),
         })
     }
 
@@ -58,6 +60,13 @@ impl Http {
     /// Falls back to the alternate `www.`/apex host when the server's
     /// certificate doesn't cover the requested hostname.
     pub async fn get(&self, url: &Url) -> Result<String> {
+        let host = url.host_str().unwrap_or("").to_string();
+        // Skip hosts with known-bad TLS (expired, wrong issuer, no useful
+        // www↔bare alternate). Prevents 12+ redundant retries during
+        // discovery when a host's certificate is broken site-wide.
+        if self.tls_failed.lock().unwrap().contains(&host) {
+            return Err(format!("TLS: skipping {host} (previously failed)").into());
+        }
         match self.fetch(url).await {
             Ok(response) => response
                 .error_for_status()?
@@ -65,16 +74,37 @@ impl Http {
                 .await
                 .map_err(Into::into),
             Err(err) if is_tls_error_msg(&err.to_string()) => match alternate_www_host(url) {
-                Some(alt) => {
-                    warn!("[TLS] {url}: certificate rejected; retrying via {alt}");
-                    let response = self.fetch(&alt).await?;
-                    response
-                        .error_for_status()?
-                        .text()
-                        .await
-                        .map_err(Into::into)
+                Some(alt) if alt.host_str() != Some(&host) => {
+                    warn!(
+                        "[TLS] {url}: certificate rejected; retrying via {}",
+                        alt.host_str().unwrap_or("")
+                    );
+                    let result = self.fetch(&alt).await;
+                    match result {
+                        Ok(response) => response
+                            .error_for_status()?
+                            .text()
+                            .await
+                            .map_err(Into::into),
+                        Err(_) => {
+                            // Alternate also failed — the cert is broken
+                            // site-wide (expired / unknown issuer), not just
+                            // a www mismatch. Remember it.
+                            self.tls_failed.lock().unwrap().insert(host.clone());
+                            warn!("[TLS] {host}: both hosts failed — marking as broken");
+                            Err(err)
+                        }
+                    }
                 }
-                None => Err(err),
+                _ => {
+                    // No useful alternate (multi-level subdomain, or both
+                    // www and bare share the same broken cert).
+                    if !alternate_www_exists(url) {
+                        self.tls_failed.lock().unwrap().insert(host.clone());
+                        warn!("[TLS] {host}: no viable alternate — marking as broken");
+                    }
+                    Err(err)
+                }
             },
             Err(err) => Err(err),
         }
@@ -94,6 +124,10 @@ impl Http {
 
     /// Cheap reachability probe with the same TLS fallback as `get`.
     pub async fn head_ok(&self, url: &Url) -> bool {
+        let host = url.host_str().unwrap_or("").to_string();
+        if self.tls_failed.lock().unwrap().contains(&host) {
+            return false;
+        }
         use reqwest::Method;
         let send = |u: Url| {
             self.raw_client()
@@ -103,10 +137,13 @@ impl Http {
         };
         match send(url.clone()).await {
             Ok(r) => r.status().is_success(),
-            Err(err) if is_tls_error_msg(&err.to_string()) => match alternate_www_host(url) {
-                Some(alt) => matches!(send(alt).await, Ok(r) if r.status().is_success()),
-                None => false,
-            },
+            Err(err) if is_tls_error_msg(&err.to_string()) => {
+                self.tls_failed.lock().unwrap().insert(host);
+                match alternate_www_host(url) {
+                    Some(alt) => matches!(send(alt).await, Ok(r) if r.status().is_success()),
+                    None => false,
+                }
+            }
             Err(_) => false,
         }
     }
@@ -212,6 +249,15 @@ fn alternate_www_host(url: &Url) -> Option<Url> {
     let mut out = url.clone();
     out.set_host(alt.as_deref()).ok()?;
     Some(out)
+}
+
+/// True when there IS a viable www↔bare alternate for this URL (i.e. the
+/// host is a simple two-part domain or has a `www.` prefix we can strip).
+fn alternate_www_exists(url: &Url) -> bool {
+    let Some(host) = url.host_str() else {
+        return false;
+    };
+    host.strip_prefix("www.").is_some() || host.split('.').count() == 2
 }
 
 /// The process-wide shared client, created on first use.
